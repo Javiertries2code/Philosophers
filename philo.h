@@ -23,8 +23,19 @@
 #define ERROR 1
 #define SUCCESS 0
 
+
+/**
+ * @brief for timin purposses, to start sinchronisation, an starting time synchro_t in the struct
+ *  is defined. but the diferrence must be calculated and removed from a sandclock time, for a synchronous
+ * begining time to wait for begining = sand_clock - (current time - synchro_t);
+ * 
+ */
+#define SAND_CLOCK 10900
+#define SLEEP_TO_SYNCHRO 10000
 typedef pthread_mutex_t *write_mtx;
-typedef pthread_mutex_t *maitre;
+typedef pthread_mutex_t *t_time_mtx;
+typedef pthread_mutex_t *t_maitre;
+
 
 typedef enum philo_states
 {
@@ -49,10 +60,11 @@ typedef struct s_settings
     bool all_alive;
 
     pthread_mutex_t *mutexes;
-    maitre maitre;
+    t_maitre t_maitre;
     write_mtx write_mtx;
+    t_time_mtx t_time_mtx;
 
-    struct timeval starting_time;
+    struct timeval synchro_t;
     struct s_philo *philosophers;
 
 } t_settings;
@@ -69,12 +81,16 @@ typedef struct s_philo
     pthread_mutex_t *fork_next;
     pthread_mutex_t *fork_prev;
     write_mtx write_mtx;
+    t_time_mtx t_time_mtx;
+
     //struct timeval current_time;
 
 } t_philo;
 
 // simulation
 void *routine_ph(void *args);
+void calculate_delay(struct timeval *delay, struct timeval synchro_t, write_mtx write_mtx);
+
 
 // parsers
 void parse_argv(t_settings *settings, const char *argv[]);
@@ -85,6 +101,7 @@ void load_settings(t_settings *settings, const char *argv[]);
 void create_philos(t_settings *settings);
 void create_mutexes(t_settings *settings);
 void join_threads(t_settings *settings);
+
 
 // utils
 void *ft_calloc(size_t count, size_t size);

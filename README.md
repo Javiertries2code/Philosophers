@@ -1,3 +1,9 @@
+
+LAS DAY
+for some reasosn that i dont get, it fails when creatinf mutexes to access t_time, i couls use those from write mtx
+
+gotta make order in the delaying think, taking it out in another function, no need of thread protection
+
 #Midnight ideas
 
 -- For sinchronuous starting:

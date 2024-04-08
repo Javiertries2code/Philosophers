@@ -54,6 +54,8 @@ i = 0;
     i++;
 }
 pthread_mutex_init(settings->write_mtx, NULL);
+//pthread_mutex_init(settings->t_time_mtx, NULL);
+
 
 }
 
@@ -77,6 +79,7 @@ pthread_mutex_init(settings->write_mtx, NULL);
         settings->philosophers[i].fork_next = &(settings->mutexes[i]);
         settings->philosophers[i].settings = settings;
         settings->philosophers[i].write_mtx = settings->write_mtx;
+       // settings->philosophers[i].t_time_mtx = settings->t_time_mtx;
         if (i == 0)
             settings->philosophers[i].fork_prev = &(settings->mutexes[settings->num_philosophers]);
         else

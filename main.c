@@ -18,9 +18,12 @@ load_settings(settings, test);
 create_mutexes(settings);
 settings->start_simulation = false;//i used calloc, i should be  false already
 create_philos(settings);
-sleep(1);
-gettimeofday(&settings->starting_time, NULL);
-printf("main = %ld  main",settings->starting_time.tv_usec);
+
+//pthread_mutex_lock(settings->t_time_mtx);
+gettimeofday(&settings->synchro_t, NULL);
+//pthread_mutex_lock(settings->t_time_mtx);
+
+printf("main = %ld  main",settings->synchro_t.tv_usec);
 
 settings->start_simulation = true;
 settings->all_alive = true;
