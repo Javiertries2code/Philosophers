@@ -14,11 +14,9 @@ void load_settings(t_settings *settings, const char *argv[])
 {
     settings->num_philosophers = atol(argv[1]);
     settings->time_to_die = atol(argv[2]);
-
     settings->time_to_eat = atol(argv[3]);
-
     settings->time_to_sleep = atol(argv[4]);
-    settings->anyone_death = ALL_ALIVE;
+    settings->anyone_death = (int *)ft_calloc(settings->num_philosophers, sizeof(int));    
     if(argv[5] != NULL)
         settings->max_meals = atol(argv[5]);
     else
@@ -56,22 +54,14 @@ void create_mutexes(t_settings *settings)
 
 void create_philos(t_settings *settings)
 {
-
     long int i;
 
     i = 0;
-    write(1, "in create philosos\n", 18);
-    printf(RED " num philold %ld\n" RESET, settings->num_philosophers);
     settings->philosophers = ft_calloc(settings->num_philosophers, sizeof(t_philo));
-
-    // pthread_mutex_lock(settings->t_general);
+    
     while (i < (settings->num_philosophers))
     {
         settings->philosophers[i].philo_id = i + 1;
-        /// it seems that it points to 0 in simulation
-
-        // pthread_create(&settings->philosophers[i].thread_id, NULL, &routine_ph, (void *)&settings->philosophers[i]);
-
         settings->philosophers[i].time_to_die = settings->time_to_die;
         settings->philosophers[i].time_to_eat = settings->time_to_eat;
         settings->philosophers[i].time_to_sleep = (settings->max_meals);
@@ -87,8 +77,12 @@ void create_philos(t_settings *settings)
         pthread_create(&settings->philosophers[i].thread_id, NULL, &routine_ph, (void *)&settings->philosophers[i]);
         i++;
     }
-
-    // pthread_mutex_unlock(settings->t_general);
+    create_maitre(settings);
+}
+void create_maitre(t_settings *settings)
+{
+    settings->maitre = ft_calloc(1, sizeof(t_maitre));
+    pthread_create(&settings->maitre->th_maitre, NULL, &routine_maitre, (void *)&settings->maitre);
 }
 /**
  * @brief Joins threads, execution wont proceed untill all of them are joint

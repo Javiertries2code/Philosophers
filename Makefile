@@ -8,6 +8,7 @@ DIR_SIMULATION := simulation/
 DIR_INIT := init/
 DIR_TIMING := timing/
 DIR_PARSERS := parsers/
+DIR_EXITING := exiting/
 
 
 
@@ -18,6 +19,7 @@ DIR_PARSERS := parsers/
 # TESTS := $(addprefix $(DIR_TEST), $(TEST_FILES))
 #-------------
 #-------------
+EXITING_FILES = exiting.c 
 TIMING_FILES = timing.c 
 INIT_FILES =  init.c
 SIMULATION_FILES = simulation.c 
@@ -25,6 +27,7 @@ SIMULATION_FILES = simulation.c
 UTILS_FILES = utils.c utils_support.c
 #SUPPORT_FILES = support.c
 PARSERS_FILES = parse_argv.c 
+HANDLERS_FILES = safe_mutex.c 
 
 
 OBJECTS = $(UTILS:.c=.o) $(HANDLERS:.c=.o)  $(INITS:.c=.o) $(PARSERS:.c=.o) $(TIMING:.c=.o)
@@ -38,6 +41,7 @@ PARSERS := $(addprefix $(DIR_PARSERS), $(PARSERS_FILES))
 SIMULATIONS := $(addprefix $(DIR_SIMULATION), $(SIMULATION_FILES))
 INITS := $(addprefix $(DIR_INIT), $(INIT_FILES))
 TIMINGS := $(addprefix $(DIR_TIMING), $(TIMING_FILES))
+EXITING := $(addprefix $(DIR_EXITING), $(EXITING_FILES))
 
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror
@@ -48,7 +52,8 @@ LEAKS = -g3
 all : $(NAME)
 
 $(NAME):$(OBJECTS)
-	$(CC) $(CFLAGS) $(LEAKS) -o $(NAME) main.c $(UTILS) $(HANDLERS) $(PARSERS) $(SIMULATIONS) $(INITS) $(TIMINGS) 
+	$(CC) $(CFLAGS) $(LEAKS) -o $(NAME) main.c $(UTILS) $(HANDLERS) \
+	 $(PARSERS) $(SIMULATIONS) $(INITS) $(TIMINGS) $(EXITING)
 	
 #$(TIMINGS)$(VALIDATES) $(SUPPORT) 
 

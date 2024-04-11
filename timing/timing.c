@@ -25,7 +25,7 @@ void set_threshold(t_settings *settings)
         if (settings->max_thr > settings->threshold)
             settings->threshold = settings->max_thr;
     }
-        printf(YELLOW " YYset_threshold: threshold max with sleeping time %ld\n;  new sleeping threshold = %ld\n" RESET, (long)max_sleep, settings->threshold);
+        printf(YELLOW " Max deviation, with sleeping time %ld  = %ld\n" RESET, (long)max_sleep, settings->threshold);
 
 funcion_proporcional(settings);
         printf(BLUE"   new  threshold = %ld\n" RESET,  settings->threshold);
