@@ -1,5 +1,6 @@
 #include "../philo.h"
 #include "stdlib.h"
+
 void ft_bzero(void *s, size_t n)
 {
 	unsigned int i;
@@ -40,43 +41,20 @@ size_t ft_strlen(const char *s)
 	return (i);
 }
 
-void *print(char *str)
-{
-}
 
-/**
- * @brief it calculates the time all philos must delay for a sinchronised begining
- * under the thresold of 1000 ml fro 
- * @param delay 
- * @param synchro_t 
- * @param write_mtx 
- */
-void calculate_delay(struct timeval *delay, struct timeval synchro_t, write_mtx write_mtx)
-{
-    struct timeval current_time;
-    struct timeval elapsed_time;
-    struct timeval begining;
+
+// float funcion_proporcional(float input) {
+//     // Definir los límites de la función
+//     float input_min = 0;
+//     float input_max = 1;
+//     float output_min = 0.7;
+//     float output_max = 0.95;
     
-		delay->tv_usec = SAND_CLOCK;//pending to remove elpased time
-
-    // calculates the dalay when waking up, and makes them wait just enough to wake up the same time.
-    begining.tv_usec = synchro_t.tv_usec;    
-   // pthread_mutex_lock(philo.t_time_mtx);
-    gettimeofday(&current_time, NULL);
-   // pthread_mutex_unlock(philo.t_time_mtx);
-
-   //elapsed time
-    elapsed_time.tv_usec = current_time.tv_usec - begining.tv_usec;
-   
-    if (elapsed_time.tv_usec > SAND_CLOCK)
-        printf("ERROR");
-    else
-        delay->tv_usec -= elapsed_time.tv_usec;
-
-     pthread_mutex_lock(write_mtx);
-
-	printf("current time = %ld\nbegining = %ld\nelapsed = %ld, planned delay = %ld\n",
-	 (long)current_time.tv_usec , (long)begining.tv_usec, (long)elapsed_time.tv_usec, (long)delay->tv_usec);
-    pthread_mutex_unlock(write_mtx);
-
-}
+//     // Asegurarse de que el input esté dentro del rango permitido
+//     input = (input < input_min) ? input_min : ((input > input_max) ? input_max : input);
+    
+//     // Calcular el valor de retorno usando una interpolación lineal
+//     float output = ((input - input_min) / (input_max - input_min)) * (output_max - output_min) + output_min;
+    
+//     return output;
+// }

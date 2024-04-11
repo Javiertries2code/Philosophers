@@ -48,6 +48,41 @@ busy waiting
 while (condition)
 ; <--- enough with semicolom
 
+avr@T:~/Desktop/Philo/philo$ valgrind --tool=helgrind ./filo
+==8475== Helgrind, a thread error detector
+==8475== Copyright (C) 2007-2017, and GNU GPL'd, by OpenWorks LLP et al.
+==8475== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==8475== Command: ./filo
+==8475== 
+INICIO
+into parseargv
+into load setting
+some load setting
+in create mutexes
+in create philosos num philold 5
+MAIN LOCKS MUTEX
+MAIN UNLOCKS MUTEX==8475== 
+==8475== Process terminating with default action of signal 11 (SIGSEGV)
+==8475==  Access not within mapped region at address 0x10
+==8475==    at 0x490BEF4: pthread_mutex_lock@@GLIBC_2.2.5 (pthread_mutex_lock.c:80)
+==8475==    by 0x4850C66: ??? (in /usr/libexec/valgrind/vgpreload_helgrind-amd64-linux.so)
+==8475==    by 0x109FFF: routine_ph (simulation.c:16)
+==8475==    by 0x485396A: ??? (in /usr/libexec/valgrind/vgpreload_helgrind-amd64-linux.so)
+==8475==    by 0x4908AC2: start_thread (pthread_create.c:442)
+==8475==    by 0x4999A03: clone (clone.S:100)
+==8475==  If you believe this happened as a result of a stack
+==8475==  overflow in your program's main thread (unlikely but
+==8475==  possible), you can try to increase the size of the
+==8475==  main thread stack using the --main-stacksize= flag.
+==8475==  The main thread stack size used in this run was 8388608.
+==8475== 
+==8475== Use --history-level=approx or =none to gain increased speed, at
+==8475== the cost of reduced accuracy of conflicting-access information
+==8475== For lists of detected and suppressed errors, rerun with: -s
+==8475== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Segmentation fault (core dumped)
+
+
 
 -- In case of only one philo, it could be create a different routine, all sequencial, while (number of meals != 0) {
 calculate the thinking time, printing data, and go ahead.}

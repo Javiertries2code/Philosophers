@@ -14,7 +14,7 @@
 #define RESET "\033[0m"     /* Reset to default color */
 #define RED "\033[1;31m"    /* Bold Red */
 #define GREEN "\033[1;32m"  /* Bold Green */
-#define YELLOW "\033[1;33m" /* Bold Yellow */
+#define YELLOW "\033[93m" /* Bold Yellow */
 #define BLUE "\033[1;34m"   /* Bold Blue */
 #define PINK "\033[1;35m"   /* Bold Magenta */
 #define CYAN "\033[1;36m"   /* Bold Cyan */
@@ -22,6 +22,14 @@
 
 #define ERROR 1
 #define SUCCESS 0
+//ALive 
+#define ALIVE   0
+//All alive will be 0
+//every full philo will add 1
+//any death will set to 10:
+// so status = 0 -> all alive
+// status  = 5 -> all full
+// status> 5 -> anyone is death
 
 
 /**
@@ -30,11 +38,21 @@
  * begining time to wait for begining = sand_clock - (current time - synchro_t);
  * 
  */
-#define SAND_CLOCK 10900
+#define SAND_CLOCK 100000
 #define SLEEP_TO_SYNCHRO 10000
+#define NAP_TIME_THRESHOLD 50000
+#define THRESHOLD_TEST_ITERATION   100
+#define MIN_SAFETY_MARGIN     1.3
+#define MAX_SAFETY_MARGIN     1.6
+#define NO_MAX_MEALS            -1
+#define ALL_ALIVE               0
+
+
 typedef pthread_mutex_t *write_mtx;
-typedef pthread_mutex_t *t_time_mtx;
+typedef pthread_mutex_t *time_mtx;
 typedef pthread_mutex_t *t_maitre;
+typedef pthread_mutex_t *t_general;
+typedef struct timeval timeval;
 
 
 typedef enum philo_states
@@ -57,12 +75,18 @@ typedef struct s_settings
     long int max_meals;
     long int time_to_die;
     bool start_simulation;
-    bool all_alive;
+   
+    long threshold;
+    int status;
+    float safety_margin;
+    long max_thr;
+    int anyone_death;
 
     pthread_mutex_t *mutexes;
     t_maitre t_maitre;
     write_mtx write_mtx;
-    t_time_mtx t_time_mtx;
+    time_mtx time_mtx;
+    t_general t_general;
 
     struct timeval synchro_t;
     struct s_philo *philosophers;
@@ -81,8 +105,9 @@ typedef struct s_philo
     pthread_mutex_t *fork_next;
     pthread_mutex_t *fork_prev;
     write_mtx write_mtx;
-    t_time_mtx t_time_mtx;
-
+    time_mtx time_mtx;
+    t_general t_general;
+    int *status;
     //struct timeval current_time;
 
 } t_philo;
@@ -102,15 +127,30 @@ void create_philos(t_settings *settings);
 void create_mutexes(t_settings *settings);
 void join_threads(t_settings *settings);
 
+//timing
+void set_threshold(t_settings *settings);
+long time_microsec(timeval *tv);
+long to_microsec(timeval *tv);
+long get_microsec();
+void precise_sleep(long nap_time, long *threshold);
+void funcion_proporcional(t_settings *settings);
+
+
+
+
 
 // utils
+
 void *ft_calloc(size_t count, size_t size);
 void ft_bzero(void *s, size_t n);
+
 
 // exiting
 void exiting(t_settings *settings, int flag);
 void free_memory(t_settings *settings);
 void exit_on_error();
+ void free_allocated_items();
+
 
 // supoort
 void print_data(t_settings *settings, char *str);
