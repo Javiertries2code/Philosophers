@@ -15,8 +15,11 @@ void *routine_ph(void *args)
     t_philo philo;
     struct timeval delay;
     philo = *(t_philo *)args;
-    int *ret = malloc(sizeof(int));
-     *ret = 2;
+    //settings->return_status[i] = (int *)ft_calloc(1, sizeof(int));
+    int *ret;
+    
+    ret = philo.settings->return_status[philo.philo_id -1];
+    *ret =3;
     // I cant use a mutex before, as the phile is created before
     // safe_mutex(philo.write_mtx, LOCK);
 
