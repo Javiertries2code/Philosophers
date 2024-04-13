@@ -40,32 +40,52 @@
  * begining time to wait for begining = sand_clock - (current time - synchro_t);
  * 
  */
-#define SAND_CLOCK 1000000
+#define SAND_CLOCK 115000
+//delay to give time to set the synchro sign
 #define SLEEP_TO_SYNCHRO 10000
-#define NAP_TIME_THRESHOLD 50000
+//used to test the thresold, 
+//chaged later into using the maximun of the inputs
+#define SLEEPING_THRESHOLD_TESTTIME 0
 #define THRESHOLD_TEST_ITERATION   100
-#define MIN_SAFETY_MARGIN     1.3
-#define MAX_SAFETY_MARGIN     1.6
+#define THRESHOLD_MIN_INPUT   150
+#define MIN_SAFETY_MARGIN     1.4
+#define MAX_SAFETY_MARGIN     1.9
+#define USLEEP_GAP               50//trimmed for test 
+
 #define NO_MAX_MEALS            -1
 #define ALL_ALIVE               0
+#define ONE_DIED                1
+#define FULL                    2
 
 
 typedef pthread_mutex_t *write_mtx;
 typedef pthread_mutex_t *time_mtx;
 typedef pthread_mutex_t *t_maitre_mtx;
 typedef pthread_mutex_t *t_general;
+typedef pthread_mutex_t *t_status_mtx;
 typedef struct timeval timeval;
 
-typedef enum philo_states
+//Notice either FED and FULL got same 2 number, to avoid mistakes
+typedef enum s_states
 {
     EATING,
     SLEEPING,
+    FED,
     THINKING,
-    FULL,
     TAKE_FIRST_FORK,
     TAKE_SECOND_FORK,
     DEATH
+    
 } t_states;
+
+typedef enum timing_options{
+   
+    MILISECONDS,
+    MICROSECONDS,
+    CHANGE,
+    GET
+
+} timing_options;
 
 typedef enum mtx_option
 {
@@ -78,23 +98,30 @@ typedef enum mtx_option
 
 typedef struct s_settings
 {
-    long int num_philosophers;
-    long int time_to_eat;
-    long int time_to_sleep;
-    long int max_meals;
-    long int time_to_die;
-    bool start_simulation;
+     long int num_philosophers;
+     long int time_to_eat;
+     long int time_to_sleep;
+     long int max_meals;
+     long int time_to_die;
     long threshold;
     int status;
     float safety_margin;
     long max_thr;
-    int *anyone_death;
-    
+    /// @brief one array, one for every philo
+    int *philo_status;
+
+    int funeral;
+    int all_full;
+    int **return_status;
+    //array fo mutexes, one for every fork, prev and next
+    //for every hpilo
     pthread_mutex_t *mutexes;
+    // maitre might not be neccesary anymore
     t_maitre_mtx t_maitre_mtx;
     write_mtx write_mtx;
     time_mtx time_mtx;
-    t_general t_general;
+    t_general t_funeral_mtx;
+    t_status_mtx    t_status_mtx;
 
     struct timeval synchro_t;
     struct s_philo *philosophers;
@@ -116,6 +143,7 @@ typedef struct s_philo
     pthread_mutex_t *fork_prev;
     write_mtx write_mtx;
     time_mtx time_mtx;
+    time_mtx t_status_mtx;
     t_general t_general;
     int *status;
     //struct timeval current_time;
@@ -135,6 +163,9 @@ void *routine_maitre(void *args);
  void routine_even( t_philo *philo);
  void routine_odd( t_philo *philo);
 void calculate_delay(struct timeval *delay, struct timeval synchro_t, write_mtx write_mtx);
+void check_deaths(t_settings *settings);
+ void read_returns(t_settings *settings);
+ 
 
 
 // parsers
@@ -156,6 +187,11 @@ long to_microsec(timeval *tv);
 long get_microsec();
 void precise_sleep(long nap_time, long *threshold);
 void funcion_proporcional(t_settings *settings);
+long get_mili_sec();
+long	get_mili_sec();
+long get_time(timeval *tv, timing_options operation, timing_options units);
+
+
 
 
 //handers
@@ -173,10 +209,12 @@ void destroy_error( int error_return);
 void *ft_calloc(size_t count, size_t size);
 void ft_bzero(void *s, size_t n);
 size_t ft_strlen(const char *s);
+void write_function(t_settings *settings, char *str);
+
 
 
 // exiting
-void exiting(t_settings *settings, int flag);
+void exiting(t_settings *settings, char *str );
 void free_memory(t_settings *settings);
 void exit_on_error(char * str);
  void free_allocated_items();

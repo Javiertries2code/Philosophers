@@ -8,9 +8,9 @@ free(settings->mutexes);
 free(settings);
 }
 
-void exiting(t_settings *settings, int flag){
-if (flag == ERROR)
-    exit_on_error("Generic Error");
+void exiting(t_settings *settings, char *str ){
+if (str)
+    exit_on_error(str);
 else
     free_memory(settings);
 }

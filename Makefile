@@ -20,7 +20,7 @@ DIR_EXITING := exiting/
 #-------------
 #-------------
 EXITING_FILES = exiting.c 
-TIMING_FILES = timing.c 
+TIMING_FILES = timing.c  get_time.c
 INIT_FILES =  init.c
 SIMULATION_FILES = simulation.c 
 #VALIDATE_FILES = validate.c exiting.c
@@ -46,8 +46,13 @@ EXITING := $(addprefix $(DIR_EXITING), $(EXITING_FILES))
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 #aint sure it gotta be removed on delivery
+#LEAKS = -g3 -fsanitize=leak
+#LEAKS = -g3 -fsanitize=address
 LEAKS = -g3
 
+#valgrind ./philo 
+
+# .
 
 all : $(NAME)
 

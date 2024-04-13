@@ -23,3 +23,10 @@ void print_data(t_settings *settings, char *str)
       write(1, "the mutex is null", 18);
   }
 }
+
+void write_function(t_settings *settings, char *str)
+{
+    safe_mutex(settings->write_mtx, LOCK);
+    write(1, &str, ft_strlen(str));
+    safe_mutex(settings->write_mtx, UNLOCK);
+}
