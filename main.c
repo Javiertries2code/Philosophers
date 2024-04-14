@@ -22,16 +22,16 @@ int main(int argc, char const *argv[])
 
   load_settings(settings, test);
   create_mutexes(settings);
-  gettimeofday(&settings->synchro_t, NULL);
-  set_threshold(settings);
   create_philos(settings);
   
   join_threads(settings);
-  read_returns(settings);
+
+  //support_read_returns(settings);
+
   //  i = 0;
   //   while (settings->num_philosophers > i++)
   //       pthread_join(settings->philosophers[i].thread_id, NULL);
-  sleep(2);
+  //sleep(2);
   // if (settings->all_full == 0)
   //           exit(EXIT_SUCCESS);
   //exiting(settings, SUCCESS);

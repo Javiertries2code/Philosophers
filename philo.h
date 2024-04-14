@@ -40,7 +40,7 @@
  * begining time to wait for begining = sand_clock - (current time - synchro_t);
  * 
  */
-#define SAND_CLOCK 115000
+#define SAND_CLOCK 300
 //delay to give time to set the synchro sign
 #define SLEEP_TO_SYNCHRO 10000
 //used to test the thresold, 
@@ -114,13 +114,15 @@ typedef struct s_settings
     int all_full;
     int **return_status;
     //array fo mutexes, one for every fork, prev and next
-    //for every hpilo
+    //for every hpilo. as statucs for every philo
     pthread_mutex_t *mutexes;
+    pthread_mutex_t *status_mtx;
     // maitre might not be neccesary anymore
     t_maitre_mtx t_maitre_mtx;
     write_mtx write_mtx;
     time_mtx time_mtx;
     t_general t_funeral_mtx;
+
     t_status_mtx    t_status_mtx;
 
     struct timeval synchro_t;
@@ -139,6 +141,8 @@ typedef struct s_philo
     long int time_to_die;
     long int time_to_eat;
     long int time_to_sleep;
+    long threshold;
+
     pthread_mutex_t *fork_next;
     pthread_mutex_t *fork_prev;
     write_mtx write_mtx;
@@ -146,7 +150,7 @@ typedef struct s_philo
     time_mtx t_status_mtx;
     t_general t_general;
     int *status;
-    //struct timeval current_time;
+    long synchro_t;
 
 } t_philo;
 
@@ -160,11 +164,10 @@ typedef struct s_maitre
 // simulation
 void *routine_ph(void *args);
 void *routine_maitre(void *args);
- void routine_even( t_philo *philo);
- void routine_odd( t_philo *philo);
-void calculate_delay(struct timeval *delay, struct timeval synchro_t, write_mtx write_mtx);
+ int routine_even( t_philo *philo);
+ int routine_odd( t_philo *philo);
 void check_deaths(t_settings *settings);
- void read_returns(t_settings *settings);
+ void support_read_returns(t_settings *settings);
  
 
 
@@ -190,8 +193,9 @@ void funcion_proporcional(t_settings *settings);
 long get_mili_sec();
 long	get_mili_sec();
 long get_time(timeval *tv, timing_options operation, timing_options units);
-
-
+//delaying
+void calculate_delay(struct timeval *delay, struct timeval synchro_t, write_mtx write_mtx);
+void delay_to_syncro(long *delay, long* synchro_t, write_mtx write_mtx);
 
 
 //handers

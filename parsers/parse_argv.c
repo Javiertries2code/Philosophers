@@ -7,7 +7,7 @@
  * @param argv well! Our old good friend argv
  */
 void parse_argv(t_settings *settings, const char *argv[])
-{    write(1,"into parseargv\n",16);
+{   
 
 (void)settings;
 (void)argv;

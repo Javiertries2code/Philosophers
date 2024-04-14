@@ -17,6 +17,10 @@ void load_settings(t_settings *settings, const char *argv[])
     settings->time_to_eat = atol(argv[3]);
     settings->time_to_sleep = atol(argv[4]);
     settings->all_full = settings->num_philosophers;
+    gettimeofday(&settings->synchro_t, NULL);
+    set_threshold(settings);
+
+
 
     settings->philo_status = (int *)ft_calloc(settings->num_philosophers, sizeof(int));
     settings->return_status = (int **)ft_calloc(settings->num_philosophers, sizeof(int *));
@@ -27,7 +31,9 @@ void load_settings(t_settings *settings, const char *argv[])
 }
 /**
  * @brief Allocates memoryy for mutexes and initialize them
- * debug cheack is to be eliminates
+ * in the loop it crreates mutexes for each fork, and for each return status, as each and every
+ * philo access it own return status.
+ * hence, looping return_mutex[philo.id] will speed up the reading.
  *
  *
  * @param settings
@@ -41,11 +47,14 @@ void create_mutexes(t_settings *settings)
     settings->t_funeral_mtx = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
     settings->time_mtx = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
     settings->mutexes = (pthread_mutex_t *)ft_calloc(settings->num_philosophers, sizeof(pthread_mutex_t));
+    settings->status_mtx = (pthread_mutex_t *)ft_calloc(settings->num_philosophers, sizeof(pthread_mutex_t));
     settings->write_mtx = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
     settings->t_status_mtx = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
     while (i < (int)(settings->num_philosophers))
     {
         safe_mutex(&settings->mutexes[i], INIT);
+        safe_mutex(&settings->status_mtx[i], INIT);
+
         i++;
     }
     safe_mutex(settings->write_mtx, INIT);
@@ -72,6 +81,10 @@ void create_philos(t_settings *settings)
         settings->philosophers[i].write_mtx = settings->write_mtx;
         settings->philosophers[i].time_mtx = settings->time_mtx;
         settings->philosophers[i].t_status_mtx = settings->t_status_mtx;
+        settings->philosophers[i].threshold = settings->threshold;
+        settings->philosophers[i].synchro_t =get_time(&settings->synchro_t, CHANGE, MILISECONDS); 
+        
+
         if (i == 0)
             settings->philosophers[i].fork_prev = &(settings->mutexes[settings->num_philosophers - 1]);
         else
@@ -81,34 +94,54 @@ void create_philos(t_settings *settings)
         i++;
     }
 }
-
- void read_returns(t_settings *settings){
-    int i;
-
-    i = -1;
-  while (settings->num_philosophers > ++i)
-    {    write(1, "read returns\n", 13);
-
-       printf("philo [%d]return_status = %d\n", i + 1, (int)((settings->return_status[i][0])));
-
-    }
- }
-
-void join_threads(t_settings *settings)
+/**
+ * @brief support function to read returned results
+ * 
+ * @param settings 
+ */
+void support_read_returns(t_settings *settings)
 {
     int i;
 
     i = -1;
     while (settings->num_philosophers > ++i)
     {
-        //settings->return_status[i] = (int *)ft_calloc(1, sizeof(int));
+        write(1, "read returns\n", 13);
+
+        printf("philo [%d]return_status = %d\n", i + 1, (int)((settings->return_status[i][0])));
+    }
+}
+/**
+ * @brief When joining it  reads the returned argunment, 
+ * (now that i think it should be mutexed also when writing it a new status)
+ * if it evaluates the status  to ONEDIED. it sets the whole array to ONEDIED, what will be continously 
+ * check in the thread. not need to malloc there, as it comes built from init.
+ * 
+ * @param settings 
+ */
+void join_threads(t_settings *settings)
+{
+    int i;
+    int j;
+
+    i = -1;
+
+    while (settings->num_philosophers > ++i)
+    {
+        // settings->return_status[i] = (int *)ft_calloc(1, sizeof(int));
         pthread_join(settings->philosophers[i].thread_id, (void **)&settings->return_status[i]);
         printf("philo [%d] joint with return_status = %d\n", i + 1, (int)((settings->return_status[i][0])));
 
-        sleep(1);
+        if ((int)((settings->return_status[i][0])) == ONE_DIED)
+        {//previous :    safe_mutex(settings->t_status_mtx, LOCK);
+            j = -1;
+            safe_mutex(&settings->status_mtx[i], LOCK);
+            while (settings->num_philosophers > ++j)
+                settings->return_status[j][0] = ONE_DIED;
+            safe_mutex(&settings->status_mtx[i], UNLOCK);
+        }
     }
-          write(1, "joint threads\n", 14);
-
+    write(1, "joint threads\n", 14);
 }
 /**
  * @brief it makes a loop where, if a max meals was given, and it found all fed

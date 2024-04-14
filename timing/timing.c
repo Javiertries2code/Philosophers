@@ -87,22 +87,22 @@ while (get_microsec()- start < nap_time)
  * @param synchro_t 
  * @param write_mtx 
 //  */
-void calculate_delay(struct timeval *delay, struct timeval synchro_t, write_mtx write_mtx)
-{
-    struct timeval current_time;
-    struct timeval elapsed_time;
-    struct timeval begining;
-	//to avoid fail
-    (void)write_mtx;
-	delay->tv_usec = SAND_CLOCK;
-    begining.tv_usec = synchro_t.tv_usec;    
-   // pthread_mutex_lock(philo.t_time_mtx);
-    gettimeofday(&current_time, NULL);
-   // pthread_mutex_unlock(philo.t_time_mtx);
-    elapsed_time.tv_usec = current_time.tv_usec - begining.tv_usec;
-    if (elapsed_time.tv_usec > SAND_CLOCK)
-        printf("ERROR: Elapsed time > SAND_CLOCK,this sentence isnt thread safe");
-    else
-        delay->tv_usec -= elapsed_time.tv_usec;
+// void calculate_delay(struct timeval *delay, struct timeval synchro_t, write_mtx write_mtx)
+// {
+//     struct timeval current_time;
+//     struct timeval elapsed_time;
+//     struct timeval begining;
+// 	//to avoid fail
+//     (void)write_mtx;
+// 	delay->tv_usec = SAND_CLOCK;
+//     begining.tv_usec = synchro_t.tv_usec;    
+//    // pthread_mutex_lock(philo.t_time_mtx);
+//     gettimeofday(&current_time, NULL);
+//    // pthread_mutex_unlock(philo.t_time_mtx);
+//     elapsed_time.tv_usec = current_time.tv_usec - begining.tv_usec;
+//     if (elapsed_time.tv_usec > SAND_CLOCK)
+//         printf("ERROR: Elapsed time > SAND_CLOCK,this sentence isnt thread safe");
+//     else
+//         delay->tv_usec -= elapsed_time.tv_usec;
 	
-}
+// }
