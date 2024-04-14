@@ -108,7 +108,6 @@ void create_philos(t_settings *settings)
         settings->philosophers[i].time_to_sleep = settings->time_to_sleep;
         settings->philosophers[i].num_philosophers = settings->num_philosophers;
         settings->philosophers[i].settings = settings;
-        settings->philosophers[i].last_meal = get_time(&settings->synchro_t, CHANGE, MILISECONDS) + SAND_CLOCK;
         //mtexes
         settings->philosophers[i].t_write_mtx = settings->t_write_mtx;
         settings->philosophers[i].time_mtx = settings->time_mtx;
