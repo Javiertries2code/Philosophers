@@ -70,39 +70,13 @@ void	funcion_proporcional(t_settings *settings)
 void precise_sleep(long nap_time, long *threshold)
 {
 long start;
+    //printf(YELLOW "IN PRECISE SLEEP=  %ld\n *hreshold = %ld\n" RESET, nap_time, *threshold);
+start = get_milisec();
+if(nap_time > *threshold)
+    usleep(nap_time - *threshold);
 
-start = get_microsec();
-usleep(nap_time - *threshold);
-
-while (get_microsec()- start < nap_time)
+while (get_milisec()- start < nap_time)
 	;
-//printf("diff precise = %ld\n", get_microsec()- start );
+
 }
 
-
-/**
- * @brief it calculates the time all philos must delay for a sinchronised begining
- * under the threshold of 1000 ml fro 
- * @param delay 
- * @param synchro_t 
- * @param write_mtx 
-//  */
-// void calculate_delay(struct timeval *delay, struct timeval synchro_t, write_mtx write_mtx)
-// {
-//     struct timeval current_time;
-//     struct timeval elapsed_time;
-//     struct timeval begining;
-// 	//to avoid fail
-//     (void)write_mtx;
-// 	delay->tv_usec = SAND_CLOCK;
-//     begining.tv_usec = synchro_t.tv_usec;    
-//    // pthread_mutex_lock(philo.t_time_mtx);
-//     gettimeofday(&current_time, NULL);
-//    // pthread_mutex_unlock(philo.t_time_mtx);
-//     elapsed_time.tv_usec = current_time.tv_usec - begining.tv_usec;
-//     if (elapsed_time.tv_usec > SAND_CLOCK)
-//         printf("ERROR: Elapsed time > SAND_CLOCK,this sentence isnt thread safe");
-//     else
-//         delay->tv_usec -= elapsed_time.tv_usec;
-	
-// }

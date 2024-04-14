@@ -26,7 +26,7 @@ void print_data(t_settings *settings, char *str)
 
 void write_function(t_settings *settings, char *str)
 {
-    safe_mutex(settings->write_mtx, LOCK);
+    safe_mutex(settings->t_write_mtx, LOCK);
     write(1, &str, ft_strlen(str));
-    safe_mutex(settings->write_mtx, UNLOCK);
+    safe_mutex(settings->t_write_mtx, UNLOCK);
 }

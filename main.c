@@ -23,7 +23,8 @@ int main(int argc, char const *argv[])
   load_settings(settings, test);
   create_mutexes(settings);
   create_philos(settings);
-  
+  create_maitre(settings);
+
   join_threads(settings);
 
   //support_read_returns(settings);

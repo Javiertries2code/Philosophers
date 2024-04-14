@@ -1,30 +1,33 @@
 #include "../philo.h"
 
-void delay_to_syncro(long *delay, long* synchro_t, write_mtx write_mtx)
+long delay_to_syncro(long *delay, long* synchro_t, t_write_mtx t_write_mtx)
 {
     long current_time;
     long elapsed_time;
     long begining;
+   
 
     *delay = (long)SAND_CLOCK;
     begining = *synchro_t;
     current_time = get_time(NULL, GET, MILISECONDS);
     elapsed_time = current_time - begining;
-        // safe_mutex(write_mtx, LOCK);
+        // safe_mutex(t_write_mtx, LOCK);
         // printf("delay = %ld\n", *delay );
         // printf("begining = %ld\n", begining);
         // printf("current_time = %ld\n", current_time );
         // printf("elapsed_time  = %ld\n", elapsed_time  );
-        // safe_mutex(write_mtx, UNLOCK);
+        // safe_mutex(t_write_mtx, UNLOCK);
     if (elapsed_time > SAND_CLOCK)
     {
-        safe_mutex(write_mtx, LOCK);
+        safe_mutex(t_write_mtx, LOCK);
         printf("ERROR: Elapsed time > SAND_CLOCK,this sentence isnt thread safe");
-        safe_mutex(write_mtx, UNLOCK);
+        safe_mutex(t_write_mtx, UNLOCK);
+        return(EXIT_FAILURE);
     }
     else
-        *delay -= elapsed_time;
-    *synchro_t += SAND_CLOCK;
+       return (*delay - elapsed_time);
+    // this would reasult in adding repetitevely, and a data race   
+   //*synchro_t += SAND_CLOCK;
 }
 
 /**
@@ -41,7 +44,7 @@ long get_time(timeval *tv, timing_options operation, timing_options units)
     if (operation == GET)
     {
         if (units == MILISECONDS)
-            return (get_mili_sec());
+            return (get_milisec());
         if (units == MICROSECONDS)
             return (get_microsec());
     }
@@ -73,7 +76,7 @@ long get_microsec()
     return ((long)tv.tv_sec * 1e6 + tv.tv_usec);
 }
 
-long get_mili_sec()
+long get_milisec()
 {
     timeval tv;
     gettimeofday(&tv, NULL);

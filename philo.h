@@ -40,9 +40,9 @@
  * begining time to wait for begining = sand_clock - (current time - synchro_t);
  * 
  */
-#define SAND_CLOCK 300
+#define SAND_CLOCK 30000
 //delay to give time to set the synchro sign
-#define SLEEP_TO_SYNCHRO 10000
+#define SLEEP_TO_SYNCHRO 1000
 //used to test the thresold, 
 //chaged later into using the maximun of the inputs
 #define SLEEPING_THRESHOLD_TESTTIME 0
@@ -58,12 +58,13 @@
 #define FULL                    2
 
 
-typedef pthread_mutex_t *write_mtx;
+typedef pthread_mutex_t *t_write_mtx;
 typedef pthread_mutex_t *time_mtx;
 typedef pthread_mutex_t *t_maitre_mtx;
 typedef pthread_mutex_t *t_general;
 typedef pthread_mutex_t *t_status_mtx;
 typedef struct timeval timeval;
+typedef struct s_maitre t_maitre;
 
 //Notice either FED and FULL got same 2 number, to avoid mistakes
 typedef enum s_states
@@ -117,12 +118,11 @@ typedef struct s_settings
     //for every hpilo. as statucs for every philo
     pthread_mutex_t *mutexes;
     pthread_mutex_t *status_mtx;
+    pthread_mutex_t *meal_mtx;
     // maitre might not be neccesary anymore
     t_maitre_mtx t_maitre_mtx;
-    write_mtx write_mtx;
+    t_write_mtx t_write_mtx;
     time_mtx time_mtx;
-    t_general t_funeral_mtx;
-
     t_status_mtx    t_status_mtx;
 
     struct timeval synchro_t;
@@ -133,24 +133,37 @@ typedef struct s_settings
 
 typedef struct s_philo
 {
-
+    //common data struct
     t_settings *settings;
-    long int philo_id;
-    pthread_t thread_id;
-
-    long int time_to_die;
-    long int time_to_eat;
-    long int time_to_sleep;
-    long threshold;
-
+    //thread
+     pthread_t thread_id;
+    //mutexes
+  
     pthread_mutex_t *fork_next;
     pthread_mutex_t *fork_prev;
-    write_mtx write_mtx;
+    pthread_mutex_t *meal_mtx;
+    pthread_mutex_t *status_mtx;
+
+    t_write_mtx t_write_mtx;
     time_mtx time_mtx;
     time_mtx t_status_mtx;
     t_general t_general;
-    int *status;
+
+     long int num_philosophers;
+
+    long int philo_id;
+    long int time_to_die;
+    long int time_to_eat;
+    long int time_to_sleep;
+    long int last_meal;
+    //sleeping safety threshold
+    long threshold;
+    //syncro start, it will be inicializacion + sandclock
+    //after calculating the delay
     long synchro_t;
+    //status 0-alive 1-death 2-full(not needed)
+    int *status;
+    
 
 } t_philo;
 
@@ -158,17 +171,30 @@ typedef struct s_maitre
 {
     pthread_t th_maitre;
     t_settings *settings;
+    pthread_mutex_t *status_mtx;
+    pthread_mutex_t *meal_mtx;
+    t_write_mtx write_mtx;
+    t_philo *philosophers;
+    int **return_status;
+
+    long int num_philosophers;
+
 
 } t_maitre;
 
-// simulation
+// simulation routines
 void *routine_ph(void *args);
 void *routine_maitre(void *args);
  int routine_even( t_philo *philo);
  int routine_odd( t_philo *philo);
+
+ 
+ //simulation suppot
+ //long int time_left(t_philo *philo);
 void check_deaths(t_settings *settings);
  void support_read_returns(t_settings *settings);
- 
+long int time_left(t_philo *philo);
+
 
 
 // parsers
@@ -190,12 +216,12 @@ long to_microsec(timeval *tv);
 long get_microsec();
 void precise_sleep(long nap_time, long *threshold);
 void funcion_proporcional(t_settings *settings);
-long get_mili_sec();
-long	get_mili_sec();
+long get_milisec();
+long	get_milisec();
 long get_time(timeval *tv, timing_options operation, timing_options units);
 //delaying
-void calculate_delay(struct timeval *delay, struct timeval synchro_t, write_mtx write_mtx);
-void delay_to_syncro(long *delay, long* synchro_t, write_mtx write_mtx);
+void calculate_delay(struct timeval *delay, struct timeval synchro_t, t_write_mtx t_write_mtx);
+long delay_to_syncro(long *delay, long* synchro_t, t_write_mtx t_write_mtx);
 
 
 //handers
