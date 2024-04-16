@@ -7,13 +7,12 @@ int main(int argc, char const *argv[])
   (void)argv;
 
 
-  const char *test[] = {"0", "5", "900", "200", "250", "5"};
+  const char *test[] = {"0", "5", "900", "200", "250", "6"};
   t_settings *settings;
   settings = ft_calloc(1, sizeof(t_settings));
 
   if (argc == 5 || argc == 6)
     parse_argv(settings, argv);
-  write(1, "INICIO\n", 7);
   // for testing
   if (argv == NULL)
     parse_argv(settings, test);

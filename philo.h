@@ -40,22 +40,23 @@
  * begining time to wait for begining = sand_clock - (current time - synchro_t);
  * 
  */
-#define SAND_CLOCK 30000
+#define SAND_CLOCK 1000
 //delay to give time to set the synchro sign
 #define SLEEP_TO_SYNCHRO 1000
 //used to test the thresold, 
 //chaged later into using the maximun of the inputs
 #define SLEEPING_THRESHOLD_TESTTIME 0
-#define THRESHOLD_TEST_ITERATION   100
+#define THRESHOLD_TEST_ITERATION   50
 #define THRESHOLD_MIN_INPUT   150
-#define MIN_SAFETY_MARGIN     1.4
-#define MAX_SAFETY_MARGIN     1.9
+#define MIN_SAFETY_MARGIN     1.2
+#define MAX_SAFETY_MARGIN     1.4
 #define USLEEP_GAP               50//trimmed for test 
 
 #define NO_MAX_MEALS            -1
 #define ALL_ALIVE               0
 #define ONE_DIED                1
 #define FULL                    2
+
 
 
 typedef pthread_mutex_t *t_write_mtx;
@@ -139,6 +140,8 @@ typedef struct s_philo
      pthread_t thread_id;
     //mutexes
   
+    pthread_mutex_t *first_fork;
+    pthread_mutex_t *second_fork;
     pthread_mutex_t *fork_next;
     pthread_mutex_t *fork_prev;
     pthread_mutex_t *meal_mtx;
@@ -156,6 +159,9 @@ typedef struct s_philo
     long int time_to_eat;
     long int time_to_sleep;
     long int last_meal;
+    long int max_meals;
+    int **return_status;
+
     //sleeping safety threshold
     long threshold;
     //syncro start, it will be inicializacion + sandclock
@@ -187,6 +193,9 @@ void *routine_ph(void *args);
 void *routine_maitre(void *args);
  int routine_even( t_philo *philo);
  int routine_odd( t_philo *philo);
+ void set_all_died(t_maitre *maitre);
+ int eating(t_philo *philo);
+
 
  
  //simulation suppot
@@ -204,6 +213,7 @@ int parse_int(char *argv[]);
 // init
 void load_settings(t_settings *settings, const char *argv[]);
 void create_philos(t_settings *settings);
+//void set_forks(t_settings *settings);
 void create_maitre(t_settings *settings);
 
 void create_mutexes(t_settings *settings);

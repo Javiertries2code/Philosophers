@@ -9,60 +9,113 @@ all alive, to quite, hence the data it should
 ◦ timestamp_in_ms X is thinking
 ◦ timestamp_in_ms X died
 */
+
+/**
+ * @brief it firstlo locks all the return status for each philo, 
+ * then updates the statu to  ONEDIED
+ * unlocks them all
+ * 
+ * @param maitre 
+ */
+void set_all_died(t_maitre *maitre)
+{
+int i;
+
+i = 0;
+//locks all for speed
+while (maitre->num_philosophers > i)
+        {
+    safe_mutex(&maitre->status_mtx[i], LOCK);
+      i++;  }
+//updates all
+i = 0;
+while (maitre->num_philosophers > i)
+        {
+    maitre->return_status[i][0] = ONE_DIED;
+      i++;  }
+//unlocks all for speed
+
+      i = 0;
+while (maitre->num_philosophers > i)
+        {
+    safe_mutex(&maitre->status_mtx[i], UNLOCK);
+      i++;  }
+
+
+}
+/**
+ * @brief eternal loop untill it reaturns
+ * Locks status[i]  and check if all philos status != FULL (status DEATH is not posible),
+ *  as the maitre  would RETURN after anyone dies and overwrite the status to DEATH.
+ * it unluck before set_all dead to avoid deathlocks
+ * 
+ * it writes later the "DIED " message when the status was already changed
+ * in the routine, it will lock WRITE, adn then lock status, so it wouldnt write a new ongoing action 
+ * if the status was already changed.
+ * 
+ * @param args 
+ * @return void* 
+ */
 void *routine_maitre(void *args)
 {
     t_maitre maitre;
     long int i;
-    long int time_left_die;
 
     maitre = *(t_maitre *)args;
-    // safe_mutex(maitre.write_mtx, LOCK);
-    // printf(YELLOW "In MAITRE 2 --- num philos %ld \n" RESET, maitre.num_philosophers);
-    // safe_mutex(maitre.write_mtx, UNLOCK);
-    //////
-    // int *ret;
-    /////
+   
     while (true)
     {
         i = 0;
         while (maitre.num_philosophers > i)
         {
-            safe_mutex(maitre.meal_mtx, LOCK);
-            time_left_die = time_left(&(maitre.philosophers[i]));
-            ////////////////////
-            // ret = &maitre.return_status[i][0];
-            // printf(YELLOW "philo[%ld] status = %d \n" RESET, (i + 1), *ret);
-            // safe_mutex(maitre.write_mtx, LOCK);
-            // printf(YELLOW "In MAITRE philo[%ld] time_left_die = %ld \n" RESET, i + 1, time_left_die);
-            // printf(YELLOW "philo[%ld] LAst meal  = %ld \n" RESET, i + 1, maitre.philosophers[i].last_meal);
-
-            // safe_mutex(maitre.write_mtx, UNLOCK);
-            ///////////////////////////
-
-            safe_mutex(maitre.meal_mtx, UNLOCK);
-            if (time_left_die <= 0)
-            {//NECESARIA, IMPRIME MUERTOS
-                safe_mutex(maitre.write_mtx, LOCK);
-                printf(YELLOW "% ld %ld died\n" RESET, get_time(NULL, GET, MILISECONDS), (long)maitre.philosophers[i].philo_id);
-                safe_mutex(maitre.write_mtx, UNLOCK);
-                i = 0;
-                while (maitre.num_philosophers > i)
+            safe_mutex(&maitre.status_mtx[i], LOCK);
+            if (maitre.return_status[i][0] != FULL)
+            {
+                if (time_left(&(maitre.philosophers[i])) == 0)
                 {
-                    safe_mutex(maitre.status_mtx, LOCK);
                     maitre.return_status[i][0] = ONE_DIED;
-                    safe_mutex(maitre.status_mtx, UNLOCK);
-                    // safe_mutex(maitre.write_mtx, LOCK);
-                    // printf(YELLOW "philo[%ld] maitre.return_status[i][0]= %d \n" RESET, (i + 1), maitre.return_status[i][0]);
-                    // safe_mutex(maitre.write_mtx, UNLOCK);
-                    i++;
+                    safe_mutex(&maitre.status_mtx[i], UNLOCK);
+
+                    set_all_died( &maitre);
+                    safe_mutex(maitre.write_mtx, LOCK);
+                    printf(YELLOW "% ld %ld died\n" RESET, get_time(NULL, GET, MILISECONDS), (long)maitre.philosophers[i].philo_id);
+                    safe_mutex(maitre.write_mtx, UNLOCK);
+                    return NULL;
                 }
-                return (NULL);
+                i++;
             }
-            i++;
+            else if (maitre.return_status[i][0] == FULL)
+            {
+                safe_mutex(&maitre.status_mtx[i], UNLOCK);
+                i++;
+            }
         }
     }
-    return (NULL);
 }
+//         if (time_left_die <= 0)
+//         { // NECESARIA, IMPRIME MUERTOS
+//             safe_mutex(maitre.write_mtx, LOCK);
+//             printf(YELLOW "% ld %ld died\n" RESET, get_time(NULL, GET, MILISECONDS), (long)maitre.philosophers[i].philo_id);
+//             safe_mutex(maitre.write_mtx, UNLOCK);
+//             i = 0;
+//             while (maitre.num_philosophers > i)
+//             {
+//                 // safe_mutex(maitre.status_mtx[, LOCK); this one worked
+//                 safe_mutex(&maitre.status_mtx[i], LOCK);
+//                 maitre.return_status[i][0] = ONE_DIED;
+//                 safe_mutex(&maitre.status_mtx[i], UNLOCK);
+//                 // safe_mutex(maitre.write_mtx, LOCK);
+//                 // printf(YELLOW "philo[%ld] maitre.return_status[i][0]= %d \n" RESET, (i + 1), maitre.return_status[i][0]);
+//                 // safe_mutex(maitre.write_mtx, UNLOCK);
+//                 i++;
+//             }
+//             return (NULL);
+//         }
+//         i++;
+//     }
+// }
+// return (NULL);
+// }
 /**
  * @brief first points to the variable in settings int **return_status;
  * is a array of ints, where the returned variable will be stored,
@@ -89,9 +142,9 @@ void *routine_ph(void *args)
     safe_mutex(philo.time_mtx, LOCK);
     // NOT IN USE: calculate_delay(&delay, philo.settings->synchro_t, philo.t_write_mtx);
     delay_to_sync = delay_to_syncro(&delay_to_sync, &philo.synchro_t, philo.t_write_mtx);
-    safe_mutex(philo.t_write_mtx, LOCK);
-    printf(RED "[delay_to_sync =  %ld\n philo.threshold = %ld\n" RESET, delay_to_sync, philo.threshold);
-    safe_mutex(philo.t_write_mtx, UNLOCK);
+    // safe_mutex(philo.t_write_mtx, LOCK);
+    // printf(RED "[delay_to_sync =  %ld\n philo.threshold = %ld\n" RESET, delay_to_sync, philo.threshold);
+    // safe_mutex(philo.t_write_mtx, UNLOCK);
     precise_sleep(delay_to_sync, &philo.threshold);
     philo.last_meal = get_milisec(NULL, GET, MILISECONDS);
 
@@ -131,79 +184,65 @@ void *routine_ph(void *args)
  */
 int routine_even(t_philo *philo)
 {
+int ret;
+
     safe_mutex(philo->t_write_mtx, LOCK);
-    printf(PINK "[%ld] %ld in EVEN\n" RESET, philo->philo_id, get_time(NULL, GET, MILISECONDS));
+    printf(YELLOW "[%ld] %ld in EVEN\n" RESET, philo->philo_id, get_time(NULL, GET, MILISECONDS));
     safe_mutex(philo->t_write_mtx, UNLOCK);
-    return 0; ////////////
 
-    while (true)
+    
+    
+    while (1)
     { // previous mutex status for all of them.  philo->settings->status_mtx;
-        safe_mutex(&philo->settings->status_mtx[philo->philo_id - 1], LOCK);
-        if (philo->settings->return_status[philo->philo_id - 1][0] == ONE_DIED)
-            return (ONE_DIED);
-        safe_mutex(&philo->settings->status_mtx[philo->philo_id - 1], UNLOCK);
+      ret = eating(philo);
+      
+    safe_mutex(philo->t_write_mtx, LOCK);
+    printf(WHITE "[%ld] RET = %d\n" RESET, philo->philo_id, ret);
+    safe_mutex(philo->t_write_mtx, UNLOCK);
 
-        // think();
-        safe_mutex(&philo->settings->status_mtx[philo->philo_id - 1], LOCK);
-        if (philo->settings->return_status[philo->philo_id - 1][0] == ONE_DIED)
-            return (ONE_DIED);
-        safe_mutex(&philo->settings->status_mtx[philo->philo_id - 1], UNLOCK);
-
-        // eat();
-        safe_mutex(&philo->settings->status_mtx[philo->philo_id - 1], LOCK);
-        if (philo->settings->return_status[philo->philo_id - 1][0] == ONE_DIED)
-            return (ONE_DIED);
-        safe_mutex(&philo->settings->status_mtx[philo->philo_id - 1], UNLOCK);
-
-        // take_nap(); this could simply be a preccise sleep(sleeping time);
+      if(ret != 0)
+        return ret;
+      write(1,"X\n", 2);
+       
     }
 
-    // pthread_mutex_lock(philo->t_write_mtx);
-    safe_mutex(philo->t_write_mtx, LOCK);
-    printf(YELLOW "philo [%d]  is EVEN\n" RESET, (int)philo->philo_id);
-    safe_mutex(philo->t_write_mtx, UNLOCK);
-    sleep(1);
-    // pthread_mutex_unlock(philo->t_write_mtx);
+    pthread_mutex_lock(philo->t_write_mtx);
+   
+    
+    pthread_mutex_unlock(philo->t_write_mtx);
 
     (void)philo;
 }
 
 int routine_odd(t_philo *philo)
-{
+{ 
+int ret;
+
     safe_mutex(philo->t_write_mtx, LOCK);
-    printf(YELLOW "[%ld] %ld  In OOD\n" RESET, philo->philo_id, get_time(NULL, GET, MILISECONDS));
+    printf(YELLOW "[%ld] %ld in ODD\n" RESET, philo->philo_id, get_time(NULL, GET, MILISECONDS));
     safe_mutex(philo->t_write_mtx, UNLOCK);
 
-    while (true)
+    
+    
+    while (1)
     { // previous mutex status for all of them.  philo->settings->status_mtx;
-
-        safe_mutex(&philo->settings->status_mtx[philo->philo_id - 1], LOCK);
-        if (philo->settings->return_status[philo->philo_id - 1][0] == ONE_DIED)
-            return (ONE_DIED);
-        safe_mutex(&philo->settings->status_mtx[philo->philo_id - 1], UNLOCK);
-
-        // think();
-        safe_mutex(&philo->settings->status_mtx[philo->philo_id - 1], LOCK);
-        if (philo->settings->return_status[philo->philo_id - 1][0] == ONE_DIED)
-            return (ONE_DIED);
-        safe_mutex(&philo->settings->status_mtx[philo->philo_id - 1], UNLOCK);
-
-        // eat();
-        safe_mutex(&philo->settings->status_mtx[philo->philo_id - 1], LOCK);
-        if (philo->settings->return_status[philo->philo_id - 1][0] == ONE_DIED)
-            return (ONE_DIED);
-        safe_mutex(&philo->settings->status_mtx[philo->philo_id - 1], UNLOCK);
-
-        // take_nap(); this could simply be a preccise sleep(sleeping time);
-    }
-    // pthread_mutex_lock(philo->t_write_mtx);
+      ret = eating(philo);
+      
     safe_mutex(philo->t_write_mtx, LOCK);
-
-    printf(RED "philo [%d]  is ODD\n" RESET, (int)philo->philo_id);
+    printf(WHITE "[%ld] RET = %d\n" RESET, philo->philo_id, ret);
     safe_mutex(philo->t_write_mtx, UNLOCK);
-    sleep(1);
 
-    // pthread_mutex_unlock(philo->t_write_mtx);
+      if(ret != 0)
+        return ret;
+      write(1,"X\n", 2);
+       
+    }
+
+    pthread_mutex_lock(philo->t_write_mtx);
+   
+    
+    pthread_mutex_unlock(philo->t_write_mtx);
+
     (void)philo;
 }
 
