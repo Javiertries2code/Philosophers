@@ -1,5 +1,26 @@
 #include "../philo.h"
 
+
+/**
+ * @brief support function to read returned results
+ *
+ * @param settings
+ */
+void support_read_returns(t_settings *settings)
+{
+    int i;
+
+    i = -1;
+    while (settings->num_philosophers > ++i)
+    {
+        write(1, "read returns\n", 13);
+
+        printf("philo [%ld]return_status = %d\n", settings->philosophers[i].philo_id, (int)((settings->return_status[i][0])));
+        //printf("philo [%ld]return_status = %d\n",settings->philosophers[i].philo_id ,((settings->philosophers[i].status[0])));
+
+    }
+}
+
 /**
  * @brief this is a support functio to check if inputs were set
  *

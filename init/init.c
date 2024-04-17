@@ -23,7 +23,6 @@ void load_settings(t_settings *settings, const char *argv[])
     settings->philo_status = (int *)ft_calloc(settings->num_philosophers, sizeof(int));
     settings->return_status = (int **)ft_calloc(settings->num_philosophers, sizeof(int *));
     //better in create philos, but to cut lines
-    settings->philosophers = ft_calloc(settings->num_philosophers, sizeof(t_philo));
 
     if (argv[5] != NULL)
         settings->max_meals = atol(argv[5]);
@@ -45,17 +44,21 @@ void create_mutexes(t_settings *settings)
 
     i = 0;
     settings->t_write_mtx = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
-    settings->t_status_mtx = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
+    settings->t_common_status_mtx = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
     settings->t_maitre_mtx = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
     settings->time_mtx = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
-    // arr mtxs
-    settings->mutexes = (pthread_mutex_t *)ft_calloc(settings->num_philosophers, sizeof(pthread_mutex_t));
-    settings->status_mtx = (pthread_mutex_t *)ft_calloc(settings->num_philosophers, sizeof(pthread_mutex_t));
-    settings->meal_mtx = (pthread_mutex_t *)ft_calloc(settings->num_philosophers, sizeof(pthread_mutex_t));
+    // arr mtxs 
+    settings->mutexes = (pthread_mutex_t *)ft_calloc(settings->num_philosophers +1, sizeof(pthread_mutex_t));
+    settings->status_mtx = (pthread_mutex_t *)ft_calloc(settings->num_philosophers +1, sizeof(pthread_mutex_t ));
+    settings->meal_mtx = (pthread_mutex_t *)ft_calloc(settings->num_philosophers +1, sizeof(pthread_mutex_t));
 
-    while (i < (int)(settings->num_philosophers))
+    while (i <= (int)(settings->num_philosophers))
     {
         safe_mutex(&settings->mutexes[i], INIT);
+        
+        //safe_mutex(&settings->status_mtx[i], INIT);
+
+        //trying with 0 instead of the one ahead
         safe_mutex(&settings->status_mtx[i], INIT);
         safe_mutex(&settings->meal_mtx[i], INIT);
 
@@ -64,7 +67,7 @@ void create_mutexes(t_settings *settings)
     safe_mutex(settings->t_write_mtx, INIT);
     safe_mutex(settings->time_mtx, INIT);
     safe_mutex(settings->t_maitre_mtx, INIT);
-    safe_mutex(settings->t_status_mtx, INIT);
+    safe_mutex(settings->t_common_status_mtx, INIT);
 }
 
 void create_maitre(t_settings *settings)
@@ -94,12 +97,14 @@ void create_maitre(t_settings *settings)
 void create_philos(t_settings *settings)
 {
     long int i;
+    settings->philosophers = ft_calloc(settings->num_philosophers, sizeof(t_philo));
 
     //settings->philosophers = ft_calloc(settings->num_philosophers, sizeof(t_philo));
     //MOVED TO LOAD SETTINGS TO CUT LINES.
     i = 0;
     while (i < settings->num_philosophers)
     {
+
         settings->philosophers[i].philo_id = i + 1;
         settings->philosophers[i].time_to_die = settings->time_to_die;
         settings->philosophers[i].time_to_eat = settings->time_to_eat;
@@ -111,14 +116,21 @@ void create_philos(t_settings *settings)
         // mtexes
         settings->philosophers[i].t_write_mtx = settings->t_write_mtx;
         settings->philosophers[i].time_mtx = settings->time_mtx;
-        settings->philosophers[i].t_status_mtx = settings->t_status_mtx;
+        settings->philosophers[i].t_common_status_mtx = &settings->t_common_status_mtx[i];
         // timing
         settings->philosophers[i].threshold = settings->threshold;
         settings->philosophers[i].synchro_t = get_time(&settings->synchro_t, CHANGE, MILISECONDS);
         // mutexes: each pointer each one
-        settings->philosophers[i].status_mtx = &settings->status_mtx[i];
+
+        //iused 0 instead of one to try
+        //settings->philosophers[i].status_mtx = &settings->status_mtx[i];
+        settings->philosophers[i].status_mtx = settings->status_mtx;
+
         settings->philosophers[i].meal_mtx = &settings->meal_mtx[i];
         //access own retunr status
+        settings->return_status[i] = (int *)ft_calloc(1, sizeof(int));
+
+        //////asgfsadfgsadsagfda
         settings->philosophers[i].return_status = settings->return_status;
         settings->philosophers[i].fork_next = &settings->mutexes[i];
         
@@ -141,10 +153,10 @@ void create_philos(t_settings *settings)
         //     settings->philosophers[i].fork_prev = &(settings->mutexes[settings->num_philosophers - 1]);
         // else
         //     settings->philosophers[i].fork_prev = &(settings->mutexes[i - 1]);
-        settings->return_status[i] = (int *)ft_calloc(1, sizeof(int));
         pthread_create(&settings->philosophers[i].thread_id, NULL, &routine_ph, (void *)&settings->philosophers[i]);
         i++;
-    }
+    }//check forks
+    
    // set_forks(settings);
 }
 
@@ -174,23 +186,7 @@ void create_philos(t_settings *settings)
 //     }
 // }
 
-/**
- * @brief support function to read returned results
- *
- * @param settings
- */
-void support_read_returns(t_settings *settings)
-{
-    int i;
 
-    i = -1;
-    while (settings->num_philosophers > ++i)
-    {
-        write(1, "read returns\n", 13);
-
-        printf("philo [%d]return_status = %d\n", i + 1, (int)((settings->return_status[i][0])));
-    }
-}
 /**
  * @brief When joining it  reads the returned argunment,
  * (now that i think it should be mutexed also when writing it a new status)
@@ -213,7 +209,7 @@ void join_threads(t_settings *settings)
         printf("philo [%d] joint with return_status = %d\n", i + 1, (int)((settings->return_status[i][0])));
 
         if ((int)((settings->return_status[i][0])) == ONE_DIED)
-        { // previous :    safe_mutex(settings->t_status_mtx, LOCK);
+        { // previous :    safe_mutex(settings->t_common_status_mtx, LOCK);
             j = -1;
             safe_mutex(&settings->status_mtx[i], LOCK);
             while (settings->num_philosophers > ++j)

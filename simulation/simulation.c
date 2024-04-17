@@ -78,7 +78,7 @@ void *routine_maitre(void *args)
 
                     set_all_died( &maitre);
                     safe_mutex(maitre.write_mtx, LOCK);
-                    printf(YELLOW "% ld %ld died\n" RESET, get_time(NULL, GET, MILISECONDS), (long)maitre.philosophers[i].philo_id);
+                    printf(CYAN "% ld %ld died\n" RESET, get_time(NULL, GET, MILISECONDS), (long)maitre.philosophers[i].philo_id);
                     safe_mutex(maitre.write_mtx, UNLOCK);
                     return NULL;
                 }
@@ -172,6 +172,7 @@ void *routine_ph(void *args)
     safe_mutex(philo.t_write_mtx, LOCK);
 
     printf(PINK "philo [%d] LEAVING DINNER IN MAIN THREAD\n" RESET, (int)philo.philo_id);
+    printf(WHITE "philo [%d] \n return status = %d\n" RESET, (int)philo.philo_id, (int)*philo.return_status[philo.philo_id -1]);
     safe_mutex(philo.t_write_mtx, UNLOCK);
 
     return ret;
@@ -185,63 +186,71 @@ void *routine_ph(void *args)
 int routine_even(t_philo *philo)
 {
 int ret;
+int ret2;
+int ret3;
 
-    safe_mutex(philo->t_write_mtx, LOCK);
-    printf(YELLOW "[%ld] %ld in EVEN\n" RESET, philo->philo_id, get_time(NULL, GET, MILISECONDS));
-    safe_mutex(philo->t_write_mtx, UNLOCK);
+    // safe_mutex(philo->t_write_mtx, LOCK);
+    // printf(YELLOW "[%ld] %ld in EVEN\n" RESET, philo->philo_id, get_time(NULL, GET, MILISECONDS));
+    // safe_mutex(philo->t_write_mtx, UNLOCK);
 
     
     
     while (1)
     { // previous mutex status for all of them.  philo->settings->status_mtx;
       ret = eating(philo);
-      
-    safe_mutex(philo->t_write_mtx, LOCK);
-    printf(WHITE "[%ld] RET = %d\n" RESET, philo->philo_id, ret);
-    safe_mutex(philo->t_write_mtx, UNLOCK);
+      ret2 = sleeping(philo);
+      ret3 = thinking(philo);
+    // safe_mutex(philo->t_write_mtx, LOCK);
+    // printf(WHITE "[%ld] RET = %d\n" RESET, philo->philo_id, ret);
+    // safe_mutex(philo->t_write_mtx, UNLOCK);
 
       if(ret != 0)
         return ret;
-      write(1,"X\n", 2);
+      if(ret != 0)
+        return ret2;
+      if(ret != 0)
+        return ret3;
+     // write(1,"evv\n", 2);
        
     }
 
-    pthread_mutex_lock(philo->t_write_mtx);
-   
-    
-    pthread_mutex_unlock(philo->t_write_mtx);
-
+  
     (void)philo;
 }
 
 int routine_odd(t_philo *philo)
 { 
 int ret;
+int ret2;
+int ret3;
 
-    safe_mutex(philo->t_write_mtx, LOCK);
-    printf(YELLOW "[%ld] %ld in ODD\n" RESET, philo->philo_id, get_time(NULL, GET, MILISECONDS));
-    safe_mutex(philo->t_write_mtx, UNLOCK);
+    // safe_mutex(philo->t_write_mtx, LOCK);
+    // printf(YELLOW "[%ld] %ld in ODD\n" RESET, philo->philo_id, get_time(NULL, GET, MILISECONDS));
+    // safe_mutex(philo->t_write_mtx, UNLOCK);
 
     
     
-    while (1)
+     while (1)
     { // previous mutex status for all of them.  philo->settings->status_mtx;
-      ret = eating(philo);
-      
-    safe_mutex(philo->t_write_mtx, LOCK);
-    printf(WHITE "[%ld] RET = %d\n" RESET, philo->philo_id, ret);
-    safe_mutex(philo->t_write_mtx, UNLOCK);
+      ret2 = sleeping(philo);
+      ret3 = thinking(philo);
+     ret = eating(philo);
+
+    // safe_mutex(philo->t_write_mtx, LOCK);
+    // printf(WHITE "[%ld] RET = %d\n" RESET, philo->philo_id, ret);
+    // safe_mutex(philo->t_write_mtx, UNLOCK);
 
       if(ret != 0)
+        return ret2;
+      if(ret != 0)
+        return ret3;
+      if(ret != 0)
         return ret;
-      write(1,"X\n", 2);
+     // write(1,"evv\n", 2);
        
     }
 
-    pthread_mutex_lock(philo->t_write_mtx);
-   
-    
-    pthread_mutex_unlock(philo->t_write_mtx);
+ 
 
     (void)philo;
 }
@@ -262,7 +271,7 @@ int ret;
 //         safe_mutex(settings->t_write_mtx, UNLOCK);
 
 //         i = 0;
-//         safe_mutex(settings->t_status_mtx, LOCK);
+//         safe_mutex(settings->t_common_status_mtx, LOCK);
 //         while (settings->num_philosophers > i)
 //         {
 //             if (settings->philo_status[i] == ONE_DIED)
@@ -271,7 +280,7 @@ int ret;
 //                 settings->all_full--;
 //             i++;
 //         }
-//         safe_mutex(settings->t_status_mtx, UNLOCK);
+//         safe_mutex(settings->t_common_status_mtx, UNLOCK);
 //         usleep(100000);
 //     }
 // }

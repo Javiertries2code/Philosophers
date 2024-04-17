@@ -63,7 +63,7 @@ typedef pthread_mutex_t *t_write_mtx;
 typedef pthread_mutex_t *time_mtx;
 typedef pthread_mutex_t *t_maitre_mtx;
 typedef pthread_mutex_t *t_general;
-typedef pthread_mutex_t *t_status_mtx;
+typedef pthread_mutex_t *t_common_status_mtx;
 typedef struct timeval timeval;
 typedef struct s_maitre t_maitre;
 
@@ -124,7 +124,7 @@ typedef struct s_settings
     t_maitre_mtx t_maitre_mtx;
     t_write_mtx t_write_mtx;
     time_mtx time_mtx;
-    t_status_mtx    t_status_mtx;
+    t_common_status_mtx    t_common_status_mtx;
 
     struct timeval synchro_t;
     struct s_philo *philosophers;
@@ -149,7 +149,7 @@ typedef struct s_philo
 
     t_write_mtx t_write_mtx;
     time_mtx time_mtx;
-    time_mtx t_status_mtx;
+    time_mtx t_common_status_mtx;
     t_general t_general;
 
      long int num_philosophers;
@@ -195,6 +195,9 @@ void *routine_maitre(void *args);
  int routine_odd( t_philo *philo);
  void set_all_died(t_maitre *maitre);
  int eating(t_philo *philo);
+ int sleeping(t_philo *philo);
+ int thinking(t_philo *philo);
+
 
 
  

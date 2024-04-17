@@ -1,13 +1,34 @@
 
 #include "philo.h"
 #include <sys/time.h>
+
+// static void show_forks(t_settings *settings)
+// {
+  
+//   safe_mutex(settings->t_write_mtx, LOCK);
+//   for (int i = 0; i <= settings->num_philosophers+ 30; i++)
+//   {
+//     printf("\n[%d] philo[%ld] philosophers[i].fork_prev = %ld", i,settings->philosophers[i].philo_id, (long)settings->philosophers[i].fork_prev);
+//     printf("\n[%d] philo[%ld] philosophers[i].fork_next = %ld", i,settings->philosophers[i].philo_id, (long)settings->philosophers[i].fork_next);
+//     printf("\n[%d] philo[%ld] philosophers[i]second_.for = %ld",i,settings->philosophers[i].philo_id,  (long)settings->philosophers[i].second_fork);
+//     printf("\n[%d] philo[%ld] philosophers[i].first_fork = %ld",i,settings->philosophers[i].philo_id,  (long)settings->philosophers[i].first_fork);
+//     printf("\n*******************************************************");
+// settings->philosophers[i].fork_prev == settings->philosophers[settings->num_philosophers - 1].fork_next)
+//       printf("\n[%ld]dYEEES" , settings->philosophers->philo_id);
+//     if (settings->philosophers[i].first_fork == settings->philosophers[settings->num_philosophers - 1].first_fork)
+//       printf("\n[%ld]dALSO" , settings->philosophers->philo_id);
+//     printf("\n*******************************************************");
+//     if (
+// }
+//   safe_mutex(settings->t_write_mtx, UNLOCK);
+// }
+
 int main(int argc, char const *argv[])
 {
   (void)argc;
   (void)argv;
 
-
-  const char *test[] = {"0", "5", "900", "200", "250", "6"};
+  const char *test[] = {"0", "5", "100", "200", "200", "6"};
   t_settings *settings;
   settings = ft_calloc(1, sizeof(t_settings));
 
@@ -26,15 +47,15 @@ int main(int argc, char const *argv[])
 
   join_threads(settings);
 
-  //support_read_returns(settings);
+  // support_read_returns(settings);
 
   //  i = 0;
   //   while (settings->num_philosophers > i++)
   //       pthread_join(settings->philosophers[i].thread_id, NULL);
-  //sleep(2);
+  // sleep(2);
   // if (settings->all_full == 0)
   //           exit(EXIT_SUCCESS);
-  //exiting(settings, SUCCESS);
-  //i could actually catch the return
+  // exiting(settings, SUCCESS);
+  // i could actually catch the return
   return 0;
 }
