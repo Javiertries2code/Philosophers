@@ -1,47 +1,19 @@
-As for last best idea
+void create_mutexes(t_settings *settings)
+{
+    int i;
 
-The thread monitor should
-create dead status
-
-minotor should loop along all thread  time left.
-
-    LOCKs status[i]    
-    if status [i] != FULL, *checking alive wouldnt make sense
-   {
-    
-        CHECK TIME LEFT[i]; no  need of locking .
-            if ( time left == 0) 
-            {  chnage status = [all] = DIED; looping
-        UNLOCK status;
-        lock write
-            write death
-        unlock
-        RETURN;}
-    }
-        else if status [i] == FULL
-        UNLOCK stauts[i];
-        i++;
-
-
-create var
-
-thinking->eating- sleeping
-
-
-if(max_meals <= 0)
-    Lock status
-        status = FULL;
-    unlock status:
-    return FULL
-    
-
-    In the THREAD
-    LOCK WRITE;
-        LOCK STATUS;
-        var = status
-            if(!= 0)
-                RETURN STATUS
-            write ACTION
-        UNLOCK STATUS
-    UNLOCK WRITE
-    if status 
+    i = 0;
+    settings->t_write_mtx = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
+    settings->t_common_status_mtx = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
+    settings->t_maitre_mtx = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
+    settings->time_mtx = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
+    ////////////
+    //WEIRD AS FUCK 
+    /*
+    IT DOESNT SEEM TO CREATE NUM-PHILOSOFER GAPS FOR THE MUTEXES, recurrent probelm of allowing
+    only 4 out of 5 philos, when blocking status in eating, the fail is experienced in staus mtx, but in case
+    of i added the +1 in all mallocs*/
+    /////
+    settings->mutexes = (pthread_mutex_t *)ft_calloc(settings->num_philosophers +1, sizeof(pthread_mutex_t));
+    settings->status_mtx = (pthread_mutex_t *)ft_calloc(settings->num_philosophers +1, sizeof(pthread_mutex_t ));
+    settings->meal_mtx = (pthread_mutex_t *)ft_calloc(settings->num_philosophers +1, sizeof(pthread_mutex_t));
