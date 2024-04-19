@@ -265,5 +265,6 @@ void exit_on_error(char * str);
 
 // supoort
 void print_data(t_settings *settings, char *str);
+void check_mutex(t_settings *settings, char *mtx_name,pthread_mutex_t *mutex,char *mtx_name2, pthread_mutex_t *mutex2, t_philo *philo);
 
 #endif

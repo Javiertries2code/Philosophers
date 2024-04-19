@@ -11,63 +11,124 @@ all alive, to quite, hence the data it should
 */
 
 /**
- * @brief it firstlo locks all the return status for each philo, 
+ * @brief it firstlo locks all the return status for each philo,
  * then updates the statu to  ONEDIED
  * unlocks them all
- * 
- * @param maitre 
+ *
+ * @param maitre
  */
 void set_all_died(t_maitre *maitre)
 {
-int i;
+    int i;
 
-i = 0;
-//locks all for speed
-while (maitre->num_philosophers > i)
-        {
-    safe_mutex(&maitre->status_mtx[i], LOCK);
-      i++;  }
-//updates all
-i = 0;
-while (maitre->num_philosophers > i)
-        {
-    maitre->return_status[i][0] = ONE_DIED;
-      i++;  }
-//unlocks all for speed
+    i = 0;
+    // locks all for speed
+    while (maitre->num_philosophers > i)
+    {
+        safe_mutex(&maitre->status_mtx[i], LOCK);
+        i++;
+    }
+    // updates all
+    i = 0;
+    while (maitre->num_philosophers > i)
+    {
+        maitre->return_status[i][0] = ONE_DIED;
+        i++;
+    }
+    // unlocks all for speed
 
-      i = 0;
-while (maitre->num_philosophers > i)
-        {
-    safe_mutex(&maitre->status_mtx[i], UNLOCK);
-      i++;  }
-
-
+    i = 0;
+    while (maitre->num_philosophers > i)
+    {
+        safe_mutex(&maitre->status_mtx[i], UNLOCK);
+        i++;
+    }
 }
 /**
  * @brief eternal loop untill it reaturns
  * Locks status[i]  and check if all philos status != FULL (status DEATH is not posible),
  *  as the maitre  would RETURN after anyone dies and overwrite the status to DEATH.
  * it unluck before set_all dead to avoid deathlocks
- * 
+ *
  * it writes later the "DIED " message when the status was already changed
- * in the routine, it will lock WRITE, adn then lock status, so it wouldnt write a new ongoing action 
+ * in the routine, it will lock WRITE, adn then lock status, so it wouldnt write a new ongoing action
  * if the status was already changed.
- * 
- * @param args 
- * @return void* 
+ *
+ * @param args
+ * @return void*
  */
+
+// test
 void *routine_maitre(void *args)
 {
     t_maitre maitre;
     long int i;
 
     maitre = *(t_maitre *)args;
-   
+    printf("IN MAITRE \n\n");
+
     while (true)
     {
         i = 0;
         while (maitre.num_philosophers > i)
-        {
+        { /// WARCH OOUT, ADDING 1             safe_mutex(&maitre.status_mtx[i+1], LOCK);
+          // trying to match the fail correction from the init status thing
+          // printf("IN MAITRE LOOP after mutex \n");
+
+            // printf(YELLOW " BEFORE LOCK &maitre.status_mtx[%d]  = %p\n"RESET,i, &maitre.status_mtx[i]);
+            // usleep(1);
+            safe_mutex(&maitre.status_mtx[i], LOCK);
+            // printf("IN MAITRE LOOP after mutex \n");
+
+            if (maitre.return_status[i][0] != FULL)
+            {
+                // printf(YELLOW " iNSECOND LOOP &maitre.status_mtx[%ld]  = %p\n" RESET, i, &maitre.status_mtx[i]);
+                // printf(YELLOW " iNSECOND LOOP &maitre.status_mtx[%ld]  = %p\n" RESET, i, &maitre.status_mtx[i]);
+                // printf(WHITE " \nXXXXXTIME_LEFT (&(maitre.philosophers[%ld])  = \n"RESET,i, time_left(&(maitre.philosophers[i])));
+
+                // if (time_left(&(maitre.philosophers[i])) <= 0)
+                // {
+                //     maitre.return_status[i][0] = ONE_DIED;
+                //     safe_mutex(&maitre.status_mtx[i], UNLOCK);
+
+                //     set_all_died(&maitre);
+                //     safe_mutex(maitre.write_mtx, LOCK);
+                //     printf(CYAN "% ld %ld died\n" RESET, get_time(NULL, GET, MILISECONDS), (long)maitre.philosophers[i].philo_id);
+                //     safe_mutex(maitre.write_mtx, UNLOCK);
+                //     return NULL;
+                // }
+                // printf(BLUE " BEFORE UNLOCK !=FULL &maitre.status_mtx[%ld]  = %p\n"RESET,i, &maitre.status_mtx[i]);
+
+                safe_mutex(&maitre.status_mtx[i], UNLOCK);
+            }
+            else if (maitre.return_status[i][0] == FULL)
+            {
+                safe_mutex(maitre.write_mtx, LOCK);
+                printf(CYAN "% ld %ld FULL IN MAITRE\n" RESET, get_time(NULL, GET, MILISECONDS), (long)maitre.philosophers[i].philo_id);
+                safe_mutex(maitre.write_mtx, UNLOCK);
+
+                printf(YELLOW " BEFORE UNLOCK ==FULL &maitre.status_mtx[%ld]  = %p\n" RESET, i, &maitre.status_mtx[i]);
+
+                safe_mutex(&maitre.status_mtx[i], UNLOCK);
+            }
+            i++;
+        }
+    }
+}
+
+void *routine_maitrePREVIA(void *args)
+{
+    t_maitre maitre;
+    long int i;
+
+    maitre = *(t_maitre *)args;
+
+    while (true)
+    {
+        i = 0;
+        while (maitre.num_philosophers > i)
+        { /// WARCH OOUT, ADDING 1             safe_mutex(&maitre.status_mtx[i+1], LOCK);
+            // trying to match the fail correction from the init status thing
             safe_mutex(&maitre.status_mtx[i], LOCK);
             if (maitre.return_status[i][0] != FULL)
             {
@@ -76,7 +137,7 @@ void *routine_maitre(void *args)
                     maitre.return_status[i][0] = ONE_DIED;
                     safe_mutex(&maitre.status_mtx[i], UNLOCK);
 
-                    set_all_died( &maitre);
+                    set_all_died(&maitre);
                     safe_mutex(maitre.write_mtx, LOCK);
                     printf(CYAN "% ld %ld died\n" RESET, get_time(NULL, GET, MILISECONDS), (long)maitre.philosophers[i].philo_id);
                     safe_mutex(maitre.write_mtx, UNLOCK);
@@ -172,7 +233,7 @@ void *routine_ph(void *args)
     safe_mutex(philo.t_write_mtx, LOCK);
 
     printf(PINK "philo [%d] LEAVING DINNER IN MAIN THREAD\n" RESET, (int)philo.philo_id);
-    printf(WHITE "philo [%d] \n return status = %d\n" RESET, (int)philo.philo_id, (int)*philo.return_status[philo.philo_id -1]);
+    printf(WHITE "philo [%d] \n return status = %d\n" RESET, (int)philo.philo_id, (int)*philo.return_status[philo.philo_id - 1]);
     safe_mutex(philo.t_write_mtx, UNLOCK);
 
     return ret;
@@ -185,72 +246,63 @@ void *routine_ph(void *args)
  */
 int routine_even(t_philo *philo)
 {
-int ret;
-int ret2;
-int ret3;
+    int ret;
+    int ret2;
+    int ret3;
 
     // safe_mutex(philo->t_write_mtx, LOCK);
     // printf(YELLOW "[%ld] %ld in EVEN\n" RESET, philo->philo_id, get_time(NULL, GET, MILISECONDS));
     // safe_mutex(philo->t_write_mtx, UNLOCK);
 
-    
-    
     while (1)
     { // previous mutex status for all of them.  philo->settings->status_mtx;
-      ret = eating(philo);
-      ret2 = sleeping(philo);
-      ret3 = thinking(philo);
-    // safe_mutex(philo->t_write_mtx, LOCK);
-    // printf(WHITE "[%ld] RET = %d\n" RESET, philo->philo_id, ret);
-    // safe_mutex(philo->t_write_mtx, UNLOCK);
+        ret = eating(philo);
+        ret2 = sleeping(philo);
+        ret3 = thinking(philo);
+        // safe_mutex(philo->t_write_mtx, LOCK);
+        // printf(WHITE "[%ld] RET = %d\n" RESET, philo->philo_id, ret);
+        // safe_mutex(philo->t_write_mtx, UNLOCK);
 
-      if(ret != 0)
-        return ret;
-      if(ret != 0)
-        return ret2;
-      if(ret != 0)
-        return ret3;
-     // write(1,"evv\n", 2);
-       
+        if (ret != 0)
+            return ret;
+        if (ret != 0)
+            return ret2;
+        if (ret != 0)
+            return ret3;
+        // write(1,"evv\n", 2);
     }
 
-  
     (void)philo;
 }
 
 int routine_odd(t_philo *philo)
-{ 
-int ret;
-int ret2;
-int ret3;
+{
+    int ret;
+    int ret2;
+    int ret3;
 
     // safe_mutex(philo->t_write_mtx, LOCK);
     // printf(YELLOW "[%ld] %ld in ODD\n" RESET, philo->philo_id, get_time(NULL, GET, MILISECONDS));
     // safe_mutex(philo->t_write_mtx, UNLOCK);
 
-    
-    
-     while (1)
+    while (1)
     { // previous mutex status for all of them.  philo->settings->status_mtx;
-      ret2 = sleeping(philo);
-      ret3 = thinking(philo);
-     ret = eating(philo);
+        ret2 = sleeping(philo);
+        ret3 = thinking(philo);
+        ret = eating(philo);
 
-    // safe_mutex(philo->t_write_mtx, LOCK);
-    // printf(WHITE "[%ld] RET = %d\n" RESET, philo->philo_id, ret);
-    // safe_mutex(philo->t_write_mtx, UNLOCK);
+        // safe_mutex(philo->t_write_mtx, LOCK);
+        // printf(WHITE "[%ld] RET = %d\n" RESET, philo->philo_id, ret);
+        // safe_mutex(philo->t_write_mtx, UNLOCK);
 
-      if(ret != 0)
-        return ret2;
-      if(ret != 0)
-        return ret3;
-      if(ret != 0)
-        return ret;
-     // write(1,"evv\n", 2);
-       
+        if (ret != 0)
+            return ret2;
+        if (ret != 0)
+            return ret3;
+        if (ret != 0)
+            return ret;
+        // write(1,"evv\n", 2);
     }
-
- 
 
     (void)philo;
 }

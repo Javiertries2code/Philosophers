@@ -16,13 +16,11 @@ void load_settings(t_settings *settings, const char *argv[])
     settings->time_to_die = atol(argv[2]);
     settings->time_to_eat = atol(argv[3]);
     settings->time_to_sleep = atol(argv[4]);
-    settings->all_full = settings->num_philosophers;
     gettimeofday(&settings->synchro_t, NULL);
     set_threshold(settings);
 
     settings->philo_status = (int *)ft_calloc(settings->num_philosophers, sizeof(int));
     settings->return_status = (int **)ft_calloc(settings->num_philosophers, sizeof(int *));
-    //better in create philos, but to cut lines
 
     if (argv[5] != NULL)
         settings->max_meals = atol(argv[5]);
@@ -47,15 +45,24 @@ void create_mutexes(t_settings *settings)
     settings->t_common_status_mtx = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
     settings->t_maitre_mtx = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
     settings->time_mtx = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
-    // arr mtxs 
+    ////////////
+    //WEIRD AS FUCK 
+    /*
+    IT DOESNT SEEM TO CREATE NUM-PHILOSOFER GAPS FOR THE MUTEXES, recurrent probelm of allowing
+    only 4 out of 5 philos, when blocking status in eating, the fail is experienced in staus mtx, but in case
+    of i added the +1 in all mallocs*/
+    /////
     settings->mutexes = (pthread_mutex_t *)ft_calloc(settings->num_philosophers +1, sizeof(pthread_mutex_t));
-    settings->status_mtx = (pthread_mutex_t *)ft_calloc(settings->num_philosophers +1, sizeof(pthread_mutex_t ));
-    settings->meal_mtx = (pthread_mutex_t *)ft_calloc(settings->num_philosophers +1, sizeof(pthread_mutex_t));
+    settings->status_mtx = (pthread_mutex_t *)ft_calloc(settings->num_philosophers + 1, sizeof(pthread_mutex_t ));
 
-    while (i <= (int)(settings->num_philosophers))
+    //it fails if not added +1
+    
+    settings->meal_mtx = (pthread_mutex_t *)ft_calloc(settings->num_philosophers + 1, sizeof(pthread_mutex_t));
+    
+    while (i < (int)(settings->num_philosophers))
     {
         safe_mutex(&settings->mutexes[i], INIT);
-        
+      
         //safe_mutex(&settings->status_mtx[i], INIT);
 
         //trying with 0 instead of the one ahead
@@ -74,8 +81,9 @@ void create_maitre(t_settings *settings)
 {
     t_maitre *maitre;
 
-    settings->maitre = ft_calloc(1, sizeof(t_maitre));
-    maitre = settings->maitre;
+    maitre = ft_calloc(1, sizeof(t_maitre));
+    settings->maitre = maitre;
+    
     maitre->meal_mtx = settings->meal_mtx;
     maitre->status_mtx = settings->status_mtx;
     maitre->meal_mtx = settings->meal_mtx;
@@ -124,6 +132,7 @@ void create_philos(t_settings *settings)
 
         //iused 0 instead of one to try
         //settings->philosophers[i].status_mtx = &settings->status_mtx[i];
+
         settings->philosophers[i].status_mtx = settings->status_mtx;
 
         settings->philosophers[i].meal_mtx = &settings->meal_mtx[i];

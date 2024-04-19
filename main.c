@@ -28,7 +28,7 @@ int main(int argc, char const *argv[])
   (void)argc;
   (void)argv;
 
-  const char *test[] = {"0", "5", "100", "200", "200", "6"};
+  const char *test[] = {"0", "4", "900", "200", "200", "6"};
   t_settings *settings;
   settings = ft_calloc(1, sizeof(t_settings));
 
@@ -44,6 +44,7 @@ int main(int argc, char const *argv[])
   create_mutexes(settings);
   create_philos(settings);
   create_maitre(settings);
+check_mutex(settings,"maitre->status_mtx", settings->maitre->status_mtx, "settings->status_mtx",settings->status_mtx, &settings->philosophers[3] );
 
   join_threads(settings);
 
