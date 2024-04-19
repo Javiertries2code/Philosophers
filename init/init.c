@@ -142,6 +142,9 @@ void create_philos(t_settings *settings)
         //////asgfsadfgsadsagfda
         settings->philosophers[i].return_status = settings->return_status;
         settings->philosophers[i].fork_next = &settings->mutexes[i];
+            
+///ONLY UNTILL THE DELAY IN MAITRE IS SET UP
+        settings->philosophers[i].last_meal = get_milisec(NULL, GET, MILISECONDS);
         
         if (i == 0)
             settings->philosophers[i].fork_prev = &(settings->mutexes[settings->num_philosophers -1]);

@@ -28,7 +28,7 @@ int main(int argc, char const *argv[])
   (void)argc;
   (void)argv;
 
-  const char *test[] = {"0", "4", "900", "200", "200", "6"};
+  const char *test[] = {"0", "4", "1000", "200", "200", "6"};
   t_settings *settings;
   settings = ft_calloc(1, sizeof(t_settings));
 

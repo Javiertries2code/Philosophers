@@ -65,39 +65,33 @@ void *routine_maitre(void *args)
     long int i;
 
     maitre = *(t_maitre *)args;
-    printf("IN MAITRE \n\n");
 
     while (true)
     {
         i = 0;
         while (maitre.num_philosophers > i)
-        { /// WARCH OOUT, ADDING 1             safe_mutex(&maitre.status_mtx[i+1], LOCK);
-          // trying to match the fail correction from the init status thing
-          // printf("IN MAITRE LOOP after mutex \n");
-
-            // printf(YELLOW " BEFORE LOCK &maitre.status_mtx[%d]  = %p\n"RESET,i, &maitre.status_mtx[i]);
-            // usleep(1);
+        { 
             safe_mutex(&maitre.status_mtx[i], LOCK);
             // printf("IN MAITRE LOOP after mutex \n");
 
             if (maitre.return_status[i][0] != FULL)
             {
-                // printf(YELLOW " iNSECOND LOOP &maitre.status_mtx[%ld]  = %p\n" RESET, i, &maitre.status_mtx[i]);
-                // printf(YELLOW " iNSECOND LOOP &maitre.status_mtx[%ld]  = %p\n" RESET, i, &maitre.status_mtx[i]);
-                // printf(WHITE " \nXXXXXTIME_LEFT (&(maitre.philosophers[%ld])  = \n"RESET,i, time_left(&(maitre.philosophers[i])));
+               // printf(YELLOW " iNSECOND LOOP &maitre.status_mtx[%ld]  = %p\n" RESET, i, &maitre.status_mtx[i]);
+                printf(WHITE " \nXXXXXTIME_LEFT (&(maitre.philosophers[%ld])  =%ld \n"RESET,i, time_left(&(maitre.philosophers[i])));
+                printf(WHITE " \nmaitre.philosophers[i].last_meal[%ld])  =%ld \n"RESET,i, maitre.philosophers[i].last_meal);
 
-                // if (time_left(&(maitre.philosophers[i])) <= 0)
-                // {
-                //     maitre.return_status[i][0] = ONE_DIED;
-                //     safe_mutex(&maitre.status_mtx[i], UNLOCK);
+                if (time_left(&(maitre.philosophers[i]))  <= 0)
+                {
+                    maitre.return_status[i][0] = ONE_DIED;
+                    safe_mutex(&maitre.status_mtx[i], UNLOCK);
 
-                //     set_all_died(&maitre);
-                //     safe_mutex(maitre.write_mtx, LOCK);
-                //     printf(CYAN "% ld %ld died\n" RESET, get_time(NULL, GET, MILISECONDS), (long)maitre.philosophers[i].philo_id);
-                //     safe_mutex(maitre.write_mtx, UNLOCK);
-                //     return NULL;
-                // }
-                // printf(BLUE " BEFORE UNLOCK !=FULL &maitre.status_mtx[%ld]  = %p\n"RESET,i, &maitre.status_mtx[i]);
+                    set_all_died(&maitre);
+                    safe_mutex(maitre.write_mtx, LOCK);
+                    printf(CYAN "% ld %ld died\n" RESET, get_time(NULL, GET, MILISECONDS), (long)maitre.philosophers[i].philo_id);
+                    safe_mutex(maitre.write_mtx, UNLOCK);
+                    return NULL;
+                }
+              //  printf(BLUE " BEFORE UNLOCK !=FULL &maitre.status_mtx[%ld]  = %p\n"RESET,i, &maitre.status_mtx[i]);
 
                 safe_mutex(&maitre.status_mtx[i], UNLOCK);
             }
@@ -116,43 +110,6 @@ void *routine_maitre(void *args)
     }
 }
 
-void *routine_maitrePREVIA(void *args)
-{
-    t_maitre maitre;
-    long int i;
-
-    maitre = *(t_maitre *)args;
-
-    while (true)
-    {
-        i = 0;
-        while (maitre.num_philosophers > i)
-        { /// WARCH OOUT, ADDING 1             safe_mutex(&maitre.status_mtx[i+1], LOCK);
-            // trying to match the fail correction from the init status thing
-            safe_mutex(&maitre.status_mtx[i], LOCK);
-            if (maitre.return_status[i][0] != FULL)
-            {
-                if (time_left(&(maitre.philosophers[i])) == 0)
-                {
-                    maitre.return_status[i][0] = ONE_DIED;
-                    safe_mutex(&maitre.status_mtx[i], UNLOCK);
-
-                    set_all_died(&maitre);
-                    safe_mutex(maitre.write_mtx, LOCK);
-                    printf(CYAN "% ld %ld died\n" RESET, get_time(NULL, GET, MILISECONDS), (long)maitre.philosophers[i].philo_id);
-                    safe_mutex(maitre.write_mtx, UNLOCK);
-                    return NULL;
-                }
-                i++;
-            }
-            else if (maitre.return_status[i][0] == FULL)
-            {
-                safe_mutex(&maitre.status_mtx[i], UNLOCK);
-                i++;
-            }
-        }
-    }
-}
 //         if (time_left_die <= 0)
 //         { // NECESARIA, IMPRIME MUERTOS
 //             safe_mutex(maitre.write_mtx, LOCK);
