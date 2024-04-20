@@ -6,7 +6,8 @@ long delay_to_syncro(long *delay, long* synchro_t, t_write_mtx t_write_mtx)
     long elapsed_time;
     long begining;
    
-
+ safe_mutex(t_write_mtx, LOCK);
+        safe_mutex(t_write_mtx, UNLOCK);
     *delay = (long)SAND_CLOCK;
     begining = *synchro_t;
     current_time = get_time(NULL, GET, MILISECONDS);
@@ -20,7 +21,7 @@ long delay_to_syncro(long *delay, long* synchro_t, t_write_mtx t_write_mtx)
     if (elapsed_time > SAND_CLOCK)
     {
         safe_mutex(t_write_mtx, LOCK);
-        printf("ERROR: Elapsed time > SAND_CLOCK,this sentence isnt thread safe");
+        printf("ERROR: Elapsed time > SAND_CLOCK\nUncontrolled for resetting purposses");
         safe_mutex(t_write_mtx, UNLOCK);
         return(EXIT_FAILURE);
     }
@@ -55,7 +56,7 @@ long get_time(timeval *tv, timing_options operation, timing_options units)
         if (units == MICROSECONDS)
             return ((long)tv->tv_sec * 1e6 + tv->tv_usec);
     }
-    exit_on_error("Error calling get_time()");
+    exit_on_error("Error calling get_time()\n");
     return (EXIT_FAILURE);
 }
 

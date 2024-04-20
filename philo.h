@@ -41,11 +41,15 @@
  * 
  */
 #define SAND_CLOCK 1000
+
 //delay to give time to set the synchro sign
 #define SLEEP_TO_SYNCHRO 1000
 //used to test the thresold, 
 //chaged later into using the maximun of the inputs
+#define PHILO_HEAD_START 20
+
 #define SLEEPING_THRESHOLD_TESTTIME 0
+#define WAIT_TO_SYNCHRO 1000
 #define THRESHOLD_TEST_ITERATION   50
 #define THRESHOLD_MIN_INPUT   150
 #define MIN_SAFETY_MARGIN     1.2
@@ -56,6 +60,9 @@
 #define ALL_ALIVE               0
 #define ONE_DIED                1
 #define FULL                    2
+#define TEST                    1
+#define TESTWAIT                3000               1
+
 
 
 
@@ -109,12 +116,13 @@ typedef struct s_settings
     int status;
     float safety_margin;
     long max_thr;
-    /// @brief one array, one for every philo
+   
     int *philo_status;
 
     int funeral;
     int all_full;
     int **return_status;
+
     //array fo mutexes, one for every fork, prev and next
     //for every hpilo. as statucs for every philo
     pthread_mutex_t *mutexes;
@@ -180,8 +188,15 @@ typedef struct s_maitre
     pthread_mutex_t *status_mtx;
     pthread_mutex_t *meal_mtx;
     t_write_mtx write_mtx;
+    time_mtx time_mtx;
+
     t_philo *philosophers;
     int **return_status;
+    long synchro_t;
+    long threshold;
+     long delay_to_sync;
+
+
 
     long int num_philosophers;
 
@@ -235,6 +250,7 @@ long get_time(timeval *tv, timing_options operation, timing_options units);
 //delaying
 void calculate_delay(struct timeval *delay, struct timeval synchro_t, t_write_mtx t_write_mtx);
 long delay_to_syncro(long *delay, long* synchro_t, t_write_mtx t_write_mtx);
+void busy_wait_start(long synchro, int head_start);
 
 
 //handers

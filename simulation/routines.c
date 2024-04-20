@@ -1,12 +1,15 @@
 #include "../philo.h"
 /**
- * @brief
+ * @brief 
+ * 1 -First it evaluates if the maximun number of meals went down to 0, if so, it sets status 
+ * to FULL and quits. max-meal is in the struct, no need of mutex
+ * 2- LOCKS status check 
+ * (it has individual mutex for every philo), (if != 0 ) means anyone died
+ * UNLOCKS and quits
+ * 3- Else.  previous LOCK remains
+ * it tries to get a mutex fork, prints, gets second mutex fork, prints, UNLOCK forks
+ * mutex meal_mtx[philo->philo_id - 1], updates last meal-time, UNLOCKS status, SLEEPS, max meal --;
  *
- * for some reasons, it fails when using the mutex
- * safe_mutex(&philo->status_mtx[philo->philo_id], LOCK);
- * instead of removing -1 to th philo index.
- *   safe_mutex(&philo->status_mtx[philo->philo_id -1], LOCK);
- * In the init It had to be aloocated an extra place
  *
  * @param philo
  * @return int
@@ -16,38 +19,19 @@ int eating(t_philo *philo)
     // support_read_returns(philo->settings);
 
     int var_status;
-    /////////////
-    safe_mutex(philo->t_write_mtx, LOCK);
-    printf(YELLOW "[%ld] check num\n" RESET, philo->philo_id);
-    printf(WHITE "&&philo->status_mtx[philo->philo_id]= %p\n" RESET, &philo->status_mtx[philo->philo_id]);
-    printf(WHITE "&philo->status_mtx[philo->philo_id -1]= %p\n" RESET, &philo->status_mtx[philo->philo_id - 1]);
-
-    safe_mutex(philo->t_write_mtx, UNLOCK);
-    ///////////////////
-    if (philo->max_meals == 0)
-    {
-
-        safe_mutex(philo->t_write_mtx, LOCK);
-        printf(YELLOW "[%ld] is FULL\n" RESET, philo->philo_id);
-        safe_mutex(philo->t_write_mtx, UNLOCK);
-
-        //  safe_mutex(&philo->status_mtx[philo->philo_id -1], LOCK);
-        safe_mutex(&philo->status_mtx[philo->philo_id], LOCK);
-        philo->return_status[philo->philo_id - 1][0] = FULL;
-        // safe_mutex(&philo->status_mtx[philo->philo_id -1], UNLOCK);
-        safe_mutex(&philo->status_mtx[philo->philo_id], UNLOCK);
-        return (FULL);
-    }
-    safe_mutex(&philo->status_mtx[philo->philo_id], LOCK);
-    // safe_mutex(&philo->status_mtx[philo->philo_id-1], LOCK);
+  
+//lock status to check deaths
+    safe_mutex(&philo->status_mtx[philo->philo_id - 1], LOCK);
     var_status = philo->return_status[philo->philo_id - 1][0];
 
     if (var_status != 0)
-    {
-        safe_mutex(&philo->status_mtx[philo->philo_id], UNLOCK);
-        // safe_mutex(&philo->status_mtx[philo->philo_id-1], UNLOCK);
+    {    //unlocks to status
+
+        safe_mutex(&philo->status_mtx[philo->philo_id -1], UNLOCK);
         return var_status;
     }
+    // //unlocks to status
+    //     safe_mutex(&philo->status_mtx[philo->philo_id -1], UNLOCK);
 
     safe_mutex(philo->first_fork, LOCK);
     safe_mutex(philo->t_write_mtx, LOCK);
@@ -60,54 +44,36 @@ int eating(t_philo *philo)
     printf(RED "% ld %ld has taken a fork\n" RESET, get_time(NULL, GET, MILISECONDS), (long)philo->philo_id);
 
     printf(RED "% ld %ld is eating\n" RESET, get_time(NULL, GET, MILISECONDS), (long)philo->philo_id);
+    printf(RED "% ld  meals left = %ld\n" RESET, (long)philo->philo_id, philo->max_meals);
     safe_mutex(philo->t_write_mtx, UNLOCK);
-    safe_mutex(&philo->meal_mtx[philo->philo_id - 1], LOCK);
-
-    philo->last_meal = get_time(NULL, GET, MILISECONDS);
-    safe_mutex(&philo->meal_mtx[philo->philo_id - 1], UNLOCK);
-
     safe_mutex(philo->first_fork, UNLOCK);
     safe_mutex(philo->second_fork, UNLOCK);
-    safe_mutex(&philo->status_mtx[philo->philo_id], UNLOCK);
-    // safe_mutex(&philo->status_mtx[philo->philo_id-1], UNLOCK);
 
-    safe_mutex(philo->t_write_mtx, UNLOCK);
+    //safe_mutex(&philo->meal_mtx[philo->philo_id ], LOCK);
+    philo->last_meal = get_time(NULL, GET, MILISECONDS);
+    //safe_mutex(&philo->meal_mtx[philo->philo_id ], UNLOCK);
+
+    safe_mutex(&philo->status_mtx[philo->philo_id -1], UNLOCK);
+
     precise_sleep(philo->time_to_eat, &philo->threshold);
     philo->max_meals--;
+    if (philo->max_meals == 0)
+    {
+        safe_mutex(philo->t_write_mtx, LOCK);
+        printf(YELLOW "[%ld] is FULL\n" RESET, philo->philo_id);
+        safe_mutex(philo->t_write_mtx, UNLOCK);
+
+        //  safe_mutex(&philo->status_mtx[philo->philo_id -1], LOCK);
+        safe_mutex(&philo->status_mtx[philo->philo_id -1], LOCK);
+        philo->return_status[philo->philo_id - 1][0] = FULL;
+        // safe_mutex(&philo->status_mtx[philo->philo_id -1], UNLOCK);
+        safe_mutex(&philo->status_mtx[philo->philo_id -1], UNLOCK);
+        return (FULL);
+    }
+
     return ALL_ALIVE;
 }
 
-/**
- * @brief
- *
- * @param philo
- * @return int
- */
-int take_nap(t_philo *philo)
-{
-    long int time_to_sleep;
-
-    safe_mutex(&philo->settings->status_mtx[philo->philo_id - 1], LOCK);
-    if (philo->settings->return_status[philo->philo_id - 1][0] == ONE_DIED)
-    {
-        safe_mutex(&philo->settings->status_mtx[philo->philo_id - 1], UNLOCK);
-        return (ONE_DIED);
-    }
-    safe_mutex(&philo->settings->status_mtx[philo->philo_id - 1], UNLOCK);
-    time_to_sleep = time_left(philo);
-    if (time_to_sleep < philo->time_to_sleep && time_to_sleep > 0)
-    {
-        precise_sleep((time_to_sleep - 1), &philo->threshold);
-        safe_mutex(philo->t_write_mtx, LOCK);
-        printf(YELLOW "% ld %ld died\n" RESET, get_time(NULL, GET, MILISECONDS), philo->philo_id);
-        safe_mutex(philo->t_write_mtx, UNLOCK);
-        return (ONE_DIED);
-    }
-
-    else if (time_to_sleep <= 0)
-        return (ONE_DIED);
-    return (0);
-}
 /**
  * @brief calculates the diferrence betwen the time elapsed since the last meal.
  *
@@ -145,7 +111,7 @@ int thinking(t_philo *philo)
     {
         safe_mutex(philo->t_write_mtx, LOCK);
 
-        printf(RED "% ld %ld is thinking\n" RESET, get_time(NULL, GET, MILISECONDS), (long)philo->philo_id);
+        printf(WHITE "% ld %ld is thinking\n" RESET, get_time(NULL, GET, MILISECONDS), (long)philo->philo_id);
         safe_mutex(philo->t_write_mtx, UNLOCK);
         safe_mutex(&philo->status_mtx[philo->philo_id - 1], UNLOCK);
     }
@@ -171,7 +137,7 @@ int sleeping(t_philo *philo)
     {
         safe_mutex(philo->t_write_mtx, LOCK);
 
-        printf(RED "% ld %ld is sleeping\n" RESET, get_time(NULL, GET, MILISECONDS), (long)philo->philo_id);
+        printf(BLUE "% ld %ld is sleeping\n" RESET, get_time(NULL, GET, MILISECONDS), (long)philo->philo_id);
         safe_mutex(philo->t_write_mtx, UNLOCK);
         safe_mutex(&philo->status_mtx[philo->philo_id - 1], UNLOCK);
     }

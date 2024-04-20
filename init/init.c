@@ -16,16 +16,19 @@ void load_settings(t_settings *settings, const char *argv[])
     settings->time_to_die = atol(argv[2]);
     settings->time_to_eat = atol(argv[3]);
     settings->time_to_sleep = atol(argv[4]);
+     settings->max_meals = NO_MAX_MEALS;
+      if (argv[5] != NULL)
+        settings->max_meals = atol(argv[5]);
     gettimeofday(&settings->synchro_t, NULL);
     set_threshold(settings);
 
     settings->philo_status = (int *)ft_calloc(settings->num_philosophers, sizeof(int));
     settings->return_status = (int **)ft_calloc(settings->num_philosophers, sizeof(int *));
 
-    if (argv[5] != NULL)
-        settings->max_meals = atol(argv[5]);
-    else
-        settings->max_meals = NO_MAX_MEALS;
+    // if (argv[5] != NULL)
+    //     settings->max_meals = atol(argv[5]);
+    // else
+    //     settings->max_meals = NO_MAX_MEALS;
 }
 /**
  * @brief Allocates memoryy for mutexes and initialize them
@@ -52,12 +55,12 @@ void create_mutexes(t_settings *settings)
     only 4 out of 5 philos, when blocking status in eating, the fail is experienced in staus mtx, but in case
     of i added the +1 in all mallocs*/
     /////
-    settings->mutexes = (pthread_mutex_t *)ft_calloc(settings->num_philosophers +1, sizeof(pthread_mutex_t));
-    settings->status_mtx = (pthread_mutex_t *)ft_calloc(settings->num_philosophers + 1, sizeof(pthread_mutex_t ));
+    settings->mutexes = (pthread_mutex_t *)ft_calloc(settings->num_philosophers, sizeof(pthread_mutex_t));
+    settings->status_mtx = (pthread_mutex_t *)ft_calloc(settings->num_philosophers , sizeof(pthread_mutex_t ));
 
     //it fails if not added +1
     
-    settings->meal_mtx = (pthread_mutex_t *)ft_calloc(settings->num_philosophers + 1, sizeof(pthread_mutex_t));
+    settings->meal_mtx = (pthread_mutex_t *)ft_calloc(settings->num_philosophers , sizeof(pthread_mutex_t));
     
     while (i < (int)(settings->num_philosophers))
     {
@@ -83,7 +86,7 @@ void create_maitre(t_settings *settings)
 
     maitre = ft_calloc(1, sizeof(t_maitre));
     settings->maitre = maitre;
-    
+    maitre->settings = settings;
     maitre->meal_mtx = settings->meal_mtx;
     maitre->status_mtx = settings->status_mtx;
     maitre->meal_mtx = settings->meal_mtx;
@@ -91,6 +94,13 @@ void create_maitre(t_settings *settings)
     maitre->num_philosophers = settings->num_philosophers;
     maitre->philosophers = settings->philosophers;
     maitre->return_status = settings->return_status;
+    maitre->time_mtx = settings->time_mtx;
+
+    //Possible data races, as all  threads point here, no to change it, but it will be changed after set up
+    //time mutex migh be of an interes
+maitre->threshold = settings->threshold;
+    maitre->synchro_t  = get_time(&settings->synchro_t, CHANGE, MILISECONDS);
+
     pthread_create(&maitre->th_maitre, NULL, &routine_maitre, (void *)&settings->maitre[0]);
     //settings->philosophers = ft_calloc(settings->num_philosophers, sizeof(t_philo));
 }
@@ -127,6 +137,7 @@ void create_philos(t_settings *settings)
         settings->philosophers[i].t_common_status_mtx = &settings->t_common_status_mtx[i];
         // timing
         settings->philosophers[i].threshold = settings->threshold;
+        //settings->philosophers[i].synchro_t = get_time(&settings->synchro_t, CHANGE, MILISECONDS);
         settings->philosophers[i].synchro_t = get_time(&settings->synchro_t, CHANGE, MILISECONDS);
         // mutexes: each pointer each one
 
@@ -215,10 +226,14 @@ void join_threads(t_settings *settings)
     i = -1;
 
     while (settings->num_philosophers > ++i)
-    {
+    {char ch;
         // settings->return_status[i] = (int *)ft_calloc(1, sizeof(int));
         pthread_join(settings->philosophers[i].thread_id, (void **)&settings->return_status[i]);
-        printf("philo [%d] joint with return_status = %d\n", i + 1, (int)((settings->return_status[i][0])));
+     safe_mutex(settings->t_write_mtx, LOCK);
+     ch = i + '0';
+     write(1, "one philo joint\n" + ch, 17);
+        //printf("philo [%d] joint with return_status = %d\n", i + 1, (int)((settings->return_status[i][0])));
+     safe_mutex(settings->t_write_mtx, UNLOCK);
 
         if ((int)((settings->return_status[i][0])) == ONE_DIED)
         { // previous :    safe_mutex(settings->t_common_status_mtx, LOCK);

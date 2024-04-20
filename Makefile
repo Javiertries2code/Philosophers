@@ -20,7 +20,7 @@ DIR_EXITING := exiting/
 #-------------
 #-------------
 EXITING_FILES = exiting.c 
-TIMING_FILES = timing.c  get_time.c
+TIMING_FILES = timing.c  get_time.c synchro.c
 INIT_FILES =  init.c
 SIMULATION_FILES = simulation.c routines.c
 #VALIDATE_FILES = validate.c exiting.c

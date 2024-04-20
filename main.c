@@ -4,7 +4,7 @@
 
 // static void show_forks(t_settings *settings)
 // {
-  
+
 //   safe_mutex(settings->t_write_mtx, LOCK);
 //   for (int i = 0; i <= settings->num_philosophers+ 30; i++)
 //   {
@@ -28,7 +28,7 @@ int main(int argc, char const *argv[])
   (void)argc;
   (void)argv;
 
-  const char *test[] = {"0", "4", "1000", "200", "200", "6"};
+  const char *test[] = {"0", "6", "5500", "200", "250", "8"};
   t_settings *settings;
   settings = ft_calloc(1, sizeof(t_settings));
 
@@ -43,8 +43,12 @@ int main(int argc, char const *argv[])
   load_settings(settings, test);
   create_mutexes(settings);
   create_philos(settings);
-  create_maitre(settings);
-check_mutex(settings,"maitre->status_mtx", settings->maitre->status_mtx, "settings->status_mtx",settings->status_mtx, &settings->philosophers[3] );
+  if (TEST)
+  {
+    usleep(3500);
+    create_maitre(settings);
+  }
+ // check_mutex(settings, "settings->maitre->meal_mtx", settings->maitre->meal_mtx, "settings>meal_mtx", settings->meal_mtx, &settings->philosophers[3]);
 
   join_threads(settings);
 
