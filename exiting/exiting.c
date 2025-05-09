@@ -16,7 +16,8 @@ else
 }
 
 void exit_on_error(char *str){
-    write(2,"str\n", ft_strlen(str) + 1);
+    write(2,str, ft_strlen(str));
+    write(2,"\n", 1);
         exit(EXIT_FAILURE);
 }
 

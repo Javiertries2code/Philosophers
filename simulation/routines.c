@@ -43,8 +43,8 @@ int eating(t_philo *philo)
     safe_mutex(philo->t_write_mtx, LOCK);
     printf(RED "% ld %ld has taken a fork\n" RESET, get_time(NULL, GET, MILISECONDS), (long)philo->philo_id);
 
-    printf(RED "% ld %ld is eating\n" RESET, get_time(NULL, GET, MILISECONDS), (long)philo->philo_id);
-    printf(RED "% ld  meals left = %ld\n" RESET, (long)philo->philo_id, philo->max_meals);
+    printf(YELLOW "% ld %ld is eating\n" RESET, get_time(NULL, GET, MILISECONDS), (long)philo->philo_id);
+    printf(PINK "% ld  meals left = %ld\n" RESET, (long)philo->philo_id, philo->max_meals);
     safe_mutex(philo->t_write_mtx, UNLOCK);
     safe_mutex(philo->first_fork, UNLOCK);
     safe_mutex(philo->second_fork, UNLOCK);
@@ -60,7 +60,7 @@ int eating(t_philo *philo)
     if (philo->max_meals == 0)
     {
         safe_mutex(philo->t_write_mtx, LOCK);
-        printf(YELLOW "[%ld] is FULL\n" RESET, philo->philo_id);
+        printf(YELLOW "%ld  [%ld] is FULL\n" RESET, get_time(NULL, GET, MILISECONDS), philo->philo_id);
         safe_mutex(philo->t_write_mtx, UNLOCK);
 
         //  safe_mutex(&philo->status_mtx[philo->philo_id -1], LOCK);

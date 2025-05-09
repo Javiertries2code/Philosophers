@@ -28,7 +28,7 @@ int main(int argc, char const *argv[])
   (void)argc;
   (void)argv;
 
-  const char *test[] = {"0", "6", "5500", "200", "250", "8"};
+  const char *test[] = {"0", "9", "5500", "200", "250", "15"};
   t_settings *settings;
   settings = ft_calloc(1, sizeof(t_settings));
 
@@ -40,7 +40,7 @@ int main(int argc, char const *argv[])
   else
     parse_argv(settings, argv);
 
-  load_settings(settings, test);
+  load_settings(settings, argv);
   create_mutexes(settings);
   create_philos(settings);
   if (TEST)

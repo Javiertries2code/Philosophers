@@ -46,7 +46,7 @@
 #define SLEEP_TO_SYNCHRO 1000
 //used to test the thresold, 
 //chaged later into using the maximun of the inputs
-#define PHILO_HEAD_START 20
+#define PHILO_HEAD_START 10
 
 #define SLEEPING_THRESHOLD_TESTTIME 0
 #define WAIT_TO_SYNCHRO 1000

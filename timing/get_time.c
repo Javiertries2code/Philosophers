@@ -1,5 +1,5 @@
 #include "../philo.h"
-
+/*
 long delay_to_syncro(long *delay, long* synchro_t, t_write_mtx t_write_mtx)
 {
     long current_time;
@@ -27,9 +27,10 @@ long delay_to_syncro(long *delay, long* synchro_t, t_write_mtx t_write_mtx)
     }
     else
        return (*delay - elapsed_time);
-    // this would reasult in adding repetitevely, and a data race   
-   //*synchro_t += SAND_CLOCK;
+    // this would reasult in adding repetitevely, and a data race --  *synchro_t += SAND_CLOCK;
+   
 }
+   */
 
 /**
  * @brief it handles conversion of units, or adquiring current time, depending on the args
@@ -56,7 +57,7 @@ long get_time(timeval *tv, timing_options operation, timing_options units)
         if (units == MICROSECONDS)
             return ((long)tv->tv_sec * 1e6 + tv->tv_usec);
     }
-    exit_on_error("Error calling get_time()\n");
+    exit_on_error("IN GET TIME Error calling get_time()\n");
     return (EXIT_FAILURE);
 }
 

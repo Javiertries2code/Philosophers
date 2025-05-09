@@ -246,9 +246,3 @@ void join_threads(t_settings *settings)
     }
     write(1, "joint threads\n", 14);
 }
-/**
- * @brief it makes a loop where, if a max meals was given, and it found all fed
- * then SUCCESS. Else, loops for any dead philo and updates th funeral to DIED, if so.
- * it counts for FULL philos, again if max meal is given
- * @param settings
- */

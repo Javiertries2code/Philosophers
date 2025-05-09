@@ -12,7 +12,7 @@ all alive, to quite, hence the data it should
 
 /**
  * @brief it firstlo locks all the return status for each philo,
- * then updates the statu to  ONEDIED
+ * then updates the statu to  ONEDIED   
  * unlocks them all
  *
  * @param maitre
@@ -22,6 +22,7 @@ void set_all_died(t_maitre *maitre)
     int i;
 
     i = 0;
+    safe_mutex(maitre->write_mtx, LOCK);
 
     while (maitre->num_philosophers > i)
     {
@@ -29,10 +30,14 @@ void set_all_died(t_maitre *maitre)
 //continously signal data race using valgrind --tool=helgrind -s ./philo^C
 //but it doesnt in real
         maitre->return_status[i][0] = ONE_DIED;
+        //testing time when set to stop and leave
+        printf(PINK" In set all died. %ld Philo[%d] asked to stop\n" RESET,get_time(NULL, GET, MILISECONDS), i+1 );
     safe_mutex(&maitre->status_mtx[i], UNLOCK);
 
         i++;
     }
+    safe_mutex(maitre->write_mtx, UNLOCK);
+
 }
 /**
  * @brief eternal loop untill it reaturns
@@ -72,19 +77,25 @@ void *routine_maitre(void *args)
             if (maitre.return_status[i][0] != FULL)
             {
                 // safe_mutex(maitre.write_mtx, LOCK);
-                // printf(WHITE " TIME_LEFT (&(maitre.philosophers[%ld])  =%ld \n" RESET, i, time_left(&(maitre.philosophers[i])));
+              //  printf(WHITE "id =%ld-- TIME_LEFT (&(maitre.philosophers[%ld])  =%ld \n" RESET, maitre.philosophers[i].philo_id, i, time_left(&(maitre.philosophers[i])));
                 // printf(WHITE " \nMaitre.philosophers[%ld].last_meal)[%ld]  =%ld \n" RESET, i, i, maitre.philosophers[i].last_meal);
                 // safe_mutex(maitre.write_mtx, UNLOCK);
 
-                if (time_left(&(maitre.philosophers[i])) <= 0)
+                if (time_left(&(maitre.philosophers[i])) <= 0)//could be 0, playing with margins
                 {
                     maitre.return_status[i][0] = ONE_DIED;
         safe_mutex(&maitre.status_mtx[i], UNLOCK);
 
-                    set_all_died(&maitre);
                     safe_mutex(maitre.write_mtx, LOCK);
-                    printf(CYAN "% ld %ld died\n" RESET, get_time(NULL, GET, MILISECONDS), (long)maitre.philosophers[i].philo_id);
+                 //   printf(CYAN "%ld %ld died\n" RESET, get_time(NULL, GET, MILISECONDS), (long)maitre.philosophers[i].philo_id);
+                 
+                 printf(CYAN "%ld %ld died\n" RESET, get_time(NULL, GET, MILISECONDS), (long)maitre.philosophers[i].philo_id);
+
+                 printf("test after one died colour");
                     safe_mutex(maitre.write_mtx, UNLOCK);
+
+                    set_all_died(&maitre);
+
                     return NULL;
                 }
                 //  printf(BLUE " BEFORE UNLOCK !=FULL &maitre.status_mtx[%ld]  = %p\n"RESET,i, &maitre.status_mtx[i]);
