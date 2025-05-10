@@ -43,12 +43,23 @@ INITS := $(addprefix $(DIR_INIT), $(INIT_FILES))
 TIMINGS := $(addprefix $(DIR_TIMING), $(TIMING_FILES))
 EXITING := $(addprefix $(DIR_EXITING), $(EXITING_FILES))
 
-CC = gcc
+CC = cc
 CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror
+
+ifeq ($(DEBUG), 1)
+	CFLAGS += -g -fsanitize=address
+endif
+
+ifeq ($(DEBUG), 2)
+	CFLAGS += -g -fsanitize=thread
+endif
+
+
 #aint sure it gotta be removed on delivery
 #LEAKS = -g3 -fsanitize=leak
 #LEAKS = -g3 -fsanitize=address
-LEAKS = -g3
+#LEAKS = -g3
 
 #valgrind ./philo 
 
@@ -57,7 +68,7 @@ LEAKS = -g3
 all : $(NAME)
 
 $(NAME):$(OBJECTS)
-	$(CC) $(CFLAGS) $(LEAKS) -o $(NAME) main.c $(UTILS) $(HANDLERS) \
+	$(CC) $(CFLAGS) -o $(NAME) main.c $(UTILS) $(HANDLERS) \
 	 $(PARSERS) $(SIMULATIONS) $(INITS) $(TIMINGS) $(EXITING)
 	
 #$(TIMINGS)$(VALIDATES) $(SUPPORT) 

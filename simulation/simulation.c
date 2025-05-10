@@ -31,7 +31,7 @@ void set_all_died(t_maitre *maitre)
 //but it doesnt in real
         maitre->return_status[i][0] = ONE_DIED;
         //testing time when set to stop and leave
-        printf(PINK" In set all died. %ld Philo[%d] asked to stop\n" RESET,get_time(NULL, GET, MILISECONDS), i+1 );
+      //  printf(PINK" In set all died. %ld Philo[%d] asked to stop\n" RESET,get_time(NULL, GET, MILISECONDS), i+1 );
     safe_mutex(&maitre->status_mtx[i], UNLOCK);
 
         i++;
@@ -63,7 +63,7 @@ void *routine_maitre(void *args)
 
     busy_wait_start(maitre.synchro_t, PHILO_HEAD_START);
     safe_mutex(maitre.write_mtx, LOCK);
-    printf(CYAN "Maitre starts =  %ld\n \n" RESET, get_milisec());
+   // printf(CYAN "Maitre starts =  %ld\n \n" RESET, get_milisec());
     safe_mutex(maitre.write_mtx, UNLOCK);
     usleep(300000);
     while (true)
@@ -91,7 +91,7 @@ void *routine_maitre(void *args)
                  
                  printf(CYAN "%ld %ld died\n" RESET, get_time(NULL, GET, MILISECONDS), (long)maitre.philosophers[i].philo_id);
 
-                 printf("test after one died colour");
+              //   printf("test after one died colour");
                     safe_mutex(maitre.write_mtx, UNLOCK);
 
                     set_all_died(&maitre);
@@ -101,6 +101,7 @@ void *routine_maitre(void *args)
                 //  printf(BLUE " BEFORE UNLOCK !=FULL &maitre.status_mtx[%ld]  = %p\n"RESET,i, &maitre.status_mtx[i]);
 
         safe_mutex(&maitre.status_mtx[i], UNLOCK);
+        i++;
             }
         //     else if (maitre.return_status[i][0] == FULL)
         //     {
@@ -113,9 +114,9 @@ void *routine_maitre(void *args)
         // safe_mutex(&maitre.status_mtx[i], UNLOCK);
         //     }
             else // not really possible but as to avoid error valgrind
-        safe_mutex(&maitre.status_mtx[i], UNLOCK);
+                safe_mutex(&maitre.status_mtx[i], UNLOCK);
 
-            i++;
+            //i++;
         }
     }
 }
@@ -140,12 +141,12 @@ void *routine_ph(void *args)
 
     busy_wait_start(philo.synchro_t, 0);
     safe_mutex(philo.time_mtx, LOCK);
-    philo.last_meal = get_milisec(NULL, GET, MILISECONDS);
+    philo.last_meal = get_time(NULL, GET, MILISECONDS);
     safe_mutex(philo.time_mtx, UNLOCK);
 
     safe_mutex(philo.settings->t_write_mtx, LOCK);
     
-    printf(RED "Philo[%ld] starts simulation=  %ld\n \n" RESET, philo.philo_id, get_milisec());
+  //  printf(RED "Philo[%ld] starts simulation=  %ld\n \n" RESET, philo.philo_id, get_milisec());
     safe_mutex(philo.settings->t_write_mtx, UNLOCK);
 
     if (philo.philo_id % 2 == 0)

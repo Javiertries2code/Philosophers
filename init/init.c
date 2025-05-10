@@ -226,12 +226,11 @@ void join_threads(t_settings *settings)
     i = -1;
 
     while (settings->num_philosophers > ++i)
-    {char ch;
+    {
         // settings->return_status[i] = (int *)ft_calloc(1, sizeof(int));
         pthread_join(settings->philosophers[i].thread_id, (void **)&settings->return_status[i]);
      safe_mutex(settings->t_write_mtx, LOCK);
-     ch = i + '0';
-     write(1, "one philo joint\n" + ch, 17);
+    
         //printf("philo [%d] joint with return_status = %d\n", i + 1, (int)((settings->return_status[i][0])));
      safe_mutex(settings->t_write_mtx, UNLOCK);
 
@@ -244,5 +243,5 @@ void join_threads(t_settings *settings)
             safe_mutex(&settings->status_mtx[i], UNLOCK);
         }
     }
-    write(1, "joint threads\n", 14);
+//    write(1, "joint threads\n", 14);
 }

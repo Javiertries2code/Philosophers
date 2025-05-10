@@ -57,8 +57,8 @@ long get_time(timeval *tv, timing_options operation, timing_options units)
         if (units == MICROSECONDS)
             return ((long)tv->tv_sec * 1e6 + tv->tv_usec);
     }
-    exit_on_error("IN GET TIME Error calling get_time()\n");
-    return (EXIT_FAILURE);
+    //printf("get time operations %d, %d\n", operation, units)
+    return (2);
 }
 
 long to_microsec(timeval *tv)
