@@ -56,7 +56,21 @@ long get_time(timeval *tv, timing_options operation, timing_options units)
             return ((long)tv->tv_sec * 1e3 + tv->tv_usec / 1e3);
         if (units == MICROSECONDS)
             return ((long)tv->tv_sec * 1e6 + tv->tv_usec);
-    }
+     }
+    // if (operation == GET)
+    // {
+    //     if (units == MICROSECONDS)
+    //         return (get_milisec());
+    //     if (units == MILISECONDS)
+    //         return (get_microsec());
+    // }
+    // else if (operation == CHANGE)
+    // {
+    //     if (units == MICROSECONDS)
+    //         return ((long)tv->tv_sec * 1e3 + tv->tv_usec / 1e3);
+    //     if (units == MILISECONDS)
+    //         return ((long)tv->tv_sec * 1e6 + tv->tv_usec);
+    // }
     //printf("get time operations %d, %d\n", operation, units)
     return (2);
 }

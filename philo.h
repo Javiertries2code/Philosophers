@@ -46,7 +46,7 @@
 #define SLEEP_TO_SYNCHRO 1000
 //used to test the thresold, 
 //chaged later into using the maximun of the inputs
-#define PHILO_HEAD_START 10
+#define PHILO_HEAD_START 1
 
 #define SLEEPING_THRESHOLD_TESTTIME 0
 #define WAIT_TO_SYNCHRO 1000
@@ -116,7 +116,7 @@ typedef struct s_settings
     int status;
     float safety_margin;
     long max_thr;
-   
+   long starting_time;
     int *philo_status;
 
     int funeral;

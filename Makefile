@@ -47,12 +47,15 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror
 CFLAGS = -Wall -Wextra -Werror
 
+
+
+
 ifeq ($(DEBUG), 1)
-	CFLAGS += -g -fsanitize=address
+	CFLAGS += -g -fsanitize=address -fno-omit-frame-pointer
 endif
 
 ifeq ($(DEBUG), 2)
-	CFLAGS += -g -fsanitize=thread
+	CFLAGS += -g -fsanitize=thread -fno-omit-frame-pointer
 endif
 
 
@@ -79,5 +82,16 @@ clean:
 fclean: clean
 	
 re: fclean all
+
+debug_leaks:
+	$(MAKE) fclean
+	$(MAKE) DEBUG=1
+	./$(NAME) $(ARGS)
+
+debug_races:
+	$(MAKE) fclean
+	$(MAKE) DEBUG=2
+	./$(NAME) $(ARGS)
+
 
 .PHONY: all  clean fclean re

@@ -29,6 +29,8 @@ void load_settings(t_settings *settings, const char *argv[])
     //     settings->max_meals = atol(argv[5]);
     // else
     //     settings->max_meals = NO_MAX_MEALS;
+
+    printf("IN load_settings   \ntime_to_die = %ld\ntime_to_eat = %ld\n  time_to_sleep = %ld\n ",  settings->time_to_die,settings->time_to_eat , settings->time_to_sleep );
 }
 /**
  * @brief Allocates memoryy for mutexes and initialize them
@@ -239,7 +241,9 @@ void join_threads(t_settings *settings)
             j = -1;
             safe_mutex(&settings->status_mtx[i], LOCK);
             while (settings->num_philosophers > ++j)
+             {    safe_mutex(&settings->status_mtx[j], LOCK);
                 settings->return_status[j][0] = ONE_DIED;
+                safe_mutex(&settings->status_mtx[j], UNLOCK);}
             safe_mutex(&settings->status_mtx[i], UNLOCK);
         }
     }
