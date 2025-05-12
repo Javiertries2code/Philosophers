@@ -223,14 +223,18 @@ int all_alive(t_philo *philo,  char *opt ){
 	left_life = time_left(philo);
 
 if( left_life <= 0)//Could trick safe using <=1
-	{
+	{//reusing to save som ml in case of
+		left_life = (get_milisec() - philo->settings->starting_time);
 		safe_mutex(philo->status_mtx, LOCK);
+		if (*philo->return_status != ONE_DIED){
+			safe_mutex(philo->t_write_mtx, LOCK);
+			printf(YELLOW"%ld %ld died\n"RESET, left_life, philo->philo_id);
+			safe_mutex(philo->t_write_mtx, UNLOCK);
+		}
 		*philo->return_status = ONE_DIED;
 		safe_mutex(philo->status_mtx, UNLOCK);
 	
-		safe_mutex(philo->t_write_mtx, LOCK);
-		printf(YELLOW"%ld %ld  died (timeleft)\n"RESET, left_life, philo->philo_id);
-		safe_mutex(philo->t_write_mtx, UNLOCK);
+	
 		return ONE_DIED;
 	}
 
