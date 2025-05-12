@@ -127,7 +127,9 @@ void	*routine_ph(void *args)
 	// struct timeval delay;
 	// long delay_to_sync;
 	philo = (t_philo *)args;
-	ret = philo->settings->return_status[philo->philo_id - 1];
+safe_mutex(&philo->status_mtx[philo->philo_id - 1], LOCK);
+ret = philo->settings->return_status[philo->philo_id - 1];
+safe_mutex(&philo->status_mtx[philo->philo_id - 1], UNLOCK);
 	
 	busy_wait_start(philo->synchro_t, 0);
     if (philo->settings->starting_time  == 0)
@@ -204,6 +206,60 @@ int	routine_odd(t_philo *philo)
 			return (ret);
 	}
 	(void)philo;
+}
+void printer(t_write_mtx  t_write_mtx, char *opt, long id, long time)
+{
+	
+char *colors;
+//need som comparing from libft
+ if ( !strcmp(opt, FORK)|| !strcmp(opt, FORK2))
+	colors = BLUE;
+ else if (!strcmp(opt, THINKING))
+	colors = YELLOW;
+ else if (!strcmp(opt, SLEEPING))
+	colors = GREEN;
+ else if (!strcmp(opt, DIED))
+	colors = RED;
+
+safe_mutex(t_write_mtx, LOCK);
+if(!strcmp(opt, FORK2)){
+		printf("%s%ld %ld has taken a fork%s\n", colors, time, id , RESET);
+		printf(PINK"%ld %ld %s%s\n", time, id, EATING , RESET);
+}
+else
+	printf("%s%ld %ld %s%s\n", colors, time, id, opt, RESET);
+safe_mutex(t_write_mtx, UNLOCK);
+	
+}
+
+int all_alive(t_philo *philo,  char *opt ){
+    int var_status;
+	
+
+if(time_left(philo) <= 0)//Could trick safe using <=1
+	{
+		safe_mutex(&philo->status_mtx[philo->philo_id - 1], LOCK);
+		philo->return_status[philo->philo_id - 1][0] = ONE_DIED;
+		safe_mutex(&philo->status_mtx[philo->philo_id -1], UNLOCK);
+	
+		safe_mutex(philo->t_write_mtx, LOCK);
+		printf(YELLOW" in time_left  [%ld] died\n"RESET,  philo->philo_id);
+		safe_mutex(philo->t_write_mtx, UNLOCK);
+		return ONE_DIED;
+	}
+
+	safe_mutex(&philo->status_mtx[philo->philo_id - 1], LOCK);
+	
+    var_status = philo->return_status[philo->philo_id - 1][0];
+
+if(var_status == ALL_ALIVE){
+	printer(philo->t_write_mtx, opt,philo->philo_id, (get_milisec() - philo->settings->starting_time));
+}
+
+
+	safe_mutex(&philo->status_mtx[philo->philo_id -1], UNLOCK);
+	return var_status;
+    
 }
 
 // void check_deaths(t_settings *settings)

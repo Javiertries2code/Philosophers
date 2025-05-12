@@ -9,6 +9,8 @@
 #include <stdlib.h>
 #include <limits.h>
 # include <errno.h>
+#include <string.h>
+
 
 
 // color codes for diferent states, use like
@@ -64,6 +66,14 @@
 #define TESTWAIT                3000               1
 
 
+  #define  EATING "is eating"
+  #define  FORK "has taken a fork"
+  #define  FORK2 "has taken a fork2"
+  #define  SLEEPING "is sleeping"
+  #define  THINKING "is thinking"
+  #define  DIED "died"
+
+
 
 
 typedef pthread_mutex_t *t_write_mtx;
@@ -77,15 +87,17 @@ typedef struct s_maitre t_maitre;
 //Notice either FED and FULL got same 2 number, to avoid mistakes
 typedef enum s_states
 {
-    EATING,
-    SLEEPING,
+    EATINGA,
+    SLEEPINGA,
     FED,
-    THINKING,
+    THINKINGA,
     TAKE_FIRST_FORK,
     TAKE_SECOND_FORK,
     DEATH
     
 } t_states;
+
+
 
 typedef enum timing_options{
    
@@ -104,6 +116,8 @@ typedef enum mtx_option
     DESTROY
 
 } t_mtx_option;
+
+
 
 typedef struct s_settings
 {
@@ -218,6 +232,8 @@ void *routine_maitre(void *args);
  
  //simulation suppot
  //long int time_left(t_philo *philo);
+
+ int all_alive(t_philo *philo, char *option );
 void check_deaths(t_settings *settings);
  void support_read_returns(t_settings *settings);
 long int time_left(t_philo *philo);
@@ -264,6 +280,8 @@ void destroy_error( int error_return);
 
 
 // utils
+void printer(t_write_mtx  t_write_mtx, char *opt, long id, long time);
+
 
 void *ft_calloc(size_t count, size_t size);
 void ft_bzero(void *s, size_t n);
