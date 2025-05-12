@@ -19,7 +19,7 @@ all alive, to quite, hence the data it should
  *
  * @param maitre
  */
-void	set_all_died(t_maitre *maitre)
+void *set_all_died(t_maitre *maitre)
 {
 	int	i;
 
@@ -31,11 +31,12 @@ void	set_all_died(t_maitre *maitre)
 		// continously signal data race using
 		// valgrind --tool=helgrind-s ./philo^C
 		// but it doesnt in real
-		maitre->return_status[i][0] = ONE_DIED;
+		maitre->return_status[i] = ONE_DIED;
 		safe_mutex(&maitre->status_mtx[i], UNLOCK);
 		i++;
 	}
 	safe_mutex(maitre->write_mtx, UNLOCK);
+	return (NULL);
 }
 /**
  * @brief eternal loop untill it reaturns
@@ -59,56 +60,28 @@ void	*routine_maitre(void *args)
 {
 	t_maitre	*maitre;
 	long int	i;
+	bool run;
+	int var_status;
 
+	run = true;
 	maitre = (t_maitre *)args;
 	busy_wait_start(maitre->synchro_t, PHILO_HEAD_START);
-	safe_mutex(maitre->write_mtx, LOCK);
-	 printf(CYAN "Maitre starts =  %ld\n \n" RESET, (get_milisec()-maitre->settings->starting_time));
-	safe_mutex(maitre->write_mtx, UNLOCK);
-	usleep(300000);
-	while (true)
+	//usleep(300000);
+	while (run)
 	{
 		i = 0;
 		while (maitre->num_philosophers > i)
 		{
 			safe_mutex(&maitre->status_mtx[i], LOCK);
-			if (maitre->return_status[i][0] != FULL)
-			{ // test
-				// safe_mutex(maitre->write_mtx, LOCK);
-				// printf(WHITE "\nin maitre id =%ld-- TIME_LEFT%ld  =%ld \n" RESET,
-				// 	maitre->philosophers[i].philo_id, i,
-				// 	time_left(&(maitre->philosophers[i])));
-				// printf(WHITE "maitre last_meal  =%ld \n" RESET,
-				// 	(get_milisec() -maitre->philosophers[i].last_meal));
-				// safe_mutex(maitre->write_mtx, UNLOCK);
-				// test
-				// printf("in routine maitre philo_id %ld\n",
-				// 	maitre->philosophers[i].philo_id);
-				// printf("last_meal %ld\n", maitre->philosophers[i].last_meal);
-				// printf("time_left %ld\n", time_left(&(maitre->philosophers[i])));
-				if (time_left(&(maitre->philosophers[i])) <= 0)
-				{
-					maitre->return_status[i][0] = ONE_DIED;
-					safe_mutex(&maitre->status_mtx[i], UNLOCK);
-					safe_mutex(maitre->write_mtx, LOCK);
-					printf(CYAN "%ld %ld died\n" RESET, (get_time(NULL, GET,
-								MILISECONDS) - maitre->settings->starting_time),
-						(long)maitre->philosophers[i].philo_id);
-					safe_mutex(maitre->write_mtx, UNLOCK);
-					set_all_died(maitre);
-					return (NULL);
-				}
-				safe_mutex(&maitre->status_mtx[i], UNLOCK);
+			var_status = maitre->return_status[i];
+			safe_mutex(&maitre->status_mtx[i], UNLOCK);
+
+			if (var_status == ONE_DIED)
+					return(set_all_died(maitre));
+			else
 				i++;
-			}
-			else // not really possible but as to avoid error valgrind
-			{
-				safe_mutex(&maitre->status_mtx[i], UNLOCK);
-				i++;
-			}
 		}
-	}
-}
+}return (NULL);}
 
 /**
  * @brief first points to the variable in settings int **return_status;
@@ -127,9 +100,9 @@ void	*routine_ph(void *args)
 	// struct timeval delay;
 	// long delay_to_sync;
 	philo = (t_philo *)args;
-safe_mutex(&philo->status_mtx[philo->philo_id - 1], LOCK);
-ret = philo->settings->return_status[philo->philo_id - 1];
-safe_mutex(&philo->status_mtx[philo->philo_id - 1], UNLOCK);
+safe_mutex(philo->status_mtx, LOCK);
+ret = philo->return_status;
+safe_mutex(philo->status_mtx, UNLOCK);
 	
 	busy_wait_start(philo->synchro_t, 0);
     if (philo->settings->starting_time  == 0)
@@ -137,9 +110,16 @@ safe_mutex(&philo->status_mtx[philo->philo_id - 1], UNLOCK);
 	safe_mutex(philo->time_mtx, LOCK);
 	philo->last_meal = get_time(NULL, GET, MILISECONDS);
 	safe_mutex(philo->time_mtx, UNLOCK);
+	//////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////
+
 	safe_mutex(philo->settings->t_write_mtx, LOCK);
 	  printf(RED "Philo[%ld] starts simulation=  %ld\n \n" RESET, philo->philo_id, (get_milisec() - philo->settings->starting_time));
 		safe_mutex(philo->settings->t_write_mtx, UNLOCK);
+
+			//////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////
+
 		if (philo->philo_id % 2 == 0)
 		{
 			routine_even(philo);
@@ -148,10 +128,16 @@ safe_mutex(&philo->status_mtx[philo->philo_id - 1], UNLOCK);
 		{
 			routine_odd(philo);
 		}
+			//////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////
+
 		safe_mutex(philo->t_write_mtx, LOCK);
 		 printf(PINK "routine_ph \nphilo [%d] LEAVING DINNER IN MAIN THREAD\n" RESET,(int)philo->philo_id);
-		printf(WHITE "philo [%d] \n return (status = %d\n" RESET,(int)philo->philo_id, (int)*philo->return_status[philo->philo_id - 1]);
+		printf(WHITE "philo [%d] \n return (status = %d\n" RESET,(int)philo->philo_id, (int)*philo->return_status);
 		 safe_mutex(philo->t_write_mtx, UNLOCK);
+		 	//////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////
+
 		return (ret);
 }
 
@@ -169,20 +155,16 @@ int	routine_even(t_philo *philo)
 
 		while (1)
 		{
-			// previous mutex status for all of them.  philo->settings->status_mtx;
 			ret = eating(philo);
 			ret2 = sleeping(philo);
 			ret3 = thinking(philo);
-			// safe_mutex(philo->t_write_mtx, LOCK);
-			// printf(WHITE "[%ld] RET = %d\n" RESET, philo->philo_id, ret);
-			// safe_mutex(philo->t_write_mtx, UNLOCK);
+		
 			if (ret != 0)
 				return (ret);
 			if (ret2 != 0)
 				return (ret2);
 			if (ret3 != 0)
 				return (ret3);
-			// write(1,"evv\n", 2);
 		}
 		(void)philo;
 }
@@ -211,7 +193,9 @@ void printer(t_write_mtx  t_write_mtx, char *opt, long id, long time)
 {
 	
 char *colors;
-//need som comparing from libft
+//GET STRCMP FROM LIBFT
+//GET STRCMP FROM LIBFT
+//GET STRCMP FROM LIBFT
  if ( !strcmp(opt, FORK)|| !strcmp(opt, FORK2))
 	colors = BLUE;
  else if (!strcmp(opt, THINKING))
@@ -234,60 +218,30 @@ safe_mutex(t_write_mtx, UNLOCK);
 
 int all_alive(t_philo *philo,  char *opt ){
     int var_status;
-	
+	long left_life;
 
-if(time_left(philo) <= 0)//Could trick safe using <=1
+	left_life = time_left(philo);
+
+if( left_life <= 0)//Could trick safe using <=1
 	{
-		safe_mutex(&philo->status_mtx[philo->philo_id - 1], LOCK);
-		philo->return_status[philo->philo_id - 1][0] = ONE_DIED;
-		safe_mutex(&philo->status_mtx[philo->philo_id -1], UNLOCK);
+		safe_mutex(philo->status_mtx, LOCK);
+		*philo->return_status = ONE_DIED;
+		safe_mutex(philo->status_mtx, UNLOCK);
 	
 		safe_mutex(philo->t_write_mtx, LOCK);
-		printf(YELLOW" in time_left  [%ld] died\n"RESET,  philo->philo_id);
+		printf(YELLOW"%ld %ld  died (timeleft)\n"RESET, left_life, philo->philo_id);
 		safe_mutex(philo->t_write_mtx, UNLOCK);
 		return ONE_DIED;
 	}
 
-	safe_mutex(&philo->status_mtx[philo->philo_id - 1], LOCK);
+	safe_mutex(philo->status_mtx, LOCK);
 	
-    var_status = philo->return_status[philo->philo_id - 1][0];
+    var_status = *philo->return_status;
+safe_mutex(philo->status_mtx, UNLOCK);
 
 if(var_status == ALL_ALIVE){
 	printer(philo->t_write_mtx, opt,philo->philo_id, (get_milisec() - philo->settings->starting_time));
 }
-
-
-	safe_mutex(&philo->status_mtx[philo->philo_id -1], UNLOCK);
 	return var_status;
-    
 }
 
-// void check_deaths(t_settings *settings)
-// {
-//     int i;
-//     safe_mutex(settings->t_write_mtx, LOCK);
-
-//     printf(RED "Got into checking deaths\n\n" RESET);
-//     safe_mutex(settings->t_write_mtx, UNLOCK);
-
-//     while (ALL_ALIVE)
-//     {
-//         safe_mutex(settings->t_write_mtx, LOCK);
-
-//         printf(RED "Got into checking deaths\n\n" RESET);
-//         safe_mutex(settings->t_write_mtx, UNLOCK);
-
-//         i = 0;
-//         safe_mutex(settings->t_common_status_mtx, LOCK);
-//         while (settings->num_philosophers > i)
-//         {
-//             if (settings->philo_status[i] == ONE_DIED)
-//                 settings->funeral = ONE_DIED;
-//             if (settings->philo_status[i] == FULL)
-//                 settings->all_full--;
-//             i++;
-//         }
-//         safe_mutex(settings->t_common_status_mtx, UNLOCK);
-//         usleep(100000);
-//     }
-// }

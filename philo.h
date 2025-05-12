@@ -76,6 +76,7 @@
 
 
 
+typedef pthread_mutex_t *t_funeral_mtx;
 typedef pthread_mutex_t *t_write_mtx;
 typedef pthread_mutex_t *time_mtx;
 typedef pthread_mutex_t *t_maitre_mtx;
@@ -133,9 +134,11 @@ typedef struct s_settings
    long starting_time;
     int *philo_status;
 
-    int funeral;
+    int *funeral;
+    pthread_mutex_t *funeral_mtx;
+
     int all_full;
-    int **return_status;
+    int *return_status;
 
     //array fo mutexes, one for every fork, prev and next
     //for every hpilo. as statucs for every philo
@@ -146,7 +149,6 @@ typedef struct s_settings
     t_maitre_mtx t_maitre_mtx;
     t_write_mtx t_write_mtx;
     time_mtx time_mtx;
-    t_common_status_mtx    t_common_status_mtx;
 
     struct timeval synchro_t;
     struct s_philo *philosophers;
@@ -171,8 +173,10 @@ typedef struct s_philo
 
     t_write_mtx t_write_mtx;
     time_mtx time_mtx;
-    time_mtx t_common_status_mtx;
     t_general t_general;
+
+    int *funeral;
+    pthread_mutex_t *funeral_mtx;
 
      long int num_philosophers;
 
@@ -182,7 +186,7 @@ typedef struct s_philo
     long int time_to_sleep;
     long int last_meal;
     long int max_meals;
-    int **return_status;
+    int *return_status;
 
     //sleeping safety threshold
     long threshold;
@@ -199,17 +203,18 @@ typedef struct s_maitre
 {
     pthread_t th_maitre;
     t_settings *settings;
+    pthread_mutex_t *funeral_mtx;
     pthread_mutex_t *status_mtx;
     pthread_mutex_t *meal_mtx;
     t_write_mtx write_mtx;
     time_mtx time_mtx;
-
     t_philo *philosophers;
-    int **return_status;
+    int *return_status;
     long synchro_t;
     long threshold;
      long delay_to_sync;
-
+     int *funeral;
+    
 
 
     long int num_philosophers;
@@ -222,7 +227,7 @@ void *routine_ph(void *args);
 void *routine_maitre(void *args);
  int routine_even( t_philo *philo);
  int routine_odd( t_philo *philo);
- void set_all_died(t_maitre *maitre);
+ void *set_all_died(t_maitre *maitre);
  int eating(t_philo *philo);
  int sleeping(t_philo *philo);
  int thinking(t_philo *philo);

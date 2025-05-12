@@ -26,6 +26,12 @@ int eating(t_philo *philo)
     }
 
     safe_mutex(philo->second_fork, LOCK);
+
+       //has dinner just when entering
+        safe_mutex(philo->meal_mtx, LOCK);
+        philo->last_meal = get_time(NULL, GET, MILISECONDS);
+        safe_mutex(philo->meal_mtx, UNLOCK);
+
     var_status = all_alive(philo, FORK2);
     if (var_status != ALL_ALIVE) {
         safe_mutex(philo->second_fork, UNLOCK);
@@ -33,14 +39,14 @@ int eating(t_philo *philo)
         return var_status;
     }
 
-    // Ya con ambos forks bloqueados
-    safe_mutex(&philo->meal_mtx[philo->philo_id - 1], LOCK);
-    philo->last_meal = get_time(NULL, GET, MILISECONDS);
-    safe_mutex(&philo->meal_mtx[philo->philo_id - 1], UNLOCK);
+ 
 
     precise_sleep(philo->time_to_eat, &philo->threshold);
+    safe_mutex(philo->meal_mtx, LOCK);
 
     philo->max_meals--;
+    safe_mutex(philo->meal_mtx, UNLOCK);
+
     if (philo->max_meals == 0)
     {
         safe_mutex(philo->t_write_mtx, LOCK);
@@ -49,9 +55,9 @@ int eating(t_philo *philo)
                philo->philo_id);
         safe_mutex(philo->t_write_mtx, UNLOCK);
 
-        safe_mutex(&philo->status_mtx[philo->philo_id - 1], LOCK);
-        philo->return_status[philo->philo_id - 1][0] = FULL;
-        safe_mutex(&philo->status_mtx[philo->philo_id - 1], UNLOCK);
+        safe_mutex(philo->status_mtx, LOCK);
+        *philo->return_status= FULL;
+        safe_mutex(philo->status_mtx, UNLOCK);
 
         safe_mutex(philo->first_fork, UNLOCK);
         safe_mutex(philo->second_fork, UNLOCK);
@@ -75,14 +81,14 @@ long int time_left(t_philo *philo)
     long int time_left;
     long int last_meal;
     //    safe_mutex(&philo->settings->status_mtx[philo->philo_id - 1], LOCK);
-    safe_mutex(&philo->meal_mtx[philo->philo_id - 1], LOCK);
+    safe_mutex(philo->meal_mtx, LOCK);
     last_meal = philo->last_meal;
-    safe_mutex(&philo->meal_mtx[philo->philo_id - 1], UNLOCK);
+    safe_mutex(philo->meal_mtx, UNLOCK);
     // safe_mutex(&philo->settings->status_mtx[philo->philo_id - 1], UNLOCK);
     time_left = philo->time_to_die - (get_time(NULL, GET, MILISECONDS) - last_meal);
 //test
     // safe_mutex(philo->t_write_mtx, LOCK);
-    // printf(YELLOW " in time_left%ld  [%ld] TIME LEFT TO DIE\n" RESET, time_left, philo->philo_id);
+    // printf(YELLOW " time left to die %ld  philo[%ld]\n" RESET, time_left, philo->philo_id);
     // safe_mutex(philo->t_write_mtx, UNLOCK);
 
     return (time_left);
