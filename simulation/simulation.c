@@ -25,7 +25,8 @@ void	*routine_maitre(void *args)
 	run = 1;
 	maitre = (t_maitre *)args;
 	busy_wait_start(maitre->synchro_t, PHILO_HEAD_START);
-	 usleep(1);
+	 usleep(1);//sleep, else settingt timing, or philo or smthing is not created yet, 
+	 //and delivers shity value
 	while (run)
 	{
 		safe_mutex(maitre->funeral_mtx, LOCK);
