@@ -2,26 +2,7 @@
 #include "philo.h"
 #include <sys/time.h>
 
-// static void show_forks(t_settings *settings)
-// {
 
-//   safe_mutex(settings->t_write_mtx, LOCK);
-//   for (int i = 0; i <= settings->num_philosophers+ 30; i++)
-//   {
-//     printf("\n[%d] philo[%ld] philosophers[i].fork_prev = %ld", i,settings->philosophers[i].philo_id, (long)settings->philosophers[i].fork_prev);
-//     printf("\n[%d] philo[%ld] philosophers[i].fork_next = %ld", i,settings->philosophers[i].philo_id, (long)settings->philosophers[i].fork_next);
-//     printf("\n[%d] philo[%ld] philosophers[i]second_.for = %ld",i,settings->philosophers[i].philo_id,  (long)settings->philosophers[i].second_fork);
-//     printf("\n[%d] philo[%ld] philosophers[i].first_fork = %ld",i,settings->philosophers[i].philo_id,  (long)settings->philosophers[i].first_fork);
-//     printf("\n*******************************************************");
-// settings->philosophers[i].fork_prev == settings->philosophers[settings->num_philosophers - 1].fork_next)
-//       printf("\n[%ld]dYEEES" , settings->philosophers->philo_id);
-//     if (settings->philosophers[i].first_fork == settings->philosophers[settings->num_philosophers - 1].first_fork)
-//       printf("\n[%ld]dALSO" , settings->philosophers->philo_id);
-//     printf("\n*******************************************************");
-//     if (
-// }
-//   safe_mutex(settings->t_write_mtx, UNLOCK);
-// }
 
 int main(int argc, char const *argv[])
 {

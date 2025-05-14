@@ -134,7 +134,9 @@ typedef struct s_settings
    long starting_time;
     int *philo_status;
 
-    int *funeral;
+    int funeral;
+    int printer;
+    pthread_mutex_t *printer_mtx;
     pthread_mutex_t *funeral_mtx;
 
     int all_full;
@@ -153,6 +155,8 @@ typedef struct s_settings
     struct timeval synchro_t;
     struct s_philo *philosophers;
     struct s_maitre *maitre;
+
+    
 
 } t_settings;
 
@@ -175,6 +179,8 @@ typedef struct s_philo
     time_mtx time_mtx;
     t_general t_general;
 
+    int *printer;
+    pthread_mutex_t *printer_mtx;
     int *funeral;
     pthread_mutex_t *funeral_mtx;
 
@@ -203,7 +209,6 @@ typedef struct s_maitre
 {
     pthread_t th_maitre;
     t_settings *settings;
-    pthread_mutex_t *funeral_mtx;
     pthread_mutex_t *status_mtx;
     pthread_mutex_t *meal_mtx;
     t_write_mtx write_mtx;
@@ -213,7 +218,11 @@ typedef struct s_maitre
     long synchro_t;
     long threshold;
      long delay_to_sync;
+
+     int *printer;
+     pthread_mutex_t *printer_mtx;
      int *funeral;
+     pthread_mutex_t *funeral_mtx;
     
 
 
@@ -285,7 +294,7 @@ void destroy_error( int error_return);
 
 
 // utils
-void printer(t_write_mtx  t_write_mtx, char *opt, long id, long time);
+int printer(t_philo *philo, char *opt);
 
 
 void *ft_calloc(size_t count, size_t size);

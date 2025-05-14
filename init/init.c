@@ -22,9 +22,11 @@ void load_settings(t_settings *settings, const char *argv[])
     gettimeofday(&settings->synchro_t, NULL);
     set_threshold(settings);
 
-    settings->funeral = (int *)ft_calloc(settings->num_philosophers, sizeof(int));
     settings->philo_status = (int *)ft_calloc(settings->num_philosophers, sizeof(int));
     settings->return_status = ft_calloc(settings->num_philosophers, sizeof(int));
+    settings->printer = 0;
+    settings->funeral = 0;
+   
 
     // if (argv[5] != NULL)
     //     settings->max_meals = atol(argv[5]);
@@ -50,8 +52,9 @@ void create_mutexes(t_settings *settings)
     settings->t_write_mtx = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
     settings->t_maitre_mtx = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
     settings->time_mtx = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
+    settings->printer_mtx = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
+    settings->funeral_mtx = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
     ////////////
-    settings->funeral = (int *)ft_calloc(settings->num_philosophers,sizeof(int));
     //WEIRD AS FUCK 
     /*
     IT DOESNT SEEM TO CREATE NUM-PHILOSOFER GAPS FOR THE MUTEXES, recurrent probelm of allowing
@@ -61,7 +64,6 @@ void create_mutexes(t_settings *settings)
 
     settings->mutexes = (pthread_mutex_t *)ft_calloc(settings->num_philosophers, sizeof(pthread_mutex_t));
     settings->status_mtx = (pthread_mutex_t *)ft_calloc(settings->num_philosophers , sizeof(pthread_mutex_t ));
-    settings->funeral_mtx = (pthread_mutex_t *)ft_calloc(settings->num_philosophers , sizeof(pthread_mutex_t ));
 
     //it fails if not added +1
     
@@ -102,16 +104,19 @@ void create_maitre(t_settings *settings)
     maitre->philosophers = settings->philosophers;
     maitre->return_status = settings->return_status;
     maitre->time_mtx = settings->time_mtx;
-    maitre->funeral = settings->funeral;
-    maitre->funeral_mtx = settings->funeral_mtx;
+    ///
 
-    //Possible data races, as all  threads point here, no to change it, but it will be changed after set up
-    //time mutex migh be of an interes
+
+    maitre->funeral = &(settings->funeral);
+    maitre->funeral_mtx = settings->funeral_mtx;
+    maitre->printer = &(settings->printer);
+    maitre->printer_mtx = settings->printer_mtx;
+
+   
 maitre->threshold = settings->threshold;
     maitre->synchro_t  = get_time(&settings->synchro_t, CHANGE, MILISECONDS);
 
     pthread_create(&maitre->th_maitre, NULL, &routine_maitre, (void *)&settings->maitre[0]);
-    //settings->philosophers = ft_calloc(settings->num_philosophers, sizeof(t_philo));
 }
 static void	init_philo_data(t_settings *settings, long int i)
 {
@@ -135,6 +140,12 @@ static void	init_philo_data(t_settings *settings, long int i)
 
 	philo->fork_next = &settings->mutexes[i];
 	philo->last_meal = get_milisec(NULL, GET, MILISECONDS);
+
+    //////
+    philo->funeral = &(settings->funeral);
+    philo->funeral_mtx = settings->funeral_mtx;
+    philo->printer = &(settings->printer);
+    philo->printer_mtx = settings->printer_mtx;
 }
 
 static void	assign_forks(t_settings *settings, long int i)

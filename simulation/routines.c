@@ -1,19 +1,5 @@
 #include "../philo.h"
-/**
- * @brief 
- * 1 -First it evaluates if the maximun number of meals went down to 0, if so, it sets status 
- * to FULL and quits. max-meal is in the struct, no need of mutex
- * 2- LOCKS status check 
- * (it has individual mutex for every philo), (if != 0 ) means anyone died
- * UNLOCKS and quits
- * 3- Else.  previous LOCK remains
- * it tries to get a mutex fork, prints, gets second mutex fork, prints, UNLOCK forks
- * mutex meal_mtx[philo->philo_id - 1], updates last meal-time, UNLOCKS status, SLEEPS, max meal --;
- *
- *
- * @param philo
- * @return int
- */
+
 int eating(t_philo *philo)
 {
     int var_status;
@@ -50,7 +36,7 @@ int eating(t_philo *philo)
     if (philo->max_meals == 0)
     {
         safe_mutex(philo->t_write_mtx, LOCK);
-        printf(YELLOW "%ld  [%ld] is FULL\n" RESET,
+        printf(YELLOW "%ld  [%ld] is FULL in eating\n" RESET,
                (get_time(NULL, GET, MILISECONDS) - philo->settings->starting_time),
                philo->philo_id);
         safe_mutex(philo->t_write_mtx, UNLOCK);
@@ -70,12 +56,6 @@ int eating(t_philo *philo)
 }
 
 
-/**
- * @brief calculates the diferrence betwen the time elapsed since the last meal.
- *
- * @param philo
- * @return long int
- */
 long int time_left(t_philo *philo)
 {
     long int time_left;
@@ -86,10 +66,7 @@ long int time_left(t_philo *philo)
     safe_mutex(philo->meal_mtx, UNLOCK);
     // safe_mutex(&philo->settings->status_mtx[philo->philo_id - 1], UNLOCK);
     time_left = philo->time_to_die - (get_time(NULL, GET, MILISECONDS) - last_meal);
-//test
-    // safe_mutex(philo->t_write_mtx, LOCK);
-    // printf(YELLOW " time left to die %ld  philo[%ld]\n" RESET, time_left, philo->philo_id);
-    // safe_mutex(philo->t_write_mtx, UNLOCK);
+
 
     return (time_left);
 }
