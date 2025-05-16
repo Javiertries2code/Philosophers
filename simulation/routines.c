@@ -35,11 +35,12 @@ int eating(t_philo *philo)
 
     if (philo->max_meals == 0)
     {
-        safe_mutex(philo->t_write_mtx, LOCK);
-        printf(YELLOW "%ld  [%ld] is FULL in eating\n" RESET,
-               (get_time(NULL, GET, MILISECONDS) - philo->settings->starting_time),
-               philo->philo_id);
-        safe_mutex(philo->t_write_mtx, UNLOCK);
+        //TEST FULL
+        // safe_mutex(philo->t_write_mtx, LOCK);
+        // printf(YELLOW "%ld  [%ld] is FULL in eating\n" RESET,
+        //        (get_time(NULL, GET, MILISECONDS) - philo->settings->starting_time),
+        //        philo->philo_id);
+        // safe_mutex(philo->t_write_mtx, UNLOCK);
 
         safe_mutex(philo->status_mtx, LOCK);
         *philo->return_status= FULL;

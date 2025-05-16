@@ -199,7 +199,7 @@ void	create_philos(t_settings *settings)
 void join_threads(t_settings *settings)
 {
     int i;
-    int j;
+    //int j;
 
     i = -1;
 
@@ -208,11 +208,15 @@ void join_threads(t_settings *settings)
         // settings->return_status[i] = (int *)ft_calloc(1, sizeof(int));
         void *ret;
         pthread_join(settings->philosophers[i].thread_id, &ret);
+        /*
+        safe_mutex(&settings->status_mtx[j], LOCK);
         settings->return_status[i] = *(int *)ret;
+        safe_mutex(&settings->status_mtx[j], UNLOCK);
+
                 
      safe_mutex(settings->t_write_mtx, LOCK);
     
-        //printf("philo [%d] joint with return_status = %d\n", i + 1, (int)((settings->return_status[i][0])));
+        printf("philo [%d] join_threads with return_status = %d\n", i + 1, (int)((settings->return_status[i])));
      safe_mutex(settings->t_write_mtx, UNLOCK);
 
         if ((int)((settings->return_status[i])) == ONE_DIED)
@@ -224,7 +228,7 @@ void join_threads(t_settings *settings)
                 settings->return_status[j] = ONE_DIED;
                 safe_mutex(&settings->status_mtx[j], UNLOCK);}
             safe_mutex(&settings->status_mtx[i], UNLOCK);
-        }
+        }*/
     }
 //    write(1, "joint threads\n", 14);
 }

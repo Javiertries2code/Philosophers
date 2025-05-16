@@ -44,26 +44,29 @@ void	*routine_maitre(void *args)
 			// ///TEST
 			// //			if (var_status == ONE_DIED || time_left(&maitre->settings->philosophers[i + 1]) <= 0)
 
-			//if (var_status == ONE_DIED )
-			if (var_status == ONE_DIED || time_left(&maitre->settings->philosophers[i]) <= 0)
+		
+			 if((var_status == ONE_DIED || time_left(&maitre->settings->philosophers[i]) <= 0) && *maitre->printer == 0)
 			{
 				// printer(&maitre->settings->philosophers[i], DIED);
 				safe_mutex(maitre->settings->t_write_mtx, LOCK);
 				printf("%s%ld %ld died%s\n", CYAN, (get_milisec()
 						- maitre->settings->starting_time), i + 1, RESET);
-				safe_mutex(maitre->settings->t_write_mtx, LOCK);
+				safe_mutex(maitre->settings->t_write_mtx, UNLOCK);
 				*maitre->printer = 1;
 				*maitre->funeral = 1;
 				set_all_died(maitre);
 				safe_mutex(maitre->printer_mtx, UNLOCK);
 				 safe_mutex(maitre->funeral_mtx, UNLOCK);
 				 run = 0;
+				 return(NULL);
+
 			}
 			else
 				i++;
 		}
 		safe_mutex(maitre->printer_mtx, UNLOCK);
 		safe_mutex(maitre->funeral_mtx, UNLOCK);
+
 		
 	}
 	return (NULL);
@@ -104,10 +107,10 @@ void	*routine_ph(void *args)
 	}
 	//////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////
-	safe_mutex(philo->t_write_mtx, LOCK);
-	printf(PINK "routine_ph \nphilo [%d] LEAVING DINNER \n" RESET,
-		(int)philo->philo_id);
-	printf(WHITE "philo [%d] \n return (status = %d\n" RESET,
+	// safe_mutex(philo->t_write_mtx, LOCK);
+	// printf(PINK "routine_ph \nphilo [%d] LEAVING DINNER \n" RESET,
+	// 	(int)philo->philo_id);
+	printf(WHITE "philo [%d]  leaves simulation \n return (status = %d\n" RESET,
 		(int)philo->philo_id, (int)*philo->return_status);
 	safe_mutex(philo->t_write_mtx, UNLOCK);
 	//////////////////////////////////////////////////////////
