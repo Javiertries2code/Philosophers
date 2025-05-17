@@ -41,7 +41,7 @@ int main(int argc, char const *argv[])
   // sleep(2);
   // if (settings->all_full == 0)
   //           exit(EXIT_SUCCESS);
-  // exiting(settings, SUCCESS);
+   exiting(settings, NULL);
   // i could actually catch the return
   return 0;
 }

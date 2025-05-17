@@ -53,15 +53,7 @@ void create_mutexes(t_settings *settings)
     settings->t_maitre_mtx = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
     settings->time_mtx = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
     settings->printer_mtx = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
-    settings->funeral_mtx = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
-    ////////////
-    //WEIRD AS FUCK 
-    /*
-    IT DOESNT SEEM TO CREATE NUM-PHILOSOFER GAPS FOR THE MUTEXES, recurrent probelm of allowing
-    only 4 out of 5 philos, when blocking status in eating, the fail is experienced in staus mtx, but in case
-    of i added the +1 in all mallocs*/
-    /////
-
+    settings->funeral_mtx = ft_calloc(settings->num_philosophers, sizeof(pthread_mutex_t));
     settings->mutexes = (pthread_mutex_t *)ft_calloc(settings->num_philosophers, sizeof(pthread_mutex_t));
     settings->status_mtx = (pthread_mutex_t *)ft_calloc(settings->num_philosophers , sizeof(pthread_mutex_t ));
 
@@ -202,33 +194,14 @@ void join_threads(t_settings *settings)
     //int j;
 
     i = -1;
+    pthread_join(settings->maitre->th_maitre, NULL);
+
 
     while (settings->num_philosophers > ++i)
     {
-        // settings->return_status[i] = (int *)ft_calloc(1, sizeof(int));
         void *ret;
         pthread_join(settings->philosophers[i].thread_id, &ret);
-        /*
-        safe_mutex(&settings->status_mtx[j], LOCK);
-        settings->return_status[i] = *(int *)ret;
-        safe_mutex(&settings->status_mtx[j], UNLOCK);
-
-                
-     safe_mutex(settings->t_write_mtx, LOCK);
-    
-        printf("philo [%d] join_threads with return_status = %d\n", i + 1, (int)((settings->return_status[i])));
-     safe_mutex(settings->t_write_mtx, UNLOCK);
-
-        if ((int)((settings->return_status[i])) == ONE_DIED)
-        { 
-            j = -1;
-            safe_mutex(&settings->status_mtx[i], LOCK);
-            while (settings->num_philosophers > ++j)
-             {    safe_mutex(&settings->status_mtx[j], LOCK);
-                settings->return_status[j] = ONE_DIED;
-                safe_mutex(&settings->status_mtx[j], UNLOCK);}
-            safe_mutex(&settings->status_mtx[i], UNLOCK);
-        }*/
+     
     }
 //    write(1, "joint threads\n", 14);
 }

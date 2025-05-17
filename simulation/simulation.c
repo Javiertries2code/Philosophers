@@ -84,8 +84,11 @@ void	*routine_ph(void *args)
 	ret = philo->return_status;
 	safe_mutex(philo->status_mtx, UNLOCK);
 	busy_wait_start(philo->synchro_t, 0);
+	safe_mutex(philo->time_mtx, LOCK);
 	if (philo->settings->starting_time == 0)
 		philo->settings->starting_time = get_time(NULL, GET, MILISECONDS);
+	safe_mutex(philo->time_mtx, UNLOCK);
+
 	safe_mutex(philo->time_mtx, LOCK);
 	philo->last_meal = get_time(NULL, GET, MILISECONDS);
 	safe_mutex(philo->time_mtx, UNLOCK);
@@ -183,6 +186,8 @@ int	printer(t_philo *philo, char *opt)
 		colors = GREEN;
 	else if (!strcmp(opt, DIED))
 		colors = RED;
+
+		
 	safe_mutex(philo->printer_mtx, LOCK);
 	if (*philo->printer == 1)
 	{

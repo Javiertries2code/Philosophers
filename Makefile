@@ -10,7 +10,13 @@ DIR_TIMING := timing/
 DIR_PARSERS := parsers/
 DIR_EXITING := exiting/
 
-
+# ------------------ DEBUG ------------------
+# Para debug de memoria (leaks, out-of-bounds, etc):
+# $ make debug_leaks ARGS="4 310 200 200"
+#
+# Para debug de race conditions (mutex mal usado, accesos paralelos):
+# $ make debug_races ARGS="4 310 200 200"
+# ------------------------------------------
 
 #-------------
 #-------------
@@ -29,7 +35,6 @@ UTILS_FILES = utils.c utils_support.c
 PARSERS_FILES = parse_argv.c 
 HANDLERS_FILES = safe_mutex.c 
 
-
 OBJECTS = $(UTILS:.c=.o) $(HANDLERS:.c=.o)  $(INITS:.c=.o) $(PARSERS:.c=.o) $(TIMING:.c=.o)
 #$(VALIDATES:.c=.o) $(SUPPORT:.c=.o) 
 
@@ -45,53 +50,34 @@ EXITING := $(addprefix $(DIR_EXITING), $(EXITING_FILES))
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
-CFLAGS = -Wall -Wextra -Werror
-
-
-
 
 ifeq ($(DEBUG), 1)
-	CFLAGS += -g -fsanitize=address -fno-omit-frame-pointer
+	CFLAGS += -g -O0
 endif
-
-ifeq ($(DEBUG), 2)
-	CFLAGS += -g -fsanitize=thread -fno-omit-frame-pointer
-endif
-
-
-#aint sure it gotta be removed on delivery
-#LEAKS = -g3 -fsanitize=leak
-#LEAKS = -g3 -fsanitize=address
-#LEAKS = -g3
-
-#valgrind ./philo 
-
-# .
 
 all : $(NAME)
 
 $(NAME):$(OBJECTS)
 	$(CC) $(CFLAGS) -o $(NAME) main.c $(UTILS) $(HANDLERS) \
 	 $(PARSERS) $(SIMULATIONS) $(INITS) $(TIMINGS) $(EXITING)
-	
-#$(TIMINGS)$(VALIDATES) $(SUPPORT) 
 
 clean:
 	rm -rf  $(NAME) $(OBJECTS)
 
 fclean: clean
-	
+
 re: fclean all
 
+# Debug con Valgrind Memcheck (leaks, accesos inválidos, etc.)
 debug_leaks:
 	$(MAKE) fclean
 	$(MAKE) DEBUG=1
-	./$(NAME) $(ARGS)
+	valgrind --leak-check=full --track-origins=yes ./$(NAME) $(ARGS)
 
+# Debug con Valgrind Helgrind (data races)
 debug_races:
 	$(MAKE) fclean
-	$(MAKE) DEBUG=2
-	./$(NAME) $(ARGS)
+	$(MAKE) DEBUG=1
+	valgrind --tool=helgrind ./$(NAME) $(ARGS)
 
-
-.PHONY: all  clean fclean re
+.PHONY: all clean fclean re debug_leaks debug_races
