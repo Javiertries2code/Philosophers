@@ -1,5 +1,4 @@
 #include "../philo.h"
-
 int eating(t_philo *philo)
 {
     int var_status;
@@ -9,6 +8,12 @@ int eating(t_philo *philo)
     if (var_status != ALL_ALIVE) {
         safe_mutex(philo->first_fork, UNLOCK);
         return var_status;
+    }
+    //TEST, this should do well enough in case of one only filo
+    if(philo->settings->num_philosophers == 1)
+    {
+        safe_mutex(philo->first_fork, UNLOCK);
+        return ONE_DIED;    
     }
 
     safe_mutex(philo->second_fork, LOCK);

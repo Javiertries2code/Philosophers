@@ -114,6 +114,11 @@ int	routine_even(t_philo *philo)
 		ret = eating(philo);
 		ret2 = sleeping(philo);
 		ret3 = thinking(philo);
+		safe_mutex(philo->settings->t_write_mtx, LOCK);
+		printf("%sroutine_even new cycle %ld  %s\n", GREEN,
+			(get_milisec() - philo->settings->starting_time),
+			 RESET);
+		safe_mutex(philo->settings->t_write_mtx, UNLOCK);
 		if (ret != 0)
 			return (ret);
 		if (ret2 != 0)
@@ -135,6 +140,11 @@ int	routine_odd(t_philo *philo)
 		ret2 = sleeping(philo);
 		ret3 = thinking(philo);
 		ret = eating(philo);
+		safe_mutex(philo->settings->t_write_mtx, LOCK);
+		printf("%sroutine_odd new cycle %ld  %s\n", GREEN,
+			(get_milisec() - philo->settings->starting_time),
+			 RESET);
+		safe_mutex(philo->settings->t_write_mtx, UNLOCK);
 		if (ret2 != 0)
 			return (ret2);
 		if (ret3 != 0)
@@ -163,16 +173,15 @@ int	printer(t_philo *philo, char *opt)
 	else if (!strcmp(opt, DIED))
 		colors = RED;
 
-	// Protegemos el flag printer
 	safe_mutex(philo->printer_mtx, LOCK);
 	if (*philo->printer == 1)
 	{
 		safe_mutex(philo->printer_mtx, UNLOCK);
 		return (ONE_DIED);
 	}
-	// Si no ha muerto nadie aún, imprimimos
+
 	safe_mutex(philo->t_write_mtx, LOCK);
-	safe_mutex(philo->printer_mtx, UNLOCK); // Ya no necesitamos el flag hasta que terminemos printf()
+	safe_mutex(philo->printer_mtx, UNLOCK);
 
 	if (!strcmp(opt, FORK2))
 	{

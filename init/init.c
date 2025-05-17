@@ -195,7 +195,12 @@ void join_threads(t_settings *settings)
 
     i = -1;
     pthread_join(settings->maitre->th_maitre, NULL);
-
+///TEST
+    safe_mutex(settings->t_write_mtx, LOCK);
+    printf("%sjoin_threads %ld maitre %s\n", CYAN,
+        (get_milisec() - settings->starting_time),
+         RESET);
+    safe_mutex(settings->t_write_mtx, UNLOCK);
 
     while (settings->num_philosophers > ++i)
     {
