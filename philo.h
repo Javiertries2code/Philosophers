@@ -11,40 +11,22 @@
 # include <errno.h>
 #include <string.h>
 
-
-
-// color codes for diferent states, use like
-//
-#define RESET "\033[0m"     /* Reset to default color */
-#define RED "\033[1;31m"    /* Bold Red */
-#define GREEN "\033[1;32m"  /* Bold Green */
-#define YELLOW "\033[93m" /* Bold Yellow */
-#define BLUE "\033[1;34m"   /* Bold Blue */
-#define PINK "\033[1;35m"   /* Bold Magenta */
-#define CYAN "\033[1;36m"   /* Bold Cyan */
-#define WHITE "\033[1;37m"  /* Bold White */
+#define RESET "\033[0m"     
+#define RED "\033[1;31m"    
+#define GREEN "\033[1;32m"  
+#define YELLOW "\033[93m" 
+#define BLUE "\033[1;34m"   
+#define PINK "\033[1;35m"   
+#define CYAN "\033[1;36m"   
+#define WHITE "\033[1;37m" 
 
 #define ERROR 1
 #define SUCCESS 0
-//ALive 
 #define ALIVE   0
-//All alive will be 0
-//every full philo will add 1
-//any death will set to 10:
-// so status = 0 -> all alive
-// status  = 5 -> all full
-// status> 5 -> anyone is death
 
-
-/**
- * @brief for timin purposses, to start sinchronisation, an starting time synchro_t in the struct
- *  is defined. but the diferrence must be calculated and removed from a sandclock time, for a synchronous
- * begining time to wait for begining = sand_clock - (current time - synchro_t);
- * 
- */
 #define SAND_CLOCK 1000
 
-//delay to give time to set the synchro sign
+
 #define SLEEP_TO_SYNCHRO 1000
 //used to test the thresold, 
 //chaged later into using the maximun of the inputs
@@ -296,10 +278,11 @@ void destroy_error( int error_return);
 // utils
 int printer(t_philo *philo, char *opt);
 
-
+long	ft_atol(const char *str);
 void *ft_calloc(size_t count, size_t size);
 void ft_bzero(void *s, size_t n);
 size_t ft_strlen(const char *s);
+int	ft_strcmp(const char *s1, const char *s2, size_t n);
 void write_function(t_settings *settings, char *str);
 
 

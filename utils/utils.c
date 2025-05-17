@@ -1,5 +1,4 @@
 #include "../philo.h"
-#include "stdlib.h"
 
 void ft_bzero(void *s, size_t n)
 {
@@ -23,14 +22,6 @@ void *ft_calloc(size_t count, size_t size)
 	return (ptr);
 }
 
-/**
- * @brief Counts the lenght of an String, number of characters, excluded
- *  the closing chracter. "HOLA" returns 4
- *
- * @param s
- * @return size_t  the number of caracters
- */
-
 size_t ft_strlen(const char *s)
 {
 	unsigned int i;
@@ -40,7 +31,48 @@ size_t ft_strlen(const char *s)
 		i++;
 	return (i);
 }
+int	ft_strcmp(const char *s1, const char *s2, size_t n)
+{
+	while ((n > 0) && (*s1 == *s2) && *s1)
+	{
+		s1++;
+		s2++;
+		n--;
+	}
+	if (n == 0)
+		return (0);
+	return ((unsigned char)*s1 - (unsigned char)*s2);
+}
 
+//returns -1 if negative or bigger than long max
+long	ft_atol(const char *str)
+{
+	int		sign;
+	long	num;
+	int		i;
+
+	num = 0;
+	sign = 1;
+	i = 0;
+	while (str[i] && (str[i] == '\f' || str[i] == '\t' || str[i] == ' '
+			|| str[i] == '\n' || str[i] == '\r' || str[i] == '\v'))
+		i++;
+	if (str[i] == '-' || str[i] == '+')
+	{
+		if (str[i++] == '-')
+			sign = -sign;
+	}
+	while (str[i] && str[i] >= '0' && str[i] <= '9')
+	{
+		if (num > (LONG_MAX - (str[i] - '0')) / 10)
+			return (-1);
+		num = 10 * num + (str[i] - '0');
+		i++;
+	}
+	if (num * sign < 0)
+		return (-1);
+	return (num * sign);
+}
 
 
 // float funcion_proporcional(float input) {
