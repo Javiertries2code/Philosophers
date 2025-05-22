@@ -120,14 +120,16 @@ int	routine_odd(t_philo *philo)
 	while (1)
 	{
 		ret3 = thinking(philo);
+		if (ret3 != 0)
+			return (ret3);
 		ret = eating(philo);
+		if (ret != 0)
+			return (ret);
 		ret2 = sleeping(philo);
 		if (ret2 != 0)
 			return (ret2);
-		if (ret3 != 0)
-			return (ret3);
-		if (ret != 0)
-			return (ret);
+	
+		
 	}
 }
 
