@@ -39,6 +39,7 @@ static void	destroy_mutexes(t_settings *s)
 		i++;
 	}
 }
+
 void	free_memory(t_settings *s)
 {
 	if (!s)
@@ -46,6 +47,7 @@ void	free_memory(t_settings *s)
 	destroy_mutexes(s);
 	free_allocated(s);
 }
+
 void	exit_on_error(char *str)
 {
 	write(2, "ERROR\n", 7);
@@ -53,6 +55,7 @@ void	exit_on_error(char *str)
 	write(2, "\n", 1);
 	exit(EXIT_FAILURE);
 }
+
 void	exiting(t_settings *settings, char *str)
 {
 	if (str != NULL)
