@@ -113,7 +113,7 @@ typedef struct s_settings
 	time_mtx		time_mtx;
 	struct timeval	synchro_t;
 	struct s_philo	*philos;
-	struct s_maitre	*maitre;
+	struct s_maitre	*mtr;
 }	t_settings;
 
 typedef struct s_philo
@@ -167,7 +167,7 @@ typedef struct s_maitre
 }	t_maitre;
 
 void	*routine_ph(void *args);
-void	*routine_maitre(void *args);
+void	*rout_mtr(void *args);
 int		routine_even(t_philo *philo);
 int		routine_odd(t_philo *philo);
 void	*set_all_died(t_maitre *maitre);

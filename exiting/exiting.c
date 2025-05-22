@@ -13,7 +13,7 @@ static void	free_allocated(t_settings *s)
 	free(s->ret_st);
 	free(s->philos);
 	free(s->mutexes);
-	free(s->maitre);
+	free(s->mtr);
 	free(s);
 }
 

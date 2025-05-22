@@ -15,7 +15,7 @@ void	*set_all_died(t_maitre *maitre)
 	return (NULL);
 }
 
-void	*routine_maitre(void *args)
+void	*rout_mtr(void *args)
 {
 	t_maitre	*maitre;
 	long int	i;

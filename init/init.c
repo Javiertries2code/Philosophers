@@ -33,7 +33,7 @@ void create_maitre(t_settings *s)
     t_maitre *mt;
 
     mt = kloc(1, sizeof(t_maitre));
-    s->maitre = mt;
+    s->mtr = mt;
     mt->settings = s;
     mt->meal_mtx = s->meal_mtx;
     mt->status_mtx = s->st_mtx;
@@ -49,7 +49,7 @@ void create_maitre(t_settings *s)
     mt->printer_mtx = s->printer_mtx;
 mt->threshold = s->threshold;
     mt->synchro_t  = get_time(&s->synchro_t, CHANGE, MILI);
-    pthread_create(&mt->th_maitre, NULL, &routine_maitre, (void *)&s->maitre[0]);
+    pthread_create(&mt->th_maitre, NULL, &rout_mtr, (void *)&s->mtr[0]);
 }
 static void	init_philo_data(t_settings *s, long int i)
 {
