@@ -30,7 +30,7 @@ static void	destroy_mutexes(t_settings *s)
 		pthread_mutex_destroy(s->t_maitre_mtx);
 	if (s->printer_mtx)
 		pthread_mutex_destroy(s->printer_mtx);
-	while (i < s->num_philosophers)
+	while (i < s->num_ph)
 	{
 		pthread_mutex_destroy(&s->mutexes[i]);
 		pthread_mutex_destroy(&s->status_mtx[i]);

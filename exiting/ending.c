@@ -7,7 +7,7 @@ void join_threads(t_settings *settings)
     i = -1;
   
         
-        while (settings->num_philosophers > ++i)
+        while (settings->num_ph > ++i)
         {
             void *ret;
             pthread_join(settings->philosophers[i].thread_id, &ret);

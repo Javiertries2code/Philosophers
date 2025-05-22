@@ -10,7 +10,7 @@ void support_read_returns(t_settings *settings)
   int i;
 
   i = -1;
-  while (settings->num_philosophers > ++i)
+  while (settings->num_ph > ++i)
   {
     write(1, "read returns\n", 13);
 
@@ -28,7 +28,7 @@ void print_data(t_settings *settings, char *str)
 {
   printf("\n%s\n", str);
 
-  for (long int i = 0; i < settings->num_philosophers; i++)
+  for (long int i = 0; i < settings->num_ph; i++)
   {
     if (&settings->philosophers[i] != NULL || settings->philosophers[i].philo_id != 0)
     {
@@ -54,7 +54,7 @@ void check_mutex(t_settings *settings, char *mtx_name,pthread_mutex_t *mutex,cha
 {
 
   safe_mutex(settings->t_write_mtx, LOCK);
-  for (int i = 0; i < settings->num_philosophers; i++)
+  for (int i = 0; i < settings->num_ph; i++)
   {
     if (mutex && mutex2)
     {

@@ -40,7 +40,7 @@ int	eating(t_philo *philo)
 	var_status = lock_first_fork_and_check(philo);
 	if (var_status != ALL_ALIVE)
 		return (var_status);
-	if (philo->settings->num_philosophers == 1)
+	if (philo->settings->num_ph == 1)
 	{
 		safe_mutex(philo->first_fork, UNLOCK);
 		return (ONE_DIED);
@@ -79,7 +79,7 @@ int	thinking(t_philo *philo)
 	thinking_time = philo->time_to_die - (philo->time_to_eat
 			+ philo->time_to_sleep);
 	var_status = all_alive(philo, THINKING);
-	if (philo->philo_id % 2 != 0 && philo->settings->num_philosophers % 2 != 0)
+	if (philo->philo_id % 2 != 0 && philo->settings->num_ph % 2 != 0)
 		precise_sleep(thinking_time / 4, &philo->threshold);
 	return (var_status);
 }

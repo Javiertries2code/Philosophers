@@ -87,7 +87,7 @@ typedef enum e_mtx_option
 
 typedef struct s_settings
 {
-	long			num_philosophers;
+	long			num_ph;
 	long			time_to_eat;
 	long			time_to_sleep;
 	long			max_meals;

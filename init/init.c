@@ -10,11 +10,11 @@ void create_mutexes(t_settings *settings)
     settings->time_mtx = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
     settings->feed_mtx = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
     settings->printer_mtx = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
-    settings->funeral_mtx = ft_calloc(settings->num_philosophers, sizeof(pthread_mutex_t));
-    settings->mutexes = (pthread_mutex_t *)ft_calloc(settings->num_philosophers, sizeof(pthread_mutex_t));
-    settings->status_mtx = (pthread_mutex_t *)ft_calloc(settings->num_philosophers , sizeof(pthread_mutex_t ));
-    settings->meal_mtx = (pthread_mutex_t *)ft_calloc(settings->num_philosophers , sizeof(pthread_mutex_t));
-    while (i < (int)(settings->num_philosophers))
+    settings->funeral_mtx = ft_calloc(settings->num_ph, sizeof(pthread_mutex_t));
+    settings->mutexes = (pthread_mutex_t *)ft_calloc(settings->num_ph, sizeof(pthread_mutex_t));
+    settings->status_mtx = (pthread_mutex_t *)ft_calloc(settings->num_ph , sizeof(pthread_mutex_t ));
+    settings->meal_mtx = (pthread_mutex_t *)ft_calloc(settings->num_ph , sizeof(pthread_mutex_t));
+    while (i < (int)(settings->num_ph))
     {
         safe_mutex(&settings->mutexes[i], INIT);
         safe_mutex(&settings->status_mtx[i], INIT);
@@ -39,7 +39,7 @@ void create_maitre(t_settings *settings)
     maitre->status_mtx = settings->status_mtx;
     maitre->meal_mtx = settings->meal_mtx;
     maitre->write_mtx = settings->t_write_mtx;
-    maitre->num_philosophers = settings->num_philosophers;
+    maitre->num_philosophers = settings->num_ph;
     maitre->philosophers = settings->philosophers;
     maitre->return_status = settings->return_status;
     maitre->time_mtx = settings->time_mtx;
@@ -60,7 +60,7 @@ static void	init_philo_data(t_settings *settings, long int i)
 	philo->time_to_die = settings->time_to_die;
 	philo->time_to_eat = settings->time_to_eat;
 	philo->time_to_sleep = settings->time_to_sleep;
-	philo->num_philosophers = settings->num_philosophers;
+	philo->num_philosophers = settings->num_ph;
 	philo->settings = settings;
 	philo->max_meals = settings->max_meals;
 	philo->t_write_mtx = settings->t_write_mtx;
@@ -84,7 +84,7 @@ static void	assign_forks(t_settings *settings, long int i)
 
 	philo = &settings->philosophers[i];
 	if (i == 0)
-		philo->fork_prev = &settings->mutexes[settings->num_philosophers - 1];
+		philo->fork_prev = &settings->mutexes[settings->num_ph - 1];
 	else
 		philo->fork_prev = &settings->mutexes[i - 1];
 	if (philo->philo_id % 2 == 0)
@@ -104,8 +104,8 @@ void	create_philos(t_settings *settings)
 	long int	i;
 
 	i = 0;
-	settings->philosophers = ft_calloc(settings->num_philosophers, sizeof(t_philo));
-	while (i < settings->num_philosophers)
+	settings->philosophers = ft_calloc(settings->num_ph, sizeof(t_philo));
+	while (i < settings->num_ph)
 	{
 
 		init_philo_data(settings, i);
