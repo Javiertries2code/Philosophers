@@ -84,14 +84,10 @@ void	*routine_ph(void *args)
 	safe_mutex(philo->time_mtx, LOCK);
 	philo->last_meal = get_time(NULL, GET, MILI);
 	safe_mutex(philo->time_mtx, UNLOCK);
-	if (philo->philo_id % 2 == 0)
+	if (philo->ph_id % 2 == 0)
 		routine_even(philo);
 	else
 		routine_odd(philo);
-	safe_mutex(philo->t_write_mtx, LOCK);
-	printf(WHITE "philo [%d]  leaves simulation \n return (status = %d\n"
-		RESET, (int)philo->philo_id, (int)*philo->return_status);
-	safe_mutex(philo->t_write_mtx, UNLOCK);
 	return (ret);
 }
 
@@ -166,19 +162,19 @@ int	printer(t_philo *philo, char *opt)
 		safe_mutex(philo->printer_mtx, UNLOCK);
 		return (ONE_DIED);
 	}
-	safe_mutex(philo->t_write_mtx, LOCK);
+	safe_mutex(philo->wrt_mtx, LOCK);
 	safe_mutex(philo->printer_mtx, UNLOCK);
 	if (!strcmp(opt, FORK2))
 	{
 		printf("%s%ld %ld has taken a fork%s\n", get_color(opt),
-			time, philo->philo_id, RESET);
-		printf(PINK "%ld %ld %s%s\n", time, philo->philo_id,
+			time, philo->ph_id, RESET);
+		printf(PINK "%ld %ld %s%s\n", time, philo->ph_id,
 			EATING, RESET);
 	}
 	else
 		printf("%s%ld %ld %s%s\n", get_color(opt), time,
-			philo->philo_id, opt, RESET);
-	safe_mutex(philo->t_write_mtx, UNLOCK);
+			philo->ph_id, opt, RESET);
+	safe_mutex(philo->wrt_mtx, UNLOCK);
 	if (!strcmp(opt, DIED))
 		return (ONE_DIED);
 	return (ALL_ALIVE);

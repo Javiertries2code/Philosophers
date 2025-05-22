@@ -9,7 +9,6 @@ void parse_argv(t_settings *set, const char *argv[])
     
 }
 
-
 void load_settings(t_settings *set, const char *argv[])
 {
     set->num_ph = ft_atol(argv[1]);

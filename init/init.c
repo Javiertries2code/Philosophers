@@ -56,14 +56,14 @@ static void	init_philo_data(t_settings *s, long int i)
 	t_philo	*philo;
 
 	philo = &s->philos[i];
-	philo->philo_id = i + 1;
-	philo->time_to_die = s->tt_die;
+	philo->ph_id = i + 1;
+	philo->tt_die = s->tt_die;
 	philo->time_to_eat = s->tt_eat;
 	philo->time_to_sleep = s->tt_sleep;
-	philo->num_philosophers = s->num_ph;
+	philo->num_ph = s->num_ph;
 	philo->settings = s;
 	philo->max_meals = s->max_meals;
-	philo->t_write_mtx = s->t_write_mtx;
+	philo->wrt_mtx = s->t_write_mtx;
 	philo->time_mtx = s->time_mtx;
 	philo->threshold = s->threshold;
 	philo->synchro_t = get_time(&s->synchro_t, CHANGE, MILI);
@@ -87,7 +87,7 @@ static void	assign_forks(t_settings *s, long int i)
 		philo->fork_prev = &s->mutexes[s->num_ph - 1];
 	else
 		philo->fork_prev = &s->mutexes[i - 1];
-	if (philo->philo_id % 2 == 0)
+	if (philo->ph_id % 2 == 0)
 	{
 		philo->first_fork = philo->fork_next;
 		philo->second_fork = philo->fork_prev;

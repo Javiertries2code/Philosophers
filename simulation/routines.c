@@ -69,7 +69,7 @@ long int	time_left(t_philo *philo)
 	safe_mutex(philo->meal_mtx, LOCK);
 	last_meal = philo->last_meal;
 	safe_mutex(philo->meal_mtx, UNLOCK);
-	time_left = philo->time_to_die
+	time_left = philo->tt_die
 		- (get_time(NULL, GET, MILI) - last_meal);
 	return (time_left);
 }
@@ -79,10 +79,10 @@ int	thinking(t_philo *philo)
 	int	var_status;
 	long	thinking_time;
 
-	thinking_time = philo->time_to_die
+	thinking_time = philo->tt_die
 		- (philo->time_to_eat + philo->time_to_sleep);
 	var_status = all_alive(philo, THINKING);
-	if (philo->philo_id % 2 != 0 && philo->settings->num_ph % 2 != 0)
+	if (philo->ph_id % 2 != 0 && philo->settings->num_ph % 2 != 0)
 		precise_sleep(thinking_time / 4, &philo->threshold);
 	return (var_status);
 }
