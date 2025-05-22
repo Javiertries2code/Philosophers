@@ -75,7 +75,7 @@ static void	init_philo_data(t_settings *s, long int i)
 	philo->funeral = &(s->funeral);
 	philo->funeral_mtx = s->funeral_mtx;
 	philo->printer = &(s->printer);
-	philo->printer_mtx = s->printer_mtx;
+	philo->prntr_mtx = s->printer_mtx;
 }
 
 static void	assign_forks(t_settings *s, long int i)

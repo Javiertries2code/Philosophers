@@ -130,7 +130,7 @@ typedef struct s_philo
 	time_mtx		time_mtx;
 	t_general		t_general;
 	int				*printer;
-	pthread_mutex_t	*printer_mtx;
+	pthread_mutex_t	*prntr_mtx;
 	int				*funeral;
 	pthread_mutex_t	*funeral_mtx;
 	long			num_ph;
