@@ -5,27 +5,27 @@
 int	main(int argc, char const *argv[])
 {
 	const char	*test[] = {"0", "9", "5500", "200", "250", "15"};
-	t_settings	*settings;
+	t_settings	*set;
 
 	(void)argc;
 	(void)argv;
-	settings = ft_calloc(1, sizeof(t_settings));
+	set = ft_calloc(1, sizeof(t_settings));
 	if (argc == 5 || argc == 6)
-		parse_argv(settings, argv);
+		parse_argv(set, argv);
 	// for testing
 	if (argv == NULL)
-		parse_argv(settings, test);
+		parse_argv(set, test);
 	else
-		parse_argv(settings, argv);
-	load_settings(settings, argv);
-	create_mutexes(settings);
-	create_philos(settings);
+		parse_argv(set, argv);
+	load_settings(set, argv);
+	create_mutexes(set);
+	create_philos(set);
 	if (TEST)
 	{
 		usleep(3500);
-		create_maitre(settings);
+		create_maitre(set);
 	}
-	join_threads(settings);
-	exiting(settings, NULL);
+	join_threads(set);
+	exiting(set, NULL);
 	return (0);
 }
