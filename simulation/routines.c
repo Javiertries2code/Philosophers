@@ -1,34 +1,26 @@
 #include "../philo.h"
 
-int	eating(t_philo *philo)
+
+static int	lock_first_fork_and_check(t_philo *philo)
 {
-	int	var_status;
+	int	status;
 
 	safe_mutex(philo->first_fork, LOCK);
-	var_status = all_alive(philo, FORK);
-	if (var_status != ALL_ALIVE)
-	{
+	status = all_alive(philo, FORK);
+	if (status != ALL_ALIVE)
 		safe_mutex(philo->first_fork, UNLOCK);
-		return (var_status);
-	}
-	if (philo->settings->num_philosophers == 1)
-	{
-		safe_mutex(philo->first_fork, UNLOCK);
-		return (ONE_DIED);
-	}
-	safe_mutex(philo->second_fork, LOCK);
-	// has dinner just when entering
+	return (status);
+}
+
+static void	handle_last_meal_update(t_philo *philo)
+{
 	safe_mutex(philo->meal_mtx, LOCK);
 	philo->last_meal = get_time(NULL, GET, MILISECONDS);
 	safe_mutex(philo->meal_mtx, UNLOCK);
-	var_status = all_alive(philo, FORK2);
-	if (var_status != ALL_ALIVE)
-	{
-		safe_mutex(philo->second_fork, UNLOCK);
-		safe_mutex(philo->first_fork, UNLOCK);
-		return (var_status);
-	}
-	precise_sleep(philo->time_to_eat, &philo->threshold);
+}
+
+static int	handle_meal_count_and_status(t_philo *philo)
+{
 	safe_mutex(philo->meal_mtx, LOCK);
 	philo->max_meals--;
 	safe_mutex(philo->meal_mtx, UNLOCK);
@@ -37,10 +29,30 @@ int	eating(t_philo *philo)
 		safe_mutex(philo->status_mtx, LOCK);
 		*philo->return_status = FULL;
 		safe_mutex(philo->status_mtx, UNLOCK);
-		safe_mutex(philo->first_fork, UNLOCK);
-		safe_mutex(philo->second_fork, UNLOCK);
 		return (FULL);
 	}
+	return (ALL_ALIVE);
+}
+int	eating(t_philo *philo)
+{
+	int	var_status;
+
+	var_status = lock_first_fork_and_check(philo);
+	if (var_status != ALL_ALIVE)
+		return (var_status);
+	if (philo->settings->num_philosophers == 1)
+	{
+		safe_mutex(philo->first_fork, UNLOCK);
+		return (ONE_DIED);
+	}
+	safe_mutex(philo->second_fork, LOCK);
+	handle_last_meal_update(philo);
+	var_status = all_alive(philo, FORK2);
+	if (var_status != ALL_ALIVE)
+		goto unlock_both;
+	precise_sleep(philo->time_to_eat, &philo->threshold);
+	var_status = handle_meal_count_and_status(philo);
+unlock_both:
 	safe_mutex(philo->first_fork, UNLOCK);
 	safe_mutex(philo->second_fork, UNLOCK);
 	return (var_status);

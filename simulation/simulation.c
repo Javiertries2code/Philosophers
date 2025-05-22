@@ -51,9 +51,6 @@ void	*routine_maitre(void *args)
 				*maitre->printer = 1;
 				*maitre->funeral = 1;
 				safe_mutex(maitre->settings->t_write_mtx, LOCK);
-				printf("%s%ld %ld maitre TEST, status - %d%s\n", GREEN,
-					(get_milisec() - maitre->settings->starting_time), i + 1,
-					var_status, RESET);
 				printf("%s%ld %ld died%s\n", CYAN, (get_milisec()
 						- maitre->settings->starting_time), i + 1, RESET);
 				safe_mutex(maitre->settings->t_write_mtx, UNLOCK);
@@ -108,10 +105,11 @@ int	routine_even(t_philo *philo)
 	int	ret3;
 
 	while (1)
-	{		
+	{	
+		ret = eating(philo);	
 		ret2 = sleeping(philo);
 		ret3 = thinking(philo);
-		ret = eating(philo);
+	
 
 		if (ret != 0)
 			return (ret);

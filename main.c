@@ -33,7 +33,7 @@ int main(int argc, char const *argv[])
 
   join_threads(settings);
 
-   support_read_returns(settings);
+  // support_read_returns(settings);
 
   //  i = 0;
   //   while (settings->num_philosophers > i++)
