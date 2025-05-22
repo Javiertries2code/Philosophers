@@ -8,7 +8,7 @@ void	*set_all_died(t_maitre *maitre)
 	while (maitre->num_philosophers > i)
 	{
 		safe_mutex(&maitre->status_mtx[i], LOCK);
-		maitre->return_status[i] = ONE_DIED;
+		maitre->ret_st[i] = ONE_DIED;
 		safe_mutex(&maitre->status_mtx[i], UNLOCK);
 		i++;
 	}
@@ -33,24 +33,24 @@ void	*rout_mtr(void *args)
 		i = 0;
 		while (maitre->num_philosophers > i)
 		{
-			safe_mutex(maitre->settings->feed_mtx, LOCK);
-			if (maitre->settings->all_full == 0)
+			safe_mutex(maitre->set->feed_mtx, LOCK);
+			if (maitre->set->all_full == 0)
 				return (NULL);
-			safe_mutex(maitre->settings->feed_mtx, UNLOCK);
+			safe_mutex(maitre->set->feed_mtx, UNLOCK);
 			safe_mutex(&maitre->status_mtx[i], LOCK);
-			var_status = maitre->return_status[i];
+			var_status = maitre->ret_st[i];
 			safe_mutex(&maitre->status_mtx[i], UNLOCK);
 			if ((var_status == ONE_DIED
-					|| (time_left(&maitre->settings->philos[i]) <= 0
+					|| (time_left(&maitre->set->philos[i]) <= 0
 					&& var_status != FULL)) && *maitre->printer == 0)
 			{
 				*maitre->printer = 1;
 				*maitre->funeral = 1;
-				safe_mutex(maitre->settings->t_write_mtx, LOCK);
+				safe_mutex(maitre->set->t_write_mtx, LOCK);
 				printf("%s%ld %ld died%s\n", CYAN,
-					(get_milisec() - maitre->settings->starting_time),
+					(get_milisec() - maitre->set->starting_time),
 					i + 1, RESET);
-				safe_mutex(maitre->settings->t_write_mtx, UNLOCK);
+				safe_mutex(maitre->set->t_write_mtx, UNLOCK);
 				set_all_died(maitre);
 				safe_mutex(maitre->printer_mtx, UNLOCK);
 				safe_mutex(maitre->funeral_mtx, UNLOCK);

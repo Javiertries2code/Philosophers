@@ -149,13 +149,13 @@ typedef struct s_philo
 typedef struct s_maitre
 {
 	pthread_t		th_maitre;
-	t_settings		*settings;
+	t_settings		*set;
 	pthread_mutex_t	*status_mtx;
 	pthread_mutex_t	*meal_mtx;
 	t_write_mtx		write_mtx;
 	time_mtx		time_mtx;
-	t_philo			*philosophers;
-	int				*return_status;
+	t_philo			*philos;
+	int				*ret_st;
 	long			synchro_t;
 	long			threshold;
 	long			delay_to_sync;
