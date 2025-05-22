@@ -9,10 +9,10 @@ void set_threshold(t_settings *settings)
 
     settings->max_thr= 0;
     settings->threshold = 0;
-    if (settings->time_to_eat >= settings->time_to_die)
-        max_sleep = settings->time_to_eat;
+    if (settings->tt_eat >= settings->tt_die)
+        max_sleep = settings->tt_eat;
     else
-        max_sleep = settings->time_to_die;
+        max_sleep = settings->tt_die;
    for (int i = 0; i < THRESHOLD_TEST_ITERATION; i++)
     {
         start = get_microsec();

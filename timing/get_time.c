@@ -45,16 +45,16 @@ long get_time(timeval *tv, timing_options operation, timing_options units)
 {
     if (operation == GET)
     {
-        if (units == MILISECONDS)
+        if (units == MILI)
             return (get_milisec());
-        if (units == MICROSECONDS)
+        if (units == MICRO)
             return (get_microsec());
     }
     else if (operation == CHANGE)
     {
-        if (units == MILISECONDS)
+        if (units == MILI)
             return ((long)tv->tv_sec * 1e3 + tv->tv_usec / 1e3);
-        if (units == MICROSECONDS)
+        if (units == MICRO)
             return ((long)tv->tv_sec * 1e6 + tv->tv_usec);
      }
     // if (operation == GET)

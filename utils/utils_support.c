@@ -14,7 +14,7 @@ void support_read_returns(t_settings *settings)
   {
     write(1, "read returns\n", 13);
 
-    printf("philo [%ld]return_status = %d\n", settings->philosophers[i].philo_id, (int)((settings->return_status[i])));
+    printf("philo [%ld]return_status = %d\n", settings->philos[i].philo_id, (int)((settings->ret_st[i])));
     // printf("philo [%ld]return_status = %d\n",settings->philosophers[i].philo_id ,((settings->philosophers[i].status[0])));
   }
 }
@@ -30,7 +30,7 @@ void print_data(t_settings *settings, char *str)
 
   for (long int i = 0; i < settings->num_ph; i++)
   {
-    if (&settings->philosophers[i] != NULL || settings->philosophers[i].philo_id != 0)
+    if (&settings->philos[i] != NULL || settings->philos[i].philo_id != 0)
     {
       // printf("ettings->philosophers[%ld]->fork_id = %ld\n\n", i,
       //        settings->philosophers[i].philo_id);
@@ -63,9 +63,9 @@ void check_mutex(t_settings *settings, char *mtx_name,pthread_mutex_t *mutex,cha
     }
     if (philo)
     {
-      printf(YELLOW " philo->settings->status_mtx[%d] = %p\n"RESET,i, &philo->settings->status_mtx[i]);
+      printf(YELLOW " philo->settings->status_mtx[%d] = %p\n"RESET,i, &philo->settings->st_mtx[i]);
       printf(WHITE "&philo->status-mtx[i] = %p\n" RESET, &philo->status_mtx[i]);
-      printf(YELLOW "&settings->philosophers[i].status_mtx[settings->philosophers[i].philo_id -1]= %p\n" RESET, &settings->philosophers[i].status_mtx[settings->philosophers[i].philo_id -1]);
+      printf(YELLOW "&settings->philosophers[i].status_mtx[settings->philosophers[i].philo_id -1]= %p\n" RESET, &settings->philos[i].status_mtx[settings->philos[i].philo_id -1]);
     }
     printf("\n\n");
   }

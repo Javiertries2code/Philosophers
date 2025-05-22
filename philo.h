@@ -71,8 +71,8 @@ typedef enum s_states
 
 typedef enum e_timing_options
 {
-	MILISECONDS,
-	MICROSECONDS,
+	MILI,
+	MICRO,
 	CHANGE,
 	GET
 }	timing_options;
@@ -88,10 +88,10 @@ typedef enum e_mtx_option
 typedef struct s_settings
 {
 	long			num_ph;
-	long			time_to_eat;
-	long			time_to_sleep;
+	long			tt_eat;
+	long			tt_sleep;
 	long			max_meals;
-	long			time_to_die;
+	long			tt_die;
 	long			threshold;
 	int				status;
 	float			safety_margin;
@@ -104,15 +104,15 @@ typedef struct s_settings
 	pthread_mutex_t	*funeral_mtx;
 	pthread_mutex_t	*feed_mtx;
 	int				all_full;
-	int				*return_status;
+	int				*ret_st;
 	pthread_mutex_t	*mutexes;
-	pthread_mutex_t	*status_mtx;
+	pthread_mutex_t	*st_mtx;
 	pthread_mutex_t	*meal_mtx;
-	t_maitre_mtx	t_maitre_mtx;
+	t_maitre_mtx	mtr_mtx;
 	t_write_mtx		t_write_mtx;
 	time_mtx		time_mtx;
 	struct timeval	synchro_t;
-	struct s_philo	*philosophers;
+	struct s_philo	*philos;
 	struct s_maitre	*maitre;
 }	t_settings;
 
@@ -208,7 +208,7 @@ void	unlock_error(int ret);
 
 int		printer(t_philo *philo, char *opt);
 long	ft_atol(const char *str);
-void	*ft_calloc(size_t count, size_t size);
+void	*kloc(size_t count, size_t size);
 void	ft_bzero(void *s, size_t n);
 size_t	ft_strlen(const char *s);
 int		ft_strcmp(const char *s1, const char *s2, size_t n);

@@ -10,7 +10,7 @@ void join_threads(t_settings *settings)
         while (settings->num_ph > ++i)
         {
             void *ret;
-            pthread_join(settings->philosophers[i].thread_id, &ret);
+            pthread_join(settings->philos[i].thread_id, &ret);
             if (*(int *)ret == FULL)
             {
             safe_mutex(settings->feed_mtx, LOCK);

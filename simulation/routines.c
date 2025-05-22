@@ -15,7 +15,7 @@ static int	lock_first_fork_and_check(t_philo *philo)
 static void	handle_last_meal_update(t_philo *philo)
 {
 	safe_mutex(philo->meal_mtx, LOCK);
-	philo->last_meal = get_time(NULL, GET, MILISECONDS);
+	philo->last_meal = get_time(NULL, GET, MILI);
 	safe_mutex(philo->meal_mtx, UNLOCK);
 }
 
@@ -66,7 +66,7 @@ long int	time_left(t_philo *philo)
 	safe_mutex(philo->meal_mtx, LOCK);
 	last_meal = philo->last_meal;
 	safe_mutex(philo->meal_mtx, UNLOCK);
-	time_left = philo->time_to_die - (get_time(NULL, GET, MILISECONDS)
+	time_left = philo->time_to_die - (get_time(NULL, GET, MILI)
 			- last_meal);
 	return (time_left);
 }

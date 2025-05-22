@@ -9,7 +9,7 @@ int	main(int argc, char const *argv[])
 
 	(void)argc;
 	(void)argv;
-	set = ft_calloc(1, sizeof(t_settings));
+	set = kloc(1, sizeof(t_settings));
 	if (argc == 5 || argc == 6)
 		parse_argv(set, argv);
 	// for testing

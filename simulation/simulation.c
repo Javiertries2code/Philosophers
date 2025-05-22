@@ -41,7 +41,7 @@ void	*routine_maitre(void *args)
 			var_status = maitre->return_status[i];
 			safe_mutex(&maitre->status_mtx[i], UNLOCK);
 			if ((var_status == ONE_DIED
-					|| (time_left(&maitre->settings->philosophers[i]) <= 0
+					|| (time_left(&maitre->settings->philos[i]) <= 0
 					&& var_status != FULL)) && *maitre->printer == 0)
 			{
 				*maitre->printer = 1;
@@ -79,10 +79,10 @@ void	*routine_ph(void *args)
 	safe_mutex(philo->time_mtx, LOCK);
 	if (philo->settings->starting_time == 0)
 		philo->settings->starting_time =
-			get_time(NULL, GET, MILISECONDS);
+			get_time(NULL, GET, MILI);
 	safe_mutex(philo->time_mtx, UNLOCK);
 	safe_mutex(philo->time_mtx, LOCK);
-	philo->last_meal = get_time(NULL, GET, MILISECONDS);
+	philo->last_meal = get_time(NULL, GET, MILI);
 	safe_mutex(philo->time_mtx, UNLOCK);
 	if (philo->philo_id % 2 == 0)
 		routine_even(philo);

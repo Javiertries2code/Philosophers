@@ -11,7 +11,7 @@ void ft_bzero(void *s, size_t n)
 		str[i++] = '\0';
 }
 
-void *ft_calloc(size_t count, size_t size)
+void *kloc(size_t count, size_t size)
 {
 	void *ptr;
 
