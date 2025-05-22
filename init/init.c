@@ -1,24 +1,5 @@
 #include "../philo.h"
 
-void load_settings(t_settings *settings, const char *argv[])
-{
-    settings->num_philosophers = ft_atol(argv[1]);
-    settings->time_to_die = ft_atol(argv[2]);
-    settings->time_to_eat = ft_atol(argv[3]);
-    settings->time_to_sleep = ft_atol(argv[4]);
-     settings->max_meals = NO_MAX_MEALS;
-      if (argv[5] != NULL)
-        settings->max_meals = ft_atol(argv[5]);
-    gettimeofday(&settings->synchro_t, NULL);
-    set_threshold(settings);
-    settings->philo_status = (int *)ft_calloc(settings->num_philosophers, sizeof(int));
-    settings->return_status = ft_calloc(settings->num_philosophers, sizeof(int));
-    settings->printer = 0;
-    settings->funeral = 0;
-    settings->starting_time = 0;
-    settings->all_full = settings->num_philosophers;
-  }
-
 void create_mutexes(t_settings *settings)
 {
     int i;
@@ -32,7 +13,6 @@ void create_mutexes(t_settings *settings)
     settings->funeral_mtx = ft_calloc(settings->num_philosophers, sizeof(pthread_mutex_t));
     settings->mutexes = (pthread_mutex_t *)ft_calloc(settings->num_philosophers, sizeof(pthread_mutex_t));
     settings->status_mtx = (pthread_mutex_t *)ft_calloc(settings->num_philosophers , sizeof(pthread_mutex_t ));
-
     settings->meal_mtx = (pthread_mutex_t *)ft_calloc(settings->num_philosophers , sizeof(pthread_mutex_t));
     while (i < (int)(settings->num_philosophers))
     {
@@ -136,27 +116,3 @@ void	create_philos(t_settings *settings)
 	}
 }
 
-
-
-
-void join_threads(t_settings *settings)
-{
-    int i;
-
-    i = -1;
-  
-        
-        while (settings->num_philosophers > ++i)
-        {
-            void *ret;
-            pthread_join(settings->philosophers[i].thread_id, &ret);
-            if (*(int *)ret == FULL)
-            {
-            safe_mutex(settings->feed_mtx, LOCK);
-           settings->all_full--;
-            safe_mutex(settings->feed_mtx, UNLOCK);
-            }
-        }
-        pthread_join(settings->maitre->th_maitre, NULL);
- 
-}

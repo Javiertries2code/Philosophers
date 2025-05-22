@@ -25,7 +25,7 @@ DIR_EXITING := exiting/
 # TESTS := $(addprefix $(DIR_TEST), $(TEST_FILES))
 #-------------
 #-------------
-EXITING_FILES = exiting.c 
+EXITING_FILES = exiting.c ending.c
 TIMING_FILES = timing.c  get_time.c synchro.c
 INIT_FILES =  init.c
 SIMULATION_FILES = simulation.c routines.c

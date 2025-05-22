@@ -7,21 +7,15 @@ static void	free_allocated(t_settings *s)
 	free(s->t_maitre_mtx);
 	free(s->printer_mtx);
 	free(s->funeral_mtx);
-    free(s->status_mtx);
+	free(s->status_mtx);
 	free(s->meal_mtx);
-    free(s->philo_status);
+	free(s->philo_status);
 	free(s->return_status);
 	free(s->philosophers);
-     free(s->mutexes);
-     free(s->maitre);
-     free(s);
-
-    
-       
+	free(s->mutexes);
+	free(s->maitre);
+	free(s);
 }
-
-
-
 
 static void	destroy_mutexes(t_settings *s)
 {
@@ -45,16 +39,13 @@ static void	destroy_mutexes(t_settings *s)
 		i++;
 	}
 }
-
 void	free_memory(t_settings *s)
 {
 	if (!s)
 		return ;
 	destroy_mutexes(s);
 	free_allocated(s);
-	
 }
-
 void	exit_on_error(char *str)
 {
 	write(2, "ERROR\n", 7);
@@ -62,7 +53,6 @@ void	exit_on_error(char *str)
 	write(2, "\n", 1);
 	exit(EXIT_FAILURE);
 }
-
 void	exiting(t_settings *settings, char *str)
 {
 	if (str != NULL)
