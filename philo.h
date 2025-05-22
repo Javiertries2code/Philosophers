@@ -46,7 +46,7 @@
 #define FULL                    2
 #define TEST                    1
 #define TESTWAIT                3000               1
-
+#define ALL_FULL                    0
 
   #define  EATING "is eating"
   #define  FORK "has taken a fork"
@@ -63,7 +63,7 @@ typedef pthread_mutex_t *t_write_mtx;
 typedef pthread_mutex_t *time_mtx;
 typedef pthread_mutex_t *t_maitre_mtx;
 typedef pthread_mutex_t *t_general;
-typedef pthread_mutex_t *t_common_status_mtx;
+typedef pthread_mutex_t *t_common_status_mtx; 
 typedef struct timeval timeval;
 typedef struct s_maitre t_maitre;
 
@@ -120,6 +120,7 @@ typedef struct s_settings
     int printer;
     pthread_mutex_t *printer_mtx;
     pthread_mutex_t *funeral_mtx;
+    pthread_mutex_t *feed_mtx;
 
     int all_full;
     int *return_status;
@@ -137,8 +138,6 @@ typedef struct s_settings
     struct timeval synchro_t;
     struct s_philo *philosophers;
     struct s_maitre *maitre;
-
-    
 
 } t_settings;
 

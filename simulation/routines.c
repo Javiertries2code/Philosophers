@@ -81,7 +81,16 @@ int thinking(t_philo *philo)
 {
 
     int var_status;
+    long thinking_time;
+    thinking_time = philo->time_to_die - (philo->time_to_eat + philo->time_to_sleep);
+
     var_status = all_alive(philo, THINKING);
+    //ACCESING philo->settings->num_philosophers would create a race, gotta load in struct
+    //ACCESING philo->settings->num_philosophers would create a race, gotta load in struct
+    //ACCESING philo->settings->num_philosophers would create a race, gotta load in struct
+    //ACCESING philo->settings->num_philosophers would create a race, gotta load in struct
+    if (philo->philo_id % 2 != 0 && philo->settings->num_philosophers % 2 != 0 )
+        precise_sleep(thinking_time/4, &philo->threshold);
 
     return (var_status);
 }

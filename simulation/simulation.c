@@ -14,6 +14,8 @@ void	*set_all_died(t_maitre *maitre)
 	}
 	return (NULL);
 }
+
+
 void	*routine_maitre(void *args)
 {
 	t_maitre	*maitre;
@@ -32,16 +34,26 @@ void	*routine_maitre(void *args)
 		i = 0;
 		while (maitre->num_philosophers > i)
 		{
+			safe_mutex(maitre->settings->feed_mtx, LOCK);
+			if(maitre->settings->all_full== 0)
+				return(NULL);
+			safe_mutex(maitre->settings->feed_mtx, UNLOCK);
+
 			safe_mutex(&maitre->status_mtx[i], LOCK);
 			var_status = maitre->return_status[i];
+		
 			safe_mutex(&maitre->status_mtx[i], UNLOCK);
+			
 			if ((var_status == ONE_DIED
-					|| time_left(&maitre->settings->philosophers[i]) <= 0)
-				&& *maitre->printer == 0)
+					|| (time_left(&maitre->settings->philosophers[i]) <= 0
+						&& var_status != FULL)) && *maitre->printer == 0)
 			{
 				*maitre->printer = 1;
 				*maitre->funeral = 1;
 				safe_mutex(maitre->settings->t_write_mtx, LOCK);
+				printf("%s%ld %ld maitre TEST, status - %d%s\n", GREEN,
+					(get_milisec() - maitre->settings->starting_time), i + 1,
+					var_status, RESET);
 				printf("%s%ld %ld died%s\n", CYAN, (get_milisec()
 						- maitre->settings->starting_time), i + 1, RESET);
 				safe_mutex(maitre->settings->t_write_mtx, UNLOCK);
@@ -96,10 +108,11 @@ int	routine_even(t_philo *philo)
 	int	ret3;
 
 	while (1)
-	{
-		ret = eating(philo);
+	{		
 		ret2 = sleeping(philo);
 		ret3 = thinking(philo);
+		ret = eating(philo);
+
 		if (ret != 0)
 			return (ret);
 		if (ret2 != 0)
@@ -118,9 +131,9 @@ int	routine_odd(t_philo *philo)
 
 	while (1)
 	{
-		ret2 = sleeping(philo);
 		ret3 = thinking(philo);
 		ret = eating(philo);
+		ret2 = sleeping(philo);
 		if (ret2 != 0)
 			return (ret2);
 		if (ret3 != 0)
@@ -133,16 +146,16 @@ int	routine_odd(t_philo *philo)
 
 static char	*get_color(char *opt)
 {
-	int n;
+	int	n;
 
 	n = ft_strlen(opt);
-	if (!ft_strcmp(opt, FORK,n) || !ft_strcmp(opt, FORK2,n))
+	if (!ft_strcmp(opt, FORK, n) || !ft_strcmp(opt, FORK2, n))
 		return (BLUE);
-	else if (!ft_strcmp(opt, THINKING,n))
+	else if (!ft_strcmp(opt, THINKING, n))
 		return (YELLOW);
-	else if (!ft_strcmp(opt, SLEEPING,n))
+	else if (!ft_strcmp(opt, SLEEPING, n))
 		return (GREEN);
-	else if (!ft_strcmp(opt, DIED,n))
+	else if (!ft_strcmp(opt, DIED, n))
 		return (RED);
 	return (WHITE);
 }

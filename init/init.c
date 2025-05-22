@@ -26,6 +26,8 @@ void load_settings(t_settings *settings, const char *argv[])
     settings->return_status = ft_calloc(settings->num_philosophers, sizeof(int));
     settings->printer = 0;
     settings->funeral = 0;
+    settings->starting_time = 0;
+    settings->all_full = settings->num_philosophers;
    
 
     // if (argv[5] != NULL)
@@ -52,6 +54,7 @@ void create_mutexes(t_settings *settings)
     settings->t_write_mtx = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
     settings->t_maitre_mtx = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
     settings->time_mtx = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
+    settings->feed_mtx = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
     settings->printer_mtx = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
     settings->funeral_mtx = ft_calloc(settings->num_philosophers, sizeof(pthread_mutex_t));
     settings->mutexes = (pthread_mutex_t *)ft_calloc(settings->num_philosophers, sizeof(pthread_mutex_t));
@@ -194,19 +197,26 @@ void join_threads(t_settings *settings)
     //int j;
 
     i = -1;
-    pthread_join(settings->maitre->th_maitre, NULL);
-///TEST
+  
+        
+        while (settings->num_philosophers > ++i)
+        {
+            void *ret;
+            pthread_join(settings->philosophers[i].thread_id, &ret);
+            if (*(int *)ret == FULL)
+            {
+            safe_mutex(settings->feed_mtx, LOCK);
+           settings->all_full--;
+            safe_mutex(settings->feed_mtx, UNLOCK);
+            }
+        }
+
+        //    write(1, "joint threads\n", 14);
+        pthread_join(settings->maitre->th_maitre, NULL);
+          ///TEST
     safe_mutex(settings->t_write_mtx, LOCK);
     printf("%sjoin_threads %ld maitre %s\n", CYAN,
         (get_milisec() - settings->starting_time),
-         RESET);
-    safe_mutex(settings->t_write_mtx, UNLOCK);
-
-    while (settings->num_philosophers > ++i)
-    {
-        void *ret;
-        pthread_join(settings->philosophers[i].thread_id, &ret);
-     
-    }
-//    write(1, "joint threads\n", 14);
+        RESET);
+        safe_mutex(settings->t_write_mtx, UNLOCK);
 }
