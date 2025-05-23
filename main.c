@@ -20,7 +20,7 @@ int	main(int argc, char const *argv[])
 	load_settings(set, argv);
 	create_mutexes(set);
 	create_philos(set);
-	usleep(3500);
+	//usleep(3500);
 	create_maitre(set);
 	join_threads(set);
 	exiting(set, NULL);

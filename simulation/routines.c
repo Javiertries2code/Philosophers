@@ -83,7 +83,7 @@ int	thinking(t_philo *philo)
 		- (philo->time_to_eat + philo->time_to_sleep);
 	var_status = all_alive(philo, THINKING);
 	if (philo->ph_id % 2 != 0 && philo->settings->num_ph % 2 != 0)
-		precise_sleep(thinking_time / 4, &philo->threshold);
+		precise_sleep(thinking_time / 10, &philo->threshold);
 	return (var_status);
 }
 
