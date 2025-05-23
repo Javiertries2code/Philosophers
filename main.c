@@ -20,11 +20,8 @@ int	main(int argc, char const *argv[])
 	load_settings(set, argv);
 	create_mutexes(set);
 	create_philos(set);
-	if (TEST)
-	{
-		usleep(3500);
-		create_maitre(set);
-	}
+	usleep(3500);
+	create_maitre(set);
 	join_threads(set);
 	exiting(set, NULL);
 	return (0);

@@ -191,7 +191,7 @@ void	set_threshold(t_settings *settings);
 long	time_microsec(timeval *tv);
 long	to_microsec(timeval *tv);
 long	get_microsec();
-long	get_milisec();
+//long	get_milisec(void);
 long	get_milisec();
 long	get_time(timeval *tv, timing_options op, timing_options units);
 void	precise_sleep(long nap_time, long *threshold);

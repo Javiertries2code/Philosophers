@@ -14,6 +14,7 @@ static void	free_allocated(t_settings *s)
 	free(s->philos);
 	free(s->mutexes);
 	free(s->mtr);
+	free(s->feed_mtx);
 	free(s);
 }
 

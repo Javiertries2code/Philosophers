@@ -47,7 +47,7 @@ void	*rout_mtr(void *args)
 				*maitre->printer = 1;
 				*maitre->funeral = 1;
 				safe_mutex(maitre->set->t_write_mtx, LOCK);
-				printf("%s%ld %ld died%s\n",
+				printf("%s%ld %ld died parse mada%s\n",
 					CYAN,
 					(get_milisec() - maitre->set->starting_time),
 					i + 1,
@@ -155,7 +155,7 @@ int	printer(t_philo *philo, char *opt)
 
 	if (!opt)
 		return (ALL_ALIVE);
-	time = get_milisec() - philo->settings->starting_time;
+	//time = get_milisec() - philo->settings->starting_time;
 	safe_mutex(philo->prntr_mtx, LOCK);
 	if (*philo->printer == 1)
 	{
@@ -165,14 +165,18 @@ int	printer(t_philo *philo, char *opt)
 	safe_mutex(philo->wrt_mtx, LOCK);
 	safe_mutex(philo->prntr_mtx, UNLOCK);
 	if (!strcmp(opt, FORK2))
-	{
+	{	//test
+		time = get_milisec() - philo->settings->starting_time;
+
 		printf("%s%ld %ld has taken a fork%s\n",
 			get_color(opt), time, philo->ph_id, RESET);
 		printf(PINK "%ld %ld %s%s\n",
 			time, philo->ph_id, EATING, RESET);
 	}
 	else
-	{
+	{///test
+		time = get_milisec() - philo->settings->starting_time;
+//
 		printf("%s%ld %ld %s%s\n",
 			get_color(opt), time, philo->ph_id, opt, RESET);
 	}
