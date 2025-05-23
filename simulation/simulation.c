@@ -21,6 +21,7 @@ void	*rout_mtr(void *args)
 	long int	i;
 	int		run;
 	int		var_status;
+	long int death_time;
 
 	run = 1;
 	maitre = (t_maitre *)args;
@@ -44,12 +45,13 @@ void	*rout_mtr(void *args)
 				|| (time_left(&maitre->set->philos[i]) <= 0
 				&& var_status != FULL)) && *maitre->printer == 0)
 			{
+				death_time = get_milisec() - maitre->set->starting_time;
 				*maitre->printer = 1;
 				*maitre->funeral = 1;
 				safe_mutex(maitre->set->t_write_mtx, LOCK);
 				printf("%s%ld %ld died parse mada%s\n",
 					CYAN,
-					(get_milisec() - maitre->set->starting_time),
+					death_time,
 					i + 1,
 					RESET);
 				safe_mutex(maitre->set->t_write_mtx, UNLOCK);
