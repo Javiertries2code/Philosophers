@@ -57,6 +57,8 @@ typedef pthread_mutex_t	*t_general;
 typedef pthread_mutex_t	*t_common_status_mtx;
 typedef struct timeval	timeval;
 typedef struct s_maitre	t_maitre;
+typedef struct s_philo t_philo;
+
 
 typedef enum s_states
 {
@@ -85,8 +87,18 @@ typedef enum e_mtx_option
 	DESTROY
 }	t_mtx_option;
 
+
 typedef struct s_settings
 {
+
+	/// test
+	pthread_mutex_t		*own_death_mtx;
+	pthread_mutex_t		*any_death_mtx;
+
+
+	bool					*own_death;
+	bool					any_death;
+	///  test
 	long			num_ph;
 	long			tt_eat;
 	long			tt_sleep;
@@ -113,11 +125,43 @@ typedef struct s_settings
 	time_mtx		time_mtx;
 	struct timeval	synchro_t;
 	struct s_philo	*philos;
-	struct s_maitre	*mtr;
+	struct s_maitre	*maitre;
+	struct s_asist	*asist;
 }	t_settings;
+
+typedef struct s_asist
+{	
+	pthread_mutex_t		*meal_mtx;
+
+	pthread_mutex_t		*own_death_mtx;
+	pthread_mutex_t		*any_death_mtx;
+
+
+	bool					*own_death;
+	bool					*any_death;
+
+		pthread_t		th_asist;
+
+	t_settings			*set;
+	t_philo				*philos;
+	long				synchro_t;
+	long				threshold;
+	long				delay_to_sync;
+	long				num_philosophers;
+}	t_asist;
+
 
 typedef struct s_philo
 {
+
+	/// test
+	pthread_mutex_t		*own_death_mtx;
+	pthread_mutex_t		*any_death_mtx;
+
+
+	bool					*own_death;
+	bool					*any_death;
+	///  test
 	t_settings		*settings;
 	pthread_t		thread_id;
 	pthread_mutex_t	*first_fork;
@@ -145,6 +189,7 @@ typedef struct s_philo
 	long			synchro_t;
 	int				*status;
 	pthread_mutex_t	*one_death_mtx;
+	
 
 }	t_philo;
 
@@ -166,7 +211,17 @@ typedef struct s_maitre
 	int				*funeral;
 	pthread_mutex_t	*funeral_mtx;
 	long			num_philosophers;
+	//test
+		pthread_mutex_t		*own_death_mtx;
+	pthread_mutex_t		*any_death_mtx;
+
+	bool					*own_death;
+	bool					*any_death;
+	//test
 }	t_maitre;
+
+void	create_assitant(t_settings *s);
+void	*rout_asistant(void *args);
 
 void	*routine_ph(void *args);
 void	*rout_mtr(void *args);
@@ -188,6 +243,8 @@ void	create_philos(t_settings *settings);
 void	create_maitre(t_settings *settings);
 void	create_mutexes(t_settings *settings);
 void	join_threads(t_settings *settings);
+
+
 
 void	set_threshold(t_settings *settings);
 long	time_microsec(timeval *tv);

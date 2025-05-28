@@ -29,10 +29,13 @@ void load_settings(t_settings *set, const char *argv[])
     set_threshold(set);
     set->philo_status = (int *)kloc(set->num_ph, sizeof(int));
     set->ret_st = kloc(set->num_ph, sizeof(int));
+    set->own_death = kloc(set->num_ph, sizeof(bool));
     set->printer = 0;
     set->funeral = 0;
     set->starting_time = 0;
     set->all_full = set->num_ph;
+    set->any_death = false;
+  
     test_data((set));
     usleep(5000);
   }

@@ -13,7 +13,7 @@ static void	free_allocated(t_settings *s)
 	free(s->ret_st);
 	free(s->philos);
 	free(s->mutexes);
-	free(s->mtr);
+	free(s->maitre);
 	free(s->feed_mtx);
 	free(s);
 }
@@ -31,12 +31,15 @@ static void	destroy_mutexes(t_settings *s)
 		pthread_mutex_destroy(s->mtr_mtx);
 	if (s->printer_mtx)
 		pthread_mutex_destroy(s->printer_mtx);
+	if (s->any_death_mtx)
+		pthread_mutex_destroy(s->any_death_mtx);
 	while (i < s->num_ph)
 	{
 		pthread_mutex_destroy(&s->mutexes[i]);
 		pthread_mutex_destroy(&s->st_mtx[i]);
 		pthread_mutex_destroy(&s->meal_mtx[i]);
 		pthread_mutex_destroy(&s->funeral_mtx[i]);
+		pthread_mutex_destroy(&s->own_death_mtx[i]);
 		i++;
 	}
 }

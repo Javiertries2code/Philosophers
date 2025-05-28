@@ -66,6 +66,43 @@ void	*rout_mtr(void *args)
 	return (NULL);
 }
 
+void	*rout_asistant(void *args)
+{
+	t_asist	*asist;
+	bool run;
+	int i;
+	bool death;
+
+	
+	asist = (t_asist *)args;
+	busy_wait_start(asist->synchro_t, PHILO_HEAD_START);
+	usleep(1);
+	 run = true;
+	while (run)
+	{
+		
+		i = 0;
+		while (asist->num_philosophers > i)
+		{				
+
+			safe_mutex(&asist->own_death_mtx[i], LOCK);
+			death = asist->own_death[i];
+			safe_mutex(&asist->own_death_mtx[i], UNLOCK);
+
+			if (death == true)
+			{
+			safe_mutex(asist->any_death_mtx, LOCK);
+			 *asist->any_death = true;
+			safe_mutex(asist->any_death_mtx, UNLOCK);
+			
+				run = false;
+				return (NULL);
+			}
+			i++;
+		}
+	}
+	return (NULL);
+}
 void	*routine_ph(void *args)
 {
 	t_philo	*philo;
@@ -149,8 +186,11 @@ int	printer(t_philo *philo, char *opt)
 {
 	long	time;
 	long	status;
+	bool death;
 
 	status = 0;
+ //death = false;
+
 	// time = get_milisec() - philo->settings->starting_time;
 	safe_mutex(philo->prntr_mtx, LOCK);
 	if (*philo->printer == 1)
@@ -170,8 +210,27 @@ int	printer(t_philo *philo, char *opt)
 		if (status != ONE_DIED)
 		{
 			*philo->return_status = ONE_DIED;
-			printf(CYAN "%ld %ld %s%s in printer\n", time, philo->ph_id, DIED,
+			safe_mutex(philo->any_death_mtx, LOCK);
+			death = philo->any_death;
+			
+			safe_mutex(philo->any_death_mtx, UNLOCK);
+			if(death == false)
+				printf("death false");
+
+			if(death == true){
+				printf(CYAN "%ld %ld %s%s in printer with anydeath\n", time, philo->ph_id, DIED,
 				RESET);
+			safe_mutex(philo->own_death_mtx, LOCK);
+			*philo->own_death =true;
+			safe_mutex(philo->own_death_mtx, UNLOCK);
+
+			safe_mutex(philo->status_mtx, UNLOCK);
+			safe_mutex(philo->wrt_mtx, UNLOCK);
+			safe_mutex(philo->prntr_mtx, UNLOCK);
+			return ONE_DIED;
+			}
+			// printf(CYAN "%ld %ld %s%s in printer\n", time, philo->ph_id, DIED,
+			// 	RESET);
 			safe_mutex(philo->status_mtx, UNLOCK);
 			///waiting for maitte to do somthing
 			usleep(philo->num_ph * 100);

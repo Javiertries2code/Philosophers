@@ -21,6 +21,7 @@ int	main(int argc, char const *argv[])
 	
 	create_mutexes(set);
 	create_philos(set);
+	create_assitant(set);
 	//usleep(3500);
 	create_maitre(set);
 	join_threads(set);

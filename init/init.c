@@ -14,17 +14,21 @@ i = 0;
 	s->mutexes = kloc(s->num_ph, sizeof(pthread_mutex_t));
 	s->st_mtx = kloc(s->num_ph, sizeof(pthread_mutex_t));
 	s->meal_mtx = kloc(s->num_ph, sizeof(pthread_mutex_t));
+	s->any_death_mtx = kloc(1, sizeof(pthread_mutex_t));
+	s->own_death_mtx = kloc(s->num_ph, sizeof(pthread_mutex_t));
 	while (i < (int)(s->num_ph))
 	{
 		safe_mutex(&s->mutexes[i], INIT);
 		safe_mutex(&s->st_mtx[i], INIT);
 		safe_mutex(&s->meal_mtx[i], INIT);
 		safe_mutex(&s->funeral_mtx[i], INIT);
+		safe_mutex(&s->own_death_mtx[i], INIT);
 		i++;
 	}
 	safe_mutex(s->t_write_mtx, INIT);
 	safe_mutex(s->time_mtx, INIT);
 	safe_mutex(s->mtr_mtx, INIT);
+	safe_mutex(s->any_death_mtx, INIT);
 }
 
 void	create_maitre(t_settings *s)
@@ -32,7 +36,7 @@ void	create_maitre(t_settings *s)
 	t_maitre	*mt;
 
 	mt = kloc(1, sizeof(t_maitre));
-	s->mtr = mt;
+	s->maitre = mt;
 	mt->set = s;
 	mt->meal_mtx = s->meal_mtx;
 	mt->status_mtx = s->st_mtx;
@@ -48,7 +52,30 @@ void	create_maitre(t_settings *s)
 	mt->threshold = s->threshold;
 	mt->synchro_t = get_time(&s->synchro_t, CHANGE, MILI);
 	pthread_create(&mt->th_maitre, NULL,
-		&rout_mtr, (void *)&s->mtr[0]);
+		&rout_mtr, (void *)mt);
+}
+void	create_assitant(t_settings *s)
+{
+	t_asist	*asist;
+
+	asist = kloc(1, sizeof(t_asist));
+	s->asist = asist;
+	asist->set = s;
+	asist->meal_mtx = s->meal_mtx;
+	//test
+	asist->own_death = s->own_death;
+	asist->any_death = &s->any_death;
+	asist->own_death_mtx = s->own_death_mtx;
+	asist->any_death_mtx = s->any_death_mtx;
+	//test
+
+	asist->num_philosophers = s->num_ph;
+	asist->philos = s->philos;
+
+	asist->threshold = s->threshold;
+	asist->synchro_t = get_time(&s->synchro_t, CHANGE, MILI);
+	pthread_create(&asist->th_asist, NULL,
+		&rout_asistant, (void *)asist);
 }
 
 static void	init_philo_data(t_settings *s, long int i)
@@ -68,6 +95,13 @@ static void	init_philo_data(t_settings *s, long int i)
 	philo->threshold = s->threshold;
 	philo->synchro_t = get_time(&s->synchro_t, CHANGE, MILI);
 	philo->status_mtx = &s->st_mtx[i];
+	////
+	philo->own_death_mtx = &s->own_death_mtx[i];
+	philo->any_death_mtx = s->any_death_mtx;
+	///
+	philo->own_death = &s->own_death[i];
+	philo->any_death = &s->any_death;
+	////
 	philo->meal_mtx = &s->meal_mtx[i];
 	s->philos[i].return_status = &s->ret_st[i];
 	philo->fork_next = &s->mutexes[i];
