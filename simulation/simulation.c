@@ -16,85 +16,81 @@ void	*set_all_died(t_maitre *maitre)
 }
 
 void	*rout_mtr(void *args)
-{
-	t_maitre	*maitre;
-	long int	i;
-	int			run;
-	int			var_status;
-	long int	death_time;
+ {
+	(void)args;
+// 	t_maitre	*maitre;
+// 	long int	i;
+// 	int			run;
+// 	int			var_status;
+// 	long int	death_time;
 
-	run = 1;
-	maitre = (t_maitre *)args;
-	busy_wait_start(maitre->synchro_t, PHILO_HEAD_START);
-	usleep(1);
-	while (run)
-	{
-		safe_mutex(maitre->funeral_mtx, LOCK);
-		safe_mutex(maitre->printer_mtx, LOCK);
-		i = 0;
-		while (maitre->num_philosophers > i)
-		{
-			safe_mutex(maitre->set->feed_mtx, LOCK);
-			if (maitre->set->all_full == 0)
-				return (NULL);
-			safe_mutex(maitre->set->feed_mtx, UNLOCK);
-			safe_mutex(&maitre->status_mtx[i], LOCK);
-			var_status = maitre->ret_st[i];
-			safe_mutex(&maitre->status_mtx[i], UNLOCK);
-			if ((var_status == ONE_DIED
-					|| (time_left(&maitre->set->philos[i]) <= 0
-						&& var_status != FULL)) && *maitre->printer == 0)
-			{
-				death_time = get_milisec() - maitre->set->starting_time;
-				*maitre->printer = 1;
-				*maitre->funeral = 1;
-				safe_mutex(maitre->set->t_write_mtx, LOCK);
-				printf("%s%ld %ld died parse mada%s\n", CYAN, death_time, i + 1,
-					RESET);
-				safe_mutex(maitre->set->t_write_mtx, UNLOCK);
-				set_all_died(maitre);
-				safe_mutex(maitre->printer_mtx, UNLOCK);
-				safe_mutex(maitre->funeral_mtx, UNLOCK);
-				run = 0;
-				return (NULL);
-			}
-			i++;
-		}
-		safe_mutex(maitre->printer_mtx, UNLOCK);
-		safe_mutex(maitre->funeral_mtx, UNLOCK);
-	}
+// 	run = 1;
+// 	maitre = (t_maitre *)args;
+// 	busy_wait_start(maitre->synchro_t, PHILO_HEAD_START);
+// 	usleep(1);
+// 	while (run)
+// 	{
+// 		safe_mutex(maitre->funeral_mtx, LOCK);
+// 		safe_mutex(maitre->printer_mtx, LOCK);
+// 		i = 0;
+// 		while (maitre->num_philosophers > i)
+// 		{
+// 			safe_mutex(maitre->set->feed_mtx, LOCK);
+// 			if (maitre->set->all_full == 0)
+// 				return (NULL);
+// 			safe_mutex(maitre->set->feed_mtx, UNLOCK);
+// 			safe_mutex(&maitre->status_mtx[i], LOCK);
+// 			var_status = maitre->ret_st[i];
+// 			safe_mutex(&maitre->status_mtx[i], UNLOCK);
+// 			if ((var_status == ONE_DIED
+// 					|| (time_left(&maitre->set->philos[i]) <= 0
+// 						&& var_status != FULL)) && *maitre->printer == 0)
+// 			{
+// 				death_time = get_milisec() - maitre->set->starting_time;
+// 				*maitre->printer = 1;
+// 				*maitre->funeral = 1;
+// 				safe_mutex(maitre->set->t_write_mtx, LOCK);
+// 				printf("%s%ld %ld died parse mada%s\n", CYAN, death_time, i + 1,
+// 					RESET);
+// 				safe_mutex(maitre->set->t_write_mtx, UNLOCK);
+// 				set_all_died(maitre);
+// 				safe_mutex(maitre->printer_mtx, UNLOCK);
+// 				safe_mutex(maitre->funeral_mtx, UNLOCK);
+// 				run = 0;
+// 				return (NULL);
+// 			}
+// 			i++;
+// 		}
+// 		safe_mutex(maitre->printer_mtx, UNLOCK);
+// 		safe_mutex(maitre->funeral_mtx, UNLOCK);
+// 	}
 	return (NULL);
 }
 
 void	*rout_asistant(void *args)
 {
 	t_asist	*asist;
-	bool run;
-	int i;
-	bool death;
+	bool	run;
+	int		i;
+	int		death;
 
-	
 	asist = (t_asist *)args;
 	busy_wait_start(asist->synchro_t, PHILO_HEAD_START);
 	usleep(1);
-	 run = true;
+	run = true;
 	while (run)
 	{
-		
 		i = 0;
 		while (asist->num_philosophers > i)
-		{				
-
+		{
 			safe_mutex(&asist->own_death_mtx[i], LOCK);
 			death = asist->own_death[i];
 			safe_mutex(&asist->own_death_mtx[i], UNLOCK);
-
-			if (death == true)
+			if (death == ONE_DIED)
 			{
-			safe_mutex(asist->any_death_mtx, LOCK);
-			 *asist->any_death = true;
-			safe_mutex(asist->any_death_mtx, UNLOCK);
-			
+				safe_mutex(asist->any_death_mtx, LOCK);
+				*asist->any_death = i;
+				safe_mutex(asist->any_death_mtx, UNLOCK);
 				run = false;
 				return (NULL);
 			}
@@ -186,11 +182,10 @@ int	printer(t_philo *philo, char *opt)
 {
 	long	time;
 	long	status;
-	bool death;
+	int		death;
 
 	status = 0;
- //death = false;
-
+	// death = false;
 	// time = get_milisec() - philo->settings->starting_time;
 	safe_mutex(philo->prntr_mtx, LOCK);
 	if (*philo->printer == 1)
@@ -211,36 +206,34 @@ int	printer(t_philo *philo, char *opt)
 		{
 			*philo->return_status = ONE_DIED;
 			safe_mutex(philo->any_death_mtx, LOCK);
-			death = philo->any_death;
-			
+			death = *philo->any_death;
 			safe_mutex(philo->any_death_mtx, UNLOCK);
-			if(death == false)
-				printf("death false");
-
-			if(death == true){
-				printf(CYAN "%ld %ld %s%s in printer with anydeath\n", time, philo->ph_id, DIED,
-				RESET);
-			safe_mutex(philo->own_death_mtx, LOCK);
-			*philo->own_death =true;
-			safe_mutex(philo->own_death_mtx, UNLOCK);
-
-			safe_mutex(philo->status_mtx, UNLOCK);
-			safe_mutex(philo->wrt_mtx, UNLOCK);
-			safe_mutex(philo->prntr_mtx, UNLOCK);
-			return ONE_DIED;
+			if (death == ALL_ALIVE)
+			{
+				// if (philo->ph_id == death)
+				// {
+					printf(CYAN "%ld %ld %s%s in printer with anydeath\n", time,
+						philo->ph_id, DIED, RESET);
+				//}
+				safe_mutex(philo->own_death_mtx, LOCK);
+				*philo->own_death = ONE_DIED;
+				safe_mutex(philo->own_death_mtx, UNLOCK);
+				safe_mutex(philo->status_mtx, UNLOCK);
+				safe_mutex(philo->wrt_mtx, UNLOCK);
+				safe_mutex(philo->prntr_mtx, UNLOCK);
+				return (ONE_DIED);
 			}
-			// printf(CYAN "%ld %ld %s%s in printer\n", time, philo->ph_id, DIED,
-			// 	RESET);
+		
 			safe_mutex(philo->status_mtx, UNLOCK);
-			///waiting for maitte to do somthing
+			/// waiting for maitte to do somthing
 			usleep(philo->num_ph * 100);
 			///
 			safe_mutex(philo->wrt_mtx, UNLOCK);
 			safe_mutex(philo->prntr_mtx, UNLOCK);
-			return ONE_DIED;
+			return (ONE_DIED);
 		}
 		safe_mutex(philo->status_mtx, UNLOCK);
-		//usleep(philo->num_ph * 10000);
+		// usleep(philo->num_ph * 10000);
 		safe_mutex(philo->wrt_mtx, UNLOCK);
 		safe_mutex(philo->prntr_mtx, UNLOCK);
 		return (ONE_DIED);
@@ -279,6 +272,5 @@ int	all_alive(t_philo *philo, char *opt)
 		safe_mutex(philo->status_mtx, UNLOCK);
 		return (ONE_DIED);
 	}
-	
 	return (printer(philo, opt));
 }

@@ -97,7 +97,8 @@ typedef struct s_settings
 
 
 	bool					*own_death;
-	bool					any_death;
+
+	int					any_death;
 	///  test
 	long			num_ph;
 	long			tt_eat;
@@ -138,7 +139,7 @@ typedef struct s_asist
 
 
 	bool					*own_death;
-	bool					*any_death;
+	int					*any_death;
 
 		pthread_t		th_asist;
 
@@ -160,7 +161,7 @@ typedef struct s_philo
 
 
 	bool					*own_death;
-	bool					*any_death;
+	int					*any_death;
 	///  test
 	t_settings		*settings;
 	pthread_t		thread_id;
@@ -216,7 +217,7 @@ typedef struct s_maitre
 	pthread_mutex_t		*any_death_mtx;
 
 	bool					*own_death;
-	bool					*any_death;
+	int					*any_death;
 	//test
 }	t_maitre;
 
