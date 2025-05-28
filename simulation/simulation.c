@@ -19,9 +19,9 @@ void	*rout_mtr(void *args)
 {
 	t_maitre	*maitre;
 	long int	i;
-	int		run;
-	int		var_status;
-	long int death_time;
+	int			run;
+	int			var_status;
+	long int	death_time;
 
 	run = 1;
 	maitre = (t_maitre *)args;
@@ -42,17 +42,14 @@ void	*rout_mtr(void *args)
 			var_status = maitre->ret_st[i];
 			safe_mutex(&maitre->status_mtx[i], UNLOCK);
 			if ((var_status == ONE_DIED
-				|| (time_left(&maitre->set->philos[i]) <= 0
-				&& var_status != FULL)) && *maitre->printer == 0)
+					|| (time_left(&maitre->set->philos[i]) <= 0
+						&& var_status != FULL)) && *maitre->printer == 0)
 			{
 				death_time = get_milisec() - maitre->set->starting_time;
 				*maitre->printer = 1;
 				*maitre->funeral = 1;
 				safe_mutex(maitre->set->t_write_mtx, LOCK);
-				printf("%s%ld %ld died parse mada%s\n",
-					CYAN,
-					death_time,
-					i + 1,
+				printf("%s%ld %ld died parse mada%s\n", CYAN, death_time, i + 1,
 					RESET);
 				safe_mutex(maitre->set->t_write_mtx, UNLOCK);
 				set_all_died(maitre);
@@ -103,13 +100,13 @@ int	routine_even(t_philo *philo)
 	{
 		ret2 = sleeping(philo);
 		if (ret2 != 0)
-		return (ret2);
+			return (ret2);
 		ret3 = thinking(philo);
 		if (ret3 != 0)
 			return (ret3);
 		ret = eating(philo);
 		if (ret != 0)
-		return (ret);
+			return (ret);
 	}
 }
 
@@ -126,13 +123,10 @@ int	routine_odd(t_philo *philo)
 			return (ret3);
 		ret = eating(philo);
 		if (ret != 0)
-		return (ret);
+			return (ret);
 		ret2 = sleeping(philo);
 		if (ret2 != 0)
-		return (ret2);
-	
-	
-		
+			return (ret2);
 	}
 }
 
@@ -151,14 +145,13 @@ static char	*get_color(char *opt)
 		return (RED);
 	return (WHITE);
 }
-
 int	printer(t_philo *philo, char *opt)
 {
 	long	time;
+	long	status;
 
-	if (!opt)
-		return (ALL_ALIVE);
-	//time = get_milisec() - philo->settings->starting_time;
+	status = 0;
+	// time = get_milisec() - philo->settings->starting_time;
 	safe_mutex(philo->prntr_mtx, LOCK);
 	if (*philo->printer == 1)
 	{
@@ -166,22 +159,47 @@ int	printer(t_philo *philo, char *opt)
 		return (ONE_DIED);
 	}
 	safe_mutex(philo->wrt_mtx, LOCK);
+	// trying to make him die on time
+	// now it check when about to print, as takingmutexes takes time,
+	//	and is just after crossing the mutex u can
+	time = get_milisec() - philo->settings->starting_time;
+	if (time_left(philo) <= 0)
+	{
+		safe_mutex(philo->status_mtx, LOCK);
+		status = *philo->return_status;
+		if (status != ONE_DIED)
+		{
+			*philo->return_status = ONE_DIED;
+			printf(CYAN "%ld %ld %s%s in printer\n", time, philo->ph_id, DIED,
+				RESET);
+			safe_mutex(philo->status_mtx, UNLOCK);
+			///waiting for maitte to do somthing
+			usleep(philo->num_ph * 100);
+			///
+			safe_mutex(philo->wrt_mtx, UNLOCK);
+			safe_mutex(philo->prntr_mtx, UNLOCK);
+			return ONE_DIED;
+		}
+		safe_mutex(philo->status_mtx, UNLOCK);
+		//usleep(philo->num_ph * 10000);
+		safe_mutex(philo->wrt_mtx, UNLOCK);
+		safe_mutex(philo->prntr_mtx, UNLOCK);
+		return (ONE_DIED);
+	}
 	safe_mutex(philo->prntr_mtx, UNLOCK);
 	if (!strcmp(opt, FORK2))
-	{	//test
+	{ // test
 		time = get_milisec() - philo->settings->starting_time;
-
-		printf("%s%ld %ld has taken a fork%s\n",
-			get_color(opt), time, philo->ph_id, RESET);
-		printf(PINK "%ld %ld %s%s\n",
-			time, philo->ph_id, EATING, RESET);
+		printf("%s%ld %ld has taken a fork%s\n", get_color(opt), time,
+			philo->ph_id, RESET);
+		printf(PINK "%ld %ld %s%s\n", time, philo->ph_id, EATING, RESET);
 	}
 	else
-	{///test
+	{ /// test
 		time = get_milisec() - philo->settings->starting_time;
-//
-		printf("%s%ld %ld %s%s\n",
-			get_color(opt), time, philo->ph_id, opt, RESET);
+		//
+		printf("%s%ld %ld %s%s\n", get_color(opt), time, philo->ph_id, opt,
+			RESET);
 	}
 	safe_mutex(philo->wrt_mtx, UNLOCK);
 	if (!strcmp(opt, DIED))
@@ -202,5 +220,6 @@ int	all_alive(t_philo *philo, char *opt)
 		safe_mutex(philo->status_mtx, UNLOCK);
 		return (ONE_DIED);
 	}
+	
 	return (printer(philo, opt));
 }

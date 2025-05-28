@@ -144,6 +144,8 @@ typedef struct s_philo
 	long			threshold;
 	long			synchro_t;
 	int				*status;
+	pthread_mutex_t	*one_death_mtx;
+
 }	t_philo;
 
 typedef struct s_maitre
