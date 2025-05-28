@@ -18,6 +18,7 @@ int	main(int argc, char const *argv[])
 	else
 		parse_argv(set, argv);
 	load_settings(set, argv);
+	
 	create_mutexes(set);
 	create_philos(set);
 	//usleep(3500);

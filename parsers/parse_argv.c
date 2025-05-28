@@ -9,10 +9,17 @@ void parse_argv(t_settings *set, const char *argv[])
     
 }
 
+static void  test_data(t_settings *set){
+printf(" set->tt_die  -- %ld\n",  set->tt_die );
+printf(" set->tt_sleep  -- %ld\n",  set->tt_sleep );
+printf(" set->tt_eat  -- %ld\n",  set->tt_eat );
+
+}
+
 void load_settings(t_settings *set, const char *argv[])
 {
     set->num_ph = ft_atol(argv[1]);
-    set->tt_die = ft_atol(argv[2]);
+     set->tt_die = ft_atol(argv[2]);
     set->tt_eat = ft_atol(argv[3]);
     set->tt_sleep = ft_atol(argv[4]);
      set->max_meals = NO_MAX_MEALS;
@@ -26,5 +33,7 @@ void load_settings(t_settings *set, const char *argv[])
     set->funeral = 0;
     set->starting_time = 0;
     set->all_full = set->num_ph;
+    test_data((set));
+    usleep(5000);
   }
 
