@@ -76,7 +76,6 @@ void	*rout_asistant(void *args)
 
 	int status; // multiuse
 	asist = (t_asist *)args;
-	// usleep(200);
 	busy_wait_start(asist->synchro_t, PHILO_HEAD_START);
 	run = true;
 	while (run)
@@ -85,7 +84,7 @@ void	*rout_asistant(void *args)
 		while (asist->num_philosophers > i)
 		{
 			
-			if (time_left(&asist->philos[i]) <= 1)
+			if (time_left(&asist->philos[i]) <= 0)
 			{
 				safe_mutex(&asist->status_mtx[i], LOCK);
 				status = asist->ret_st[i];
@@ -97,7 +96,7 @@ void	*rout_asistant(void *args)
 					safe_mutex(asist->any_death_mtx, LOCK);
 					*asist->any_death = i;
 					safe_mutex(asist->any_death_mtx, UNLOCK);
-					printf("%ld %d died in routine", time, i);
+					printf("%ld %d died", time, i);
 					usleep(asist->num_philosophers * 200);
 					safe_mutex(asist->write_mtx, UNLOCK);
 					return (NULL);
@@ -210,7 +209,7 @@ int	printer(t_philo *philo, char *opt)
 	safe_mutex(philo->any_death_mtx, UNLOCK);
 	if (death != ALL_ALIVE)
 	{
-		printf(PINK "%ld %ld ya hay funeral%s\n", time, philo->ph_id, RESET);
+		//printf(PINK "%ld %ld ya hay funeral%s\n", time, philo->ph_id, RESET);
 		safe_mutex(philo->wrt_mtx, UNLOCK);
 		return (ONE_DIED);
 	}
