@@ -40,7 +40,7 @@
 # define ONE_DIED 1
 # define FULL 2
 # define TEST 1
-# define ALL_FULL 0
+# define ALL_FULL -1
 
 # define EATING "is eating"
 # define FORK "has taken a fork"
@@ -50,6 +50,7 @@
 # define DIED "died"
 
 typedef pthread_mutex_t	*t_funeral_mtx;
+typedef pthread_mutex_t	*t_feed_mtx;
 typedef pthread_mutex_t	*t_write_mtx;
 typedef pthread_mutex_t	*time_mtx;
 typedef pthread_mutex_t	*t_maitre_mtx;
@@ -115,7 +116,7 @@ typedef struct s_settings
 	int				printer;
 	pthread_mutex_t	*printer_mtx;
 	pthread_mutex_t	*funeral_mtx;
-	pthread_mutex_t	*feed_mtx;
+	t_feed_mtx		feed_mtx;
 	int				all_full;
 	int				*ret_st;
 	pthread_mutex_t	*mutexes;
@@ -136,12 +137,19 @@ typedef struct s_asist
 
 	pthread_mutex_t		*own_death_mtx;
 	pthread_mutex_t		*any_death_mtx;
+	pthread_mutex_t		*status_mtx;
+	t_write_mtx			write_mtx;
+	t_feed_mtx			feed_mtx;
 
 
-	bool					*own_death;
-	int					*any_death;
 
-		pthread_t		th_asist;
+
+	bool			*own_death;
+	int				*any_death;
+	int				*ret_st;
+
+
+	pthread_t		th_asist;
 
 	t_settings			*set;
 	t_philo				*philos;
@@ -149,6 +157,7 @@ typedef struct s_asist
 	long				threshold;
 	long				delay_to_sync;
 	long				num_philosophers;
+
 }	t_asist;
 
 

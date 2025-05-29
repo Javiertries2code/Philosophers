@@ -18,6 +18,6 @@ void join_threads(t_settings *settings)
             safe_mutex(settings->feed_mtx, UNLOCK);
             }
         }
-        pthread_join(settings->maitre->th_maitre, NULL);
+        pthread_join(settings->asist->th_asist, NULL);
  
 }
