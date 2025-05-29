@@ -84,9 +84,8 @@ void	*rout_asistant(void *args)
 		i = 0;
 		while (asist->num_philosophers > i)
 		{
-			if (status == 0)
-				return (NULL);
-			if (time_left(&asist->philos[i]) <= 0)
+			
+			if (time_left(&asist->philos[i]) <= 1)
 			{
 				safe_mutex(&asist->status_mtx[i], LOCK);
 				status = asist->ret_st[i];
@@ -94,7 +93,7 @@ void	*rout_asistant(void *args)
 				if (status != FULL)
 				{
 					safe_mutex(asist->write_mtx, LOCK);
-					time = get_milisec();
+					time = get_milisec() - asist->set->starting_time;
 					safe_mutex(asist->any_death_mtx, LOCK);
 					*asist->any_death = i;
 					safe_mutex(asist->any_death_mtx, UNLOCK);
