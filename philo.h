@@ -24,9 +24,17 @@
 # define SUCCESS 0
 # define ALIVE 0
 
+
+# define INPUT_ERROR 1
+# define ARG_NEG 2
+# define UNVALID_ARG 3
+# define ARG_TOO_BIG 4
+# define ARG_TOO_SMALL 5
+# define NO_PHILO_ERROR 6
+
 # define SAND_CLOCK 1000
 # define SLEEP_TO_SYNCHRO 1000
-# define PHILO_HEAD_START 40
+# define PHILO_HEAD_START 10 
 # define SLEEPING_THRESHOLD_TESTTIME 0
 # define WAIT_TO_SYNCHRO 1000
 # define THRESHOLD_TEST_ITERATION 50
@@ -246,7 +254,7 @@ void	check_deaths(t_settings *settings);
 void	support_read_returns(t_settings *settings);
 long	time_left(t_philo *philo);
 
-void	parse_argv(t_settings *settings, const char *argv[]);
+int		parse_input(t_settings *set,const char **argv);
 int		parse_int(char *argv[]);
 void	load_settings(t_settings *settings, const char *argv[]);
 void	create_philos(t_settings *settings);
@@ -276,7 +284,6 @@ void	safe_mutex(pthread_mutex_t *mtx, t_mtx_option opt);
 void	unlock_error(int ret);
 
 int		printer(t_philo *philo, char *opt);
-long	ft_atol(const char *str);
 void	*kloc(size_t count, size_t size);
 void	ft_bzero(void *s, size_t n);
 size_t	ft_strlen(const char *s);

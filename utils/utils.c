@@ -45,34 +45,7 @@ int	ft_strcmp(const char *s1, const char *s2, size_t n)
 }
 
 //returns -1 if negative or bigger than long max
-long	ft_atol(const char *str)
-{
-	int		sign;
-	long	num;
-	int		i;
 
-	num = 0;
-	sign = 1;
-	i = 0;
-	while (str[i] && (str[i] == '\f' || str[i] == '\t' || str[i] == ' '
-			|| str[i] == '\n' || str[i] == '\r' || str[i] == '\v'))
-		i++;
-	if (str[i] == '-' || str[i] == '+')
-	{
-		if (str[i++] == '-')
-			sign = -sign;
-	}
-	while (str[i] && str[i] >= '0' && str[i] <= '9')
-	{
-		if (num > (LONG_MAX - (str[i] - '0')) / 10)
-			return (-1);
-		num = 10 * num + (str[i] - '0');
-		i++;
-	}
-	if (num * sign < 0)
-		return (-1);
-	return (num * sign);
-}
 
 
 // float funcion_proporcional(float input) {

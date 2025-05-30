@@ -4,21 +4,27 @@
 
 int	main(int argc, char const *argv[])
 {
-	const char	*test[] = {"0", "9", "5500", "200", "250", "15"};
+
+	int ret;
+
+	ret = 0;
+	if (argc <= 1 || argc > 6)
+		return (0);
 	t_settings	*set;
 
 	(void)argc;
 	(void)argv;
 	set = kloc(1, sizeof(t_settings));
-	if (argc == 5 || argc == 6)
-		parse_argv(set, argv);
-	// for testing
-	if (argv == NULL)
-		parse_argv(set, test);
-	else
-		parse_argv(set, argv);
-	load_settings(set, argv);
+
+		if (argc == 5 || argc == 6)
+			ret = parse_input(set, argv);
+		
+
+	 if(ret)
+	 	return (ret);
 	
+	
+	load_settings(set, argv);
 	create_mutexes(set);
 	create_philos(set);
 	create_assitant(set);
@@ -26,5 +32,5 @@ int	main(int argc, char const *argv[])
 	//create_maitre(set);
 	join_threads(set);
 	exiting(set, NULL);
-	return (0);
+	return (ret);
 }
