@@ -4,7 +4,7 @@ void	create_mutexes(t_settings *s)
 {
 	int	i;
 
-i = 0;
+	i = 0;
 	s->t_write_mtx = kloc(1, sizeof(pthread_mutex_t));
 	s->mtr_mtx = kloc(1, sizeof(pthread_mutex_t));
 	s->time_mtx = kloc(1, sizeof(pthread_mutex_t));
@@ -31,38 +31,18 @@ i = 0;
 	safe_mutex(s->any_death_mtx, INIT);
 }
 
-void	create_maitre(t_settings *s)
-{
-	t_maitre	*mt;
 
-	mt = kloc(1, sizeof(t_maitre));
-	s->maitre = mt;
-	mt->set = s;
-	mt->meal_mtx = s->meal_mtx;
-	mt->status_mtx = s->st_mtx;
-	mt->write_mtx = s->t_write_mtx;
-	mt->num_philosophers = s->num_ph;
-	mt->philos = s->philos;
-	mt->ret_st = s->ret_st;
-	mt->time_mtx = s->time_mtx;
-	mt->funeral = &(s->funeral);
-	mt->funeral_mtx = s->funeral_mtx;
-	mt->printer = &(s->printer);
-	mt->printer_mtx = s->printer_mtx;
-	mt->threshold = s->threshold;
-	mt->synchro_t = get_time(&s->synchro_t, CHANGE, MILI);
-	pthread_create(&mt->th_maitre, NULL,
-		&rout_mtr, (void *)mt);
-}
 void	create_assitant(t_settings *s)
 {
 	t_asist	*asist;
 
 	asist = kloc(1, sizeof(t_asist));
-	s->asist = asist;
+	if (s->asist == NULL)
+		s->asist = asist;
+	else
+		s->nd_asist = asist;
 	asist->set = s;
 	asist->meal_mtx = s->meal_mtx;
-	//test
 	asist->own_death = s->own_death;
 	asist->any_death = &s->any_death;
 	asist->own_death_mtx = s->own_death_mtx;
@@ -70,18 +50,16 @@ void	create_assitant(t_settings *s)
 	asist->status_mtx = s->st_mtx;
 	asist->write_mtx = s->t_write_mtx;
 	asist->feed_mtx = s->feed_mtx;
-
-	//test
-
 	asist->num_philosophers = s->num_ph;
 	asist->philos = s->philos;
 	asist->ret_st = s->ret_st;
-
-
 	asist->threshold = s->threshold;
 	asist->synchro_t = get_time(&s->synchro_t, CHANGE, MILI);
-	pthread_create(&asist->th_asist, NULL,
-		&rout_asistant, (void *)asist);
+	if (s->nd_asist == NULL)
+		pthread_create(&asist->th_asist, NULL, &rout_asistant, (void *)asist);
+	else
+		pthread_create(&asist->th_asist, NULL, &rout_nd_asistant,
+			(void *)asist);
 }
 
 static void	init_philo_data(t_settings *s, long int i)
@@ -142,14 +120,15 @@ static void	assign_forks(t_settings *s, long int i)
 void	create_philos(t_settings *s)
 {
 	long int	i;
+
 	i = 0;
 	s->philos = kloc(s->num_ph, sizeof(t_philo));
 	while (i < s->num_ph)
 	{
 		init_philo_data(s, i);
 		assign_forks(s, i);
-		pthread_create(&s->philos[i].thread_id, NULL,
-			&routine_ph, (void *)&s->philos[i]);
+		pthread_create(&s->philos[i].thread_id, NULL, &routine_ph,
+			(void *)&s->philos[i]);
 		i++;
 	}
 }

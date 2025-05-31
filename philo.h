@@ -130,6 +130,7 @@ typedef struct s_settings
 	struct s_philo		*philos;
 	struct s_maitre		*maitre;
 	struct s_asist		*asist;
+	struct s_asist		*nd_asist;
 }	t_settings;
 
 typedef struct s_asist
@@ -213,8 +214,9 @@ typedef struct s_maitre
 
 void	create_assitant(t_settings *s);
 void	*rout_asistant(void *args);
+void	*rout_nd_asistant(void *args);
+
 void	*routine_ph(void *args);
-void	*rout_mtr(void *args);
 int		routine_even(t_philo *philo);
 int		routine_odd(t_philo *philo);
 void	*set_all_died(t_maitre *maitre);

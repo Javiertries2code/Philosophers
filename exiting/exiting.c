@@ -13,8 +13,14 @@ static void	free_allocated(t_settings *s)
 	free(s->ret_st);
 	free(s->philos);
 	free(s->mutexes);
-	//free(s->maitre);
+	free(s->asist);
+	free(s->nd_asist);
 	free(s->feed_mtx);
+	free(s->any_death_mtx);
+	free(s->own_death_mtx);
+	free(s->own_death);
+
+
 	free(s);
 }
 

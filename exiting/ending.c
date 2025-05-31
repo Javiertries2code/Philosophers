@@ -19,5 +19,7 @@ void join_threads(t_settings *settings)
             }
         }
         pthread_join(settings->asist->th_asist, NULL);
+        pthread_join(settings->nd_asist->th_asist, NULL);
+
  
 }
