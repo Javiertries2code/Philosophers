@@ -61,20 +61,6 @@ int	eating(t_philo *philo)
 	return (status);
 }
 
-
-int	thinking(t_philo *philo)
-{
-	int		status;
-	long	thinking_time;
-
-	thinking_time = philo->tt_die
-		- (philo->time_to_eat + philo->time_to_sleep);
-	status = all_alive(philo, THINKING);
-	if (philo->ph_id % 2 != 0 && philo->settings->num_ph % 2 != 0)
-		precise_sleep(thinking_time / 30, &philo->threshold);
-	return (status);
-}
-
 int	sleeping(t_philo *philo)
 {
 	int	status;

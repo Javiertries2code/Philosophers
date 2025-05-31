@@ -12,18 +12,18 @@ int	main(int argc, char const *argv[])
 		ret = parse_input(set, argv);
 	else
 	{
-		return (write(1, "Error: Incorrect number arguments\n", 35));
+		write(1, "Error: Incorrect number arguments\n", 35);
 		free(set);
+		return (EXIT_FAILURE);
 	}
 	if (ret)
 		return (ret);
-
-load_settings(set, argv);
-create_mutexes(set);
-create_philos(set);
-usleep(30);
-create_assitants(set);
-join_threads(set);
-exiting(set, NULL);
-return (ret);
+	load_settings(set, argv);
+	create_mutexes(set);
+	create_philos(set);
+	usleep(30);
+	create_assitants(set);
+	join_threads(set);
+	exiting(set, NULL);
+	return (ret);
 }
