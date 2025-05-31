@@ -94,10 +94,10 @@ void	*rout_asistant(void *args)
 					safe_mutex(asist->write_mtx, LOCK);
 					time = get_milisec() - asist->set->starting_time;
 					safe_mutex(asist->any_death_mtx, LOCK);
-					*asist->any_death = i;
+					*asist->any_death = i+1;
 					safe_mutex(asist->any_death_mtx, UNLOCK);
-					printf("%ld %d died", time, i);
-					usleep(asist->num_philosophers * 100);
+					printf("%ld %d died", time, i +1);
+					usleep(asist->num_philosophers * 200);
 					safe_mutex(asist->write_mtx, UNLOCK);
 					return (NULL);
 				}

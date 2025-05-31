@@ -20,10 +20,12 @@ static const char	*valid_input(const char *str)
 		str++;
 	if (*str == '-')
 	{
+		print_error(ARG_NEG);
 		return (NULL);
 	}
 	if (!is_digit(*str))
 	{
+		print_error(UNVALID_ARG);
 		return (NULL);
 	}
 	nbr_ptr = str;
@@ -45,6 +47,7 @@ static long	ft_atol(const char *str)
 	}
 	if (result > INT_MAX)
 	{
+		print_error(ARG_TOO_BIG);
 		result = -1;
 	}
 	return (result);
@@ -57,7 +60,7 @@ int	parse_input(t_settings *set, const char **argv)
 	if (set->num_ph == -1)
 		return (EXIT_FAILURE);
 	if (set->num_ph == 0)
-		return (NO_PHILO_ERROR);
+		return (print_error(NO_PHILO_ERROR));
 	set->tt_die = (long)ft_atol(argv[2]) * 1e3;
 	set->tt_eat = (long)ft_atol(argv[3]) * 1e3;
 	set->tt_sleep = (long)ft_atol(argv[4]) * 1e3;
@@ -66,7 +69,7 @@ int	parse_input(t_settings *set, const char **argv)
 		return (EXIT_FAILURE);
 	else if (set->tt_die < 6e4 || set->tt_eat < 6e4
 		|| set->tt_sleep < 6e4)
-		return (ARG_TOO_SMALL);
+		return (print_error(ARG_TOO_SMALL));
 	if (argv[5])
 	{
 		set->max_meals = ft_atol(argv[5]);
@@ -77,6 +80,7 @@ int	parse_input(t_settings *set, const char **argv)
 		set->max_meals = -1;
 	return (EXIT_SUCCESS);
 }
+
 
 void load_settings(t_settings *set, const char *argv[])
 {
@@ -98,6 +102,5 @@ void load_settings(t_settings *set, const char *argv[])
     set->all_full = set->num_ph;
     set->any_death = ALL_ALIVE;
   
-    usleep(500);
+    usleep(100);
   }
-
