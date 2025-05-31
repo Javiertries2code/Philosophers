@@ -254,6 +254,7 @@ void	create_maitre(t_settings *settings);
 void	create_mutexes(t_settings *settings);
 void	join_threads(t_settings *settings);
 void	set_threshold(t_settings *settings);
+bool	too_short(t_settings *set);
 long	time_microsec(timeval *tv);
 long	to_microsec(timeval *tv);
 long	get_microsec(void);
