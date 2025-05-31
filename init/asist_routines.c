@@ -31,14 +31,14 @@ void	*rout_asistant(void *args)
 					time = get_milisec() - asist->set->starting_time;
 					safe_mutex(asist->any_death_mtx, LOCK);
 					if (*asist->any_death == ALL_ALIVE){
-						printf("%ld %d died", time, i +1);
+						printf("%ld %d died\n", time, i +1);
 
 						*asist->any_death = ONE_DIED;	
 					}
 					
 					safe_mutex(asist->any_death_mtx, UNLOCK);
-					//printf("%ld %d died", time, i +1);
-					usleep(asist->num_philosophers * 200);
+					//printf("%ld %d died\n", time, i +1);
+					usleep(asist->num_philosophers * 100);
 					safe_mutex(asist->write_mtx, UNLOCK);
 					return (NULL);
 				}
@@ -87,13 +87,13 @@ void	*rout_nd_asistant(void *args)
 					time = get_milisec() - asist->set->starting_time;
 					safe_mutex(asist->any_death_mtx, LOCK);
 						if (*asist->any_death == ALL_ALIVE){
-						printf("%ld %d died", time, i +1);
+						printf("%ld %d died\n", time, i +1);
 
 						*asist->any_death = ONE_DIED;	
 					}
 					safe_mutex(asist->any_death_mtx, UNLOCK);
-				//	printf("%ld %d died", time, i +1);
-					usleep(asist->num_philosophers * 200);
+				//	printf("%ld %d died\n", time, i +1);
+					usleep(asist->num_philosophers * 10);
 					safe_mutex(asist->write_mtx, UNLOCK);
 					return (NULL);
 				}
@@ -142,7 +142,7 @@ void	*rout_two_ford(void *args)
 					time = get_milisec() - asist->set->starting_time;
 					safe_mutex(asist->any_death_mtx, LOCK);
 					if (*asist->any_death == ALL_ALIVE){
-						printf("%ld %d died", time, i +1);
+						printf("%ld %d died\n", time, i +1);
 
 						*asist->any_death = ONE_DIED;	
 					}
@@ -198,12 +198,12 @@ void	*rout_two_back(void *args)
 					time = get_milisec() - asist->set->starting_time;
 					safe_mutex(asist->any_death_mtx, LOCK);
 						if (*asist->any_death == ALL_ALIVE){
-						printf("%ld %d died", time, i +1);
+						printf("%ld %d died\n", time, i +1);
 
 						*asist->any_death = ONE_DIED;	
 					}
 					safe_mutex(asist->any_death_mtx, UNLOCK);
-				//	printf("%ld %d died", time, i +1);
+				//	printf("%ld %d died\n", time, i +1);
 					usleep(asist->num_philosophers * 10);
 					safe_mutex(asist->write_mtx, UNLOCK);
 					return (NULL);
@@ -253,13 +253,13 @@ void	*rout_three_ford(void *args)
 					time = get_milisec() - asist->set->starting_time;
 					safe_mutex(asist->any_death_mtx, LOCK);
 					if (*asist->any_death == ALL_ALIVE){
-						printf("%ld %d died", time, i +1);
+						printf("%ld %d died\n", time, i +1);
 
 						*asist->any_death = ONE_DIED;	
 					}
 					
 					safe_mutex(asist->any_death_mtx, UNLOCK);
-					//printf("%ld %d died", time, i +1);
+					//printf("%ld %d died\n", time, i +1);
 					usleep(asist->num_philosophers * 10);
 					safe_mutex(asist->write_mtx, UNLOCK);
 					return (NULL);
@@ -309,12 +309,12 @@ void	*rout_three_back(void *args)
 					time = get_milisec() - asist->set->starting_time;
 					safe_mutex(asist->any_death_mtx, LOCK);
 						if (*asist->any_death == ALL_ALIVE){
-						printf("%ld %d died", time, i +1);
+						printf("%ld %d died\n", time, i +1);
 
 						*asist->any_death = ONE_DIED;	
 					}
 					safe_mutex(asist->any_death_mtx, UNLOCK);
-				//	printf("%ld %d died", time, i +1);
+				//	printf("%ld %d died\n", time, i +1);
 					usleep(asist->num_philosophers * 10);
 					safe_mutex(asist->write_mtx, UNLOCK);
 					return (NULL);

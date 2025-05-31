@@ -8,7 +8,6 @@ bool too_short(t_settings *set)
     time = ((long)tv.tv_sec * 1e3 + tv.tv_usec / 1e3)- set->starting_time;
     if(time < set->tt_die)
     {
-           // printf(" too_short  time < set->tt_die %ld\n",time - set->tt_die);
             return true;
     }  
     else
