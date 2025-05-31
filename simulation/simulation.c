@@ -1,22 +1,5 @@
 #include "../philo.h"
 
-void	*set_all_died(t_maitre *maitre)
-{
-	int	i;
-
-	i = 0;
-	while (maitre->num_philosophers > i)
-	{
-		safe_mutex(&maitre->status_mtx[i], LOCK);
-		maitre->ret_st[i] = ONE_DIED;
-		safe_mutex(&maitre->status_mtx[i], UNLOCK);
-		i++;
-	}
-	return (NULL);
-}
-
-
-
 void	*routine_ph(void *args)
 {
 	t_philo	*philo;
@@ -79,75 +62,4 @@ int	routine_odd(t_philo *philo)
 		if (ret2 != 0)
 			return (ret2);
 	}
-}
-
-static char	*get_color(char *opt)
-{
-	int	n;
-
-	n = ft_strlen(opt);
-	if (!ft_strcmp(opt, FORK, n) || !ft_strcmp(opt, FORK2, n))
-		return (BLUE);
-	if (!ft_strcmp(opt, THINKING, n))
-		return (YELLOW);
-	if (!ft_strcmp(opt, SLEEPING, n))
-		return (GREEN);
-	if (!ft_strcmp(opt, DIED, n))
-		return (RED);
-	return (WHITE);
-}
-int	printer(t_philo *philo, char *opt)
-{
-	long	time;
-	int		death;
-
-	death = ALL_ALIVE;
-	safe_mutex(philo->wrt_mtx, LOCK);
-	// time to print
-	time = get_milisec() - philo->settings->starting_time;
-	safe_mutex(philo->any_death_mtx, LOCK);
-	death = *philo->any_death;
-	safe_mutex(philo->any_death_mtx, UNLOCK);
-	if (death != ALL_ALIVE)
-	{
-		//printf(PINK "%ld %ld ya hay funeral%s\n", time, philo->ph_id, RESET);
-		safe_mutex(philo->wrt_mtx, UNLOCK);
-		return (ONE_DIED);
-	}
-	else
-	{
-		if (!strcmp(opt, FORK2))
-		{
-			// test
-			///	time = get_milisec() - philo->settings->starting_time;
-			printf("%s%ld %ld has taken a fork%s\n", get_color(opt), time,
-				philo->ph_id, RESET);
-			printf(PINK "%ld %ld %s%s\n", time, philo->ph_id, EATING, RESET);
-		}
-		else
-		{ /// test
-			// time = get_milisec() - philo->settings->starting_time;
-			//
-			printf("%s%ld %ld %s%s\n", get_color(opt), time, philo->ph_id, opt,
-				RESET);
-		}
-		safe_mutex(philo->wrt_mtx, UNLOCK);
-	}
-	return (ALL_ALIVE);
-}
-
-int	all_alive(t_philo *philo, char *opt)
-{
-	long	left_life;
-
-	left_life = time_left(philo);
-	if (left_life <= 0)
-	{
-		left_life = get_milisec() - philo->settings->starting_time;
-		safe_mutex(philo->status_mtx, LOCK);
-		*philo->return_status = ONE_DIED;
-		safe_mutex(philo->status_mtx, UNLOCK);
-		return (ONE_DIED);
-	}
-	return (printer(philo, opt));
 }

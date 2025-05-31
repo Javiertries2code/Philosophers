@@ -237,9 +237,15 @@ void	*rout_three_back(void *args);
  void	asistant_monitor(t_asist *asist, int step, int reverse);
  int	check_philo_state(t_asist *asist, int i);
 
+void	handle_last_meal_update(t_philo *philo);
+int	lock_first_fork_and_check(t_philo *philo);
+int	handle_meal_count_and_status(t_philo *philo);
+
+
 void	*routine_ph(void *args);
 int		routine_even(t_philo *philo);
 int		routine_odd(t_philo *philo);
+char	*get_color(char *opt);
 void	*set_all_died(t_maitre *maitre);
 int		eating(t_philo *philo);
 int		sleeping(t_philo *philo);

@@ -53,7 +53,6 @@ static long	ft_atol(const char *str)
 	return (result);
 }
 
-
 int	parse_input(t_settings *set, const char **argv)
 {
 	set->num_ph = (long)ft_atol(argv[1]);
@@ -67,7 +66,7 @@ int	parse_input(t_settings *set, const char **argv)
 	if (set->tt_die == -1e3 || set->tt_eat == -1e3
 		|| set->tt_sleep == -1e3)
 		return (EXIT_FAILURE);
-	else if (set->tt_die < 6e4 || set->tt_eat < 6e4
+	if (set->tt_die < 6e4 || set->tt_eat < 6e4
 		|| set->tt_sleep < 6e4)
 		return (print_error(ARG_TOO_SMALL));
 	if (argv[5])
@@ -81,26 +80,24 @@ int	parse_input(t_settings *set, const char **argv)
 	return (EXIT_SUCCESS);
 }
 
-
-void load_settings(t_settings *set, const char *argv[])
+void	load_settings(t_settings *set, const char *argv[])
 {
-    set->num_ph = ft_atol(argv[1]);
-     set->tt_die = ft_atol(argv[2]);
-    set->tt_eat = ft_atol(argv[3]);
-    set->tt_sleep = ft_atol(argv[4]);
-     set->max_meals = NO_MAX_MEALS;
-      if (argv[5] != NULL)
-        set->max_meals = ft_atol(argv[5]);
-    gettimeofday(&set->synchro_t, NULL);
-    set_threshold(set);
-    set->philo_status = (int *)kloc(set->num_ph, sizeof(int));
-    set->ret_st = kloc(set->num_ph, sizeof(int));
-    set->own_death = kloc(set->num_ph, sizeof(int));
-    set->printer = 0;
-    set->funeral = 0;
-    set->starting_time = 0;
-    set->all_full = set->num_ph;
-    set->any_death = ALL_ALIVE;
-  
-    usleep(100);
-  }
+	set->num_ph = ft_atol(argv[1]);
+	set->tt_die = ft_atol(argv[2]);
+	set->tt_eat = ft_atol(argv[3]);
+	set->tt_sleep = ft_atol(argv[4]);
+	set->max_meals = NO_MAX_MEALS;
+	if (argv[5] != NULL)
+		set->max_meals = ft_atol(argv[5]);
+	gettimeofday(&set->synchro_t, NULL);
+	set_threshold(set);
+	set->philo_status = (int *)kloc(set->num_ph, sizeof(int));
+	set->ret_st = kloc(set->num_ph, sizeof(int));
+	set->own_death = kloc(set->num_ph, sizeof(int));
+	set->printer = 0;
+	set->funeral = 0;
+	set->starting_time = 0;
+	set->all_full = set->num_ph;
+	set->any_death = ALL_ALIVE;
+	usleep(100);
+}

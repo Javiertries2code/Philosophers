@@ -48,13 +48,10 @@ static void	init_philo_data(t_settings *s, long int i)
 	philo->threshold = s->threshold;
 	philo->synchro_t = get_time(&s->synchro_t, CHANGE, MILI);
 	philo->status_mtx = &s->st_mtx[i];
-	////
 	philo->own_death_mtx = &s->own_death_mtx[i];
 	philo->any_death_mtx = s->any_death_mtx;
-	///
 	philo->own_death = &s->own_death[i];
 	philo->any_death = &s->any_death;
-	////
 	philo->meal_mtx = &s->meal_mtx[i];
 	s->philos[i].return_status = &s->ret_st[i];
 	philo->fork_next = &s->mutexes[i];
@@ -96,8 +93,8 @@ void	create_philos(t_settings *s)
 	{
 		init_philo_data(s, i);
 		assign_forks(s, i);
-		pthread_create(&s->philos[i].thread_id, NULL, &routine_ph,
-			(void *)&s->philos[i]);
+		pthread_create(&s->philos[i].thread_id, NULL,
+			&routine_ph, (void *)&s->philos[i]);
 		i++;
 	}
 }
