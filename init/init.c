@@ -55,7 +55,7 @@ static void	init_philo_data(t_settings *s, long int i)
 	philo->meal_mtx = &s->meal_mtx[i];
 	s->philos[i].return_status = &s->ret_st[i];
 	philo->fork_next = &s->mutexes[i];
-	philo->last_meal = get_milisec(NULL, GET, MILI);
+	philo->last_meal = get_time(NULL, GET, MILI);
 	philo->funeral = &(s->funeral);
 	philo->funeral_mtx = s->funeral_mtx;
 	philo->printer = &(s->printer);

@@ -23,8 +23,8 @@
 # define ERROR 1
 # define SUCCESS 0
 # define ALIVE 0
-
 # define DEBUG_MODE 0
+
 # define INPUT_ERROR 1
 # define ARG_NEG 2
 # define UNVALID_ARG 3
@@ -217,10 +217,10 @@ typedef struct s_maitre
 	int					*any_death;
 }	t_maitre;
 
+/* assistants */
 void	create_assitants(t_settings *s);
 void	create_assitant_one(t_settings *s);
 void	create_assitant_two(t_settings *s);
-void	create_assitant_three(t_settings *s);
 void	create_assitant_three(t_settings *s);
 void	create_assitant_four(t_settings *s);
 void	create_assitant_five(t_settings *s);
@@ -231,67 +231,65 @@ void	*rout_two_ford(void *args);
 void	*rout_two_back(void *args);
 void	*rout_three_ford(void *args);
 void	*rout_three_back(void *args);
+void	asistant_monitor(t_asist *a, int step, int rev);
+int		check_philo_state(t_asist *a, int i);
 
-
-
- void	asistant_monitor(t_asist *asist, int step, int reverse);
- int	check_philo_state(t_asist *asist, int i);
-
-void	handle_last_meal_update(t_philo *philo);
-int	lock_first_fork_and_check(t_philo *philo);
-int	handle_meal_count_and_status(t_philo *philo);
-
-
+/* core logic */
 void	*routine_ph(void *args);
-int		routine_even(t_philo *philo);
-int		routine_odd(t_philo *philo);
+int		routine_even(t_philo *ph);
+int		routine_odd(t_philo *ph);
+int		eating(t_philo *ph);
+int		sleeping(t_philo *ph);
+int		thinking(t_philo *ph);
+int		all_alive(t_philo *ph, char *opt);
 char	*get_color(char *opt);
-void	*set_all_died(t_maitre *maitre);
-int		eating(t_philo *philo);
-int		sleeping(t_philo *philo);
-int		thinking(t_philo *philo);
-int		all_alive(t_philo *philo, char *option);
-void	check_deaths(t_settings *settings);
-void	support_read_returns(t_settings *settings);
-long	time_left(t_philo *philo);
-int		parse_input(t_settings *set, const char **argv);
-int		parse_int(char *argv[]);
-void	load_settings(t_settings *settings, const char *argv[]);
-void	create_philos(t_settings *settings);
-void	create_maitre(t_settings *settings);
-void	create_mutexes(t_settings *settings);
-void	join_threads(t_settings *settings);
-void	set_threshold(t_settings *settings);
-bool	too_short(t_settings *set);
-long	time_microsec(timeval *tv);
-long	to_microsec(timeval *tv);
+int		printer(t_philo *ph, char *opt);
+
+/* setup */
+int		parse_input(t_settings *s, const char **av);
+int		parse_int(char *av[]);
+void	load_settings(t_settings *s, const char **av);
+void	create_philos(t_settings *s);
+void	create_mutexes(t_settings *s);
+void	join_threads(t_settings *s);
+
+/* time */
 long	get_microsec(void);
-long	get_milisec();
-long	get_time(timeval *tv, timing_options op, timing_options units);
-void	precise_sleep(long nap_time, long *threshold);
-void	funcion_proporcional(t_settings *settings);
-void	calculate_delay(struct timeval *d, struct timeval s, t_write_mtx m);
-long	delay_to_syncro(long *d, long *s, t_write_mtx m);
+long	get_milisec(void);
+long	get_time(timeval *tv, timing_options o, timing_options u);
+long	to_microsec(timeval *tv);
 void	busy_wait_start(long s, int h);
-int		print_error(int err_id);
-void	init_error(int ret);
-void	lock_error(int ret);
-void	destroy_error(int ret);
-void	safe_mutex(pthread_mutex_t *mtx, t_mtx_option opt);
-void	unlock_error(int ret);
-int		printer(t_philo *philo, char *opt);
-void	*kloc(size_t count, size_t size);
+void	precise_sleep(long t, long *thr);
+long	time_left(t_philo *ph);
+bool	too_short(t_settings *s);
+void	set_threshold(t_settings *s);
+void	funcion_proporcional(t_settings *s);
+
+/* utils */
 void	ft_bzero(void *s, size_t n);
+void	*kloc(size_t c, size_t s);
 size_t	ft_strlen(const char *s);
 int		ft_strcmp(const char *s1, const char *s2, size_t n);
 void	write_function(t_settings *s, char *str);
+void	safe_mutex(pthread_mutex_t *m, t_mtx_option o);
+
+/* exit */
 void	exiting(t_settings *s, char *str);
-void	free_memory(t_settings *settings);
+void	free_memory(t_settings *s);
 void	exit_on_error(char *str);
 void	free_allocated_items(void);
+
+/* debug */
+void	support_read_returns(t_settings *s);
 void	print_data(t_settings *s, char *str);
-void	check_mutex(t_settings *s, char *n1,
-			pthread_mutex_t *m1, char *n2,
-			pthread_mutex_t *m2, t_philo *ph);
+void	check_mutex(t_settings *s, char *n1, pthread_mutex_t *m1,
+			char *n2, pthread_mutex_t *m2, t_philo *ph);
+
+/* error */
+int		print_error(int err);
+void	init_error(int ret);
+void	lock_error(int ret);
+void	unlock_error(int ret);
+void	destroy_error(int ret);
 
 #endif

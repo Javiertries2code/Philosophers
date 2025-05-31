@@ -1,37 +1,18 @@
 NAME := philo
 
 DIR_UTILS := utils/
-#DIR_SUPPORT := support/
 DIR_HANDLERS := handlers/
-#DIR_VALIDATE := val_exit/
 DIR_SIMULATION := simulation/
 DIR_INIT := init/
 DIR_TIMING := timing/
 DIR_PARSERS := parsers/
 DIR_EXITING := exiting/
 
-# ------------------ DEBUG ------------------
-# Para debug de memoria (leaks, out-of-bounds, etc):
-# $ make debug_leaks ARGS="4 310 200 200"
-#
-# Para debug de race conditions (mutex mal usado, accesos paralelos):
-# $ make debug_races ARGS="4 310 200 200"
-# ------------------------------------------
-
-#-------------
-#-------------
-# DIR_TEST := test/
-# TEST_FILES := 
-# TESTS := $(addprefix $(DIR_TEST), $(TEST_FILES))
-#-------------
-#-------------
 EXITING_FILES = exiting.c ending.c error_printer.c
 TIMING_FILES = timing.c  get_time.c synchro.c timing_support.c
 INIT_FILES =  init.c init_assistants.c asist_one.c asist_two.c asist_three.c asist_four.c asist_five.c asist_six.c
 SIMULATION_FILES = simulation.c routines.c simulation_support.c
-#VALIDATE_FILES = validate.c exiting.c
 UTILS_FILES = utils.c utils_support.c
-#SUPPORT_FILES = support.c
 PARSERS_FILES = parse_argv.c 
 HANDLERS_FILES = safe_mutex.c 
 
@@ -64,13 +45,13 @@ fclean: clean
 
 re: fclean all
 
-# Debug con Valgrind Memcheck (leaks, accesos inválidos, etc.)
+# Debug con Valgrind Memcheck make debug_leaks ARGS="4 410 200 200"
 debug_leaks:
 	$(MAKE) fclean
 	$(MAKE) DEBUG=1
 	valgrind --leak-check=full --track-origins=yes ./$(NAME) $(ARGS)
 
-# Debug con Valgrind Helgrind (data races)
+# Debug con Valgrind Helgrind make debug_races ARGS="4 410 200 200"
 debug_races:
 	$(MAKE) fclean
 	$(MAKE) DEBUG=1
