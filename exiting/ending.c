@@ -2,23 +2,21 @@
 
 void join_threads(t_settings *settings)
 {
-    int i;
+	int		i;
+	void	*ret;
 
-    i = -1;
-  
-        
-        while (settings->num_ph > ++i)
-        {
-            void *ret;
-            pthread_join(settings->philos[i].thread_id, &ret);
-            if (*(int *)ret == FULL)
-            {
-            safe_mutex(settings->feed_mtx, LOCK);
-           settings->all_full--;
-            safe_mutex(settings->feed_mtx, UNLOCK);
-            }
-        }
-    	if (settings->asist)
+	i = -1;
+	while (settings->num_ph > ++i)
+	{
+		pthread_join(settings->philos[i].thread_id, &ret);
+		if (*(int *)ret == FULL)
+		{
+			safe_mutex(settings->feed_mtx, LOCK);
+			settings->all_full--;
+			safe_mutex(settings->feed_mtx, UNLOCK);
+		}
+	}
+	if (settings->asist)
 		pthread_join(settings->asist->th_asist, NULL);
 	if (settings->nd_asist)
 		pthread_join(settings->nd_asist->th_asist, NULL);

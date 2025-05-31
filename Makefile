@@ -27,7 +27,7 @@ DIR_EXITING := exiting/
 #-------------
 EXITING_FILES = exiting.c ending.c error_printer.c
 TIMING_FILES = timing.c  get_time.c synchro.c
-INIT_FILES =  init.c init_assistants.c asist_routines.c
+INIT_FILES =  init.c init_assistants.c asist_routines.c forward_rout.c
 SIMULATION_FILES = simulation.c routines.c
 #VALIDATE_FILES = validate.c exiting.c
 UTILS_FILES = utils.c utils_support.c
@@ -36,13 +36,9 @@ PARSERS_FILES = parse_argv.c
 HANDLERS_FILES = safe_mutex.c 
 
 OBJECTS = $(UTILS:.c=.o) $(HANDLERS:.c=.o)  $(INITS:.c=.o) $(PARSERS:.c=.o) $(TIMING:.c=.o)
-#$(VALIDATES:.c=.o) $(SUPPORT:.c=.o) 
-
 UTILS := $(addprefix $(DIR_UTILS), $(UTILS_FILES))
-#SUPPORT := $(addprefix $(DIR_SUPPORT),  $(SUPPORT_FILES))
 HANDLERS := $(addprefix $(DIR_HANDLERS), $(HANDLERS_FILES))
 PARSERS := $(addprefix $(DIR_PARSERS), $(PARSERS_FILES))
-#VALIDATES := $(addprefix $(DIR_VALIDATE), $(VALIDATE_FILES))
 SIMULATIONS := $(addprefix $(DIR_SIMULATION), $(SIMULATION_FILES))
 INITS := $(addprefix $(DIR_INIT), $(INIT_FILES))
 TIMINGS := $(addprefix $(DIR_TIMING), $(TIMING_FILES))

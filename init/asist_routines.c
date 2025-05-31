@@ -9,7 +9,7 @@ void	*rout_asistant(void *args)
 	int		i;
 	long	time;
 
-	int status; // multiuse
+	int status;
 	asist = (t_asist *)args;
 	busy_wait_start(asist->synchro_t, PHILO_HEAD_START);
 	run = true;
@@ -32,12 +32,9 @@ void	*rout_asistant(void *args)
 					safe_mutex(asist->any_death_mtx, LOCK);
 					if (*asist->any_death == ALL_ALIVE){
 						printf("%ld %d died\n", time, i +1);
-
 						*asist->any_death = ONE_DIED;	
 					}
-					
 					safe_mutex(asist->any_death_mtx, UNLOCK);
-					//printf("%ld %d died\n", time, i +1);
 					usleep(asist->num_philosophers * 100);
 					safe_mutex(asist->write_mtx, UNLOCK);
 					return (NULL);

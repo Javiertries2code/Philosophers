@@ -19,8 +19,6 @@ static void	free_allocated(t_settings *s)
 	free(s->any_death_mtx);
 	free(s->own_death_mtx);
 	free(s->own_death);
-
-
 	free(s);
 }
 

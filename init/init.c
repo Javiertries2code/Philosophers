@@ -31,37 +31,6 @@ void	create_mutexes(t_settings *s)
 	safe_mutex(s->any_death_mtx, INIT);
 }
 
-
-// void	create_assitant(t_settings *s)
-// {
-// 	t_asist	*asist;
-
-// 	asist = kloc(1, sizeof(t_asist));
-// 	if (s->asist == NULL)
-// 		s->asist = asist;
-// 	else
-// 		s->nd_asist = asist;
-// 	asist->set = s;
-// 	asist->meal_mtx = s->meal_mtx;
-// 	asist->own_death = s->own_death;
-// 	asist->any_death = &s->any_death;
-// 	asist->own_death_mtx = s->own_death_mtx;
-// 	asist->any_death_mtx = s->any_death_mtx;
-// 	asist->status_mtx = s->st_mtx;
-// 	asist->write_mtx = s->t_write_mtx;
-// 	asist->feed_mtx = s->feed_mtx;
-// 	asist->num_philosophers = s->num_ph;
-// 	asist->philos = s->philos;
-// 	asist->ret_st = s->ret_st;
-// 	asist->threshold = s->threshold;
-// 	asist->synchro_t = get_time(&s->synchro_t, CHANGE, MILI);
-// 	if (s->nd_asist == NULL)
-// 		pthread_create(&asist->th_asist, NULL, &rout_asistant, (void *)asist);
-// 	else
-// 		pthread_create(&asist->th_asist, NULL, &rout_nd_asistant,
-// 			(void *)asist);
-// }
-
 static void	init_philo_data(t_settings *s, long int i)
 {
 	t_philo	*philo;
