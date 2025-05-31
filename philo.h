@@ -234,6 +234,8 @@ void	*rout_three_back(void *args);
 
 
 
+ void	asistant_monitor(t_asist *asist, int step, int reverse);
+ int	check_philo_state(t_asist *asist, int i);
 
 void	*routine_ph(void *args);
 int		routine_even(t_philo *philo);
