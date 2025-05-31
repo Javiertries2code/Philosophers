@@ -69,7 +69,7 @@ void	funcion_proporcional(t_settings *settings)
  */
 void precise_sleep(long nap_time, long *threshold)
 {
-    *threshold = 1;  
+    *threshold = 0;  
 long start;
     //printf(YELLOW "IN PRECISE SLEEP=  %ld\n *threshold = %ld\n" RESET, nap_time, *threshold);
 start = get_milisec();
