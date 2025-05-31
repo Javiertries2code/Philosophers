@@ -131,6 +131,10 @@ typedef struct s_settings
 	struct s_maitre		*maitre;
 	struct s_asist		*asist;
 	struct s_asist		*nd_asist;
+	struct s_asist		*third_asist;
+	struct s_asist		*fourth_asist;
+	struct s_asist		*fifth_asist;
+	struct s_asist		*sixth_asist;
 }	t_settings;
 
 typedef struct s_asist
@@ -212,9 +216,23 @@ typedef struct s_maitre
 	int					*any_death;
 }	t_maitre;
 
-void	create_assitant(t_settings *s);
+void	create_assitants(t_settings *s);
+void	create_assitant_one(t_settings *s);
+void	create_assitant_two(t_settings *s);
+void	create_assitant_three(t_settings *s);
+void	create_assitant_three(t_settings *s);
+void	create_assitant_four(t_settings *s);
+void	create_assitant_five(t_settings *s);
+void	create_assitant_six(t_settings *s);
 void	*rout_asistant(void *args);
 void	*rout_nd_asistant(void *args);
+void	*rout_two_ford(void *args);
+void	*rout_two_back(void *args);
+void	*rout_three_ford(void *args);
+void	*rout_three_back(void *args);
+
+
+
 
 void	*routine_ph(void *args);
 int		routine_even(t_philo *philo);
