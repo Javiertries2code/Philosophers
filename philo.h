@@ -32,6 +32,7 @@
 # define ARG_TOO_SMALL 5
 # define NO_PHILO_ERROR 6
 # define MALLOC_ERROR 7
+# define O_MAX_MEALS 8
 
 # define SAND_CLOCK 1000
 # define SLEEP_TO_SYNCHRO 1000

@@ -18,7 +18,6 @@ void	*set_all_died(t_maitre *maitre)
 
 void	*rout_asistant(void *args)
 {
-	    printf("rout_asistant\n");
 
 	t_asist	*asist;
 	bool	run;
@@ -74,7 +73,6 @@ void	*rout_asistant(void *args)
 
 void	*rout_nd_asistant(void *args)
 {
-	printf("rout_nd asistant\n");
 	t_asist	*asist;
 	bool	run;
 	int		i;

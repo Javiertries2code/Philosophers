@@ -73,8 +73,8 @@ int	parse_input(t_settings *set, const char **argv)
 	if (argv[5])
 	{
 		set->max_meals = ft_atol(argv[5]);
-		if (set->max_meals == -1)
-			return (EXIT_FAILURE);
+		if (set->max_meals < 1)
+			return (print_error(O_MAX_MEALS));
 	}
 	else
 		set->max_meals = -1;

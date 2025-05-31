@@ -33,7 +33,9 @@ int	print_error(int err_id)
 		ft_putstr_fd("Timing arguments must be greater than " \
 			" than 60ms.\n", STDERR_FILENO);
 	else if (err_id == NO_PHILO_ERROR)
-		ft_putstr_fd("Max meal must be at greater than 1.\n", 2);
+		ft_putstr_fd("Number of philosophers must be over 0.\n", STDERR_FILENO);
+	else if (err_id == O_MAX_MEALS)
+		ft_putstr_fd("Meals must be greater than 0\n", STDERR_FILENO);
 	else if (err_id == MALLOC_ERROR)
 		ft_putstr_fd("Malloc failed.\n", STDERR_FILENO);
 	
