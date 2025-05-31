@@ -27,7 +27,7 @@ DIR_EXITING := exiting/
 #-------------
 EXITING_FILES = exiting.c ending.c error_printer.c
 TIMING_FILES = timing.c  get_time.c synchro.c
-INIT_FILES =  init.c init_assistants.c asist_routines.c forward_rout.c
+INIT_FILES =  init.c init_assistants.c asist_one.c asist_two.c asist_three.c asist_four.c asist_five.c asist_six.c
 SIMULATION_FILES = simulation.c routines.c
 #VALIDATE_FILES = validate.c exiting.c
 UTILS_FILES = utils.c utils_support.c
