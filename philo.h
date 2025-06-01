@@ -62,11 +62,10 @@
 typedef pthread_mutex_t	*t_funeral_mtx;
 typedef pthread_mutex_t	*t_feed_mtx;
 typedef pthread_mutex_t	*t_write_mtx;
-typedef pthread_mutex_t	*time_mtx;
+typedef pthread_mutex_t	*t_tm_mtx;
 typedef pthread_mutex_t	*t_maitre_mtx;
 typedef pthread_mutex_t	*t_general;
 typedef pthread_mutex_t	*t_common_status_mtx;
-typedef struct timeval	timeval;
 typedef struct s_maitre	t_maitre;
 typedef struct s_philo	t_philo;
 
@@ -87,7 +86,7 @@ typedef enum e_timing_options
 	MICRO,
 	CHANGE,
 	GET
-}	timing_options;
+}	t_timing_opt;
 
 typedef enum e_mtx_option
 {
@@ -123,7 +122,7 @@ typedef struct s_settings
 	pthread_mutex_t		*st_mtx;
 	pthread_mutex_t		*meal_mtx;
 	t_write_mtx			t_write_mtx;
-	time_mtx			time_mtx;
+	t_tm_mtx			time_mtx;
 	struct timeval		synchro_t;
 	struct s_philo		*philos;
 	struct s_maitre		*maitre;
@@ -170,7 +169,7 @@ typedef struct s_philo
 	pthread_mutex_t		*meal_mtx;
 	pthread_mutex_t		*status_mtx;
 	t_write_mtx			wrt_mtx;
-	time_mtx			time_mtx;
+	t_tm_mtx			time_mtx;
 	t_general			t_general;
 	int					*printer;
 	pthread_mutex_t		*prntr_mtx;
@@ -195,7 +194,7 @@ typedef struct s_maitre
 	pthread_mutex_t		*status_mtx;
 	pthread_mutex_t		*meal_mtx;
 	t_write_mtx			write_mtx;
-	time_mtx			time_mtx;
+	t_tm_mtx			time_mtx;
 	t_philo				*philos;
 	int					*ret_st;
 	long				synchro_t;
@@ -251,8 +250,8 @@ long	ft_atol(const char *str);
 /* time */
 long	get_microsec(void);
 long	get_milisec(void);
-long	get_time(timeval *tv, timing_options o, timing_options u);
-long	to_microsec(timeval *tv);
+long	get_time(struct timeval *tv, t_timing_opt o, t_timing_opt u);
+long	to_microsec(struct timeval *tv);
 void	busy_wait_start(long s, int h);
 void	precise_sleep(long t, long *thr);
 long	time_left(t_philo *ph);

@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   get_time.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbravo <jbravo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: havr <havr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 13:58:09 by jbravo            #+#    #+#             */
-/*   Updated: 2025/06/01 13:58:10 by jbravo           ###   ########.fr       */
+/*   Updated: 2025/06/01 16:42:27 by havr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
 
-long	get_time(timeval *tv, timing_options operation, timing_options units)
+long	get_time(struct timeval *tv, t_timing_opt operation, t_timing_opt units)
 {
 	if (operation == GET)
 	{
@@ -31,19 +31,19 @@ long	get_time(timeval *tv, timing_options operation, timing_options units)
 	return (2);
 }
 
-long	to_microsec(timeval *tv)
+long	to_microsec(struct timeval *tv)
 {
 	return ((long)tv->tv_sec * 1e6 + tv->tv_usec);
 }
 
-long	to_milisec(timeval *tv)
+long	to_milisec(struct timeval *tv)
 {
 	return ((long)tv->tv_sec * 1e3 + tv->tv_usec / 1e3);
 }
 
 long	get_microsec(void)
 {
-	timeval	tv;
+	struct timeval	tv;
 
 	gettimeofday(&tv, NULL);
 	return ((long)tv.tv_sec * 1e6 + tv.tv_usec);
@@ -51,7 +51,7 @@ long	get_microsec(void)
 
 long	get_milisec(void)
 {
-	timeval	tv;
+	struct timeval	tv;
 
 	gettimeofday(&tv, NULL);
 	return ((long)tv.tv_sec * 1e3 + tv.tv_usec / 1e3);

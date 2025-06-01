@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   timing_support.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbravo <jbravo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: havr <havr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 13:58:14 by jbravo            #+#    #+#             */
-/*   Updated: 2025/06/01 13:58:15 by jbravo           ###   ########.fr       */
+/*   Updated: 2025/06/01 16:44:55 by havr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ long int	time_left(t_philo *philo)
 
 bool	too_short(t_settings *set)
 {
-	long	time;
-	timeval	tv;
+	long			time;
+	struct timeval	tv;
 
 	gettimeofday(&tv, NULL);
 	time = ((long)tv.tv_sec * 1e3 + tv.tv_usec / 1e3) - set->starting_time;
