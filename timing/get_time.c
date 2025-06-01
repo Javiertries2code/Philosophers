@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_time.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jbravo <jbravo@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/01 13:58:09 by jbravo            #+#    #+#             */
+/*   Updated: 2025/06/01 13:58:10 by jbravo           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../philo.h"
 
-long	get_time(timeval * tv, timing_options operation, timing_options units)
+long	get_time(timeval *tv, timing_options operation, timing_options units)
 {
 	if (operation == GET)
 	{
@@ -19,12 +31,12 @@ long	get_time(timeval * tv, timing_options operation, timing_options units)
 	return (2);
 }
 
-long	to_microsec(timeval * tv)
+long	to_microsec(timeval *tv)
 {
 	return ((long)tv->tv_sec * 1e6 + tv->tv_usec);
 }
 
-long	to_milisec(timeval * tv)
+long	to_milisec(timeval *tv)
 {
 	return ((long)tv->tv_sec * 1e3 + tv->tv_usec / 1e3);
 }

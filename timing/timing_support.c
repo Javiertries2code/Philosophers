@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   timing_support.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jbravo <jbravo@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/01 13:58:14 by jbravo            #+#    #+#             */
+/*   Updated: 2025/06/01 13:58:15 by jbravo           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../philo.h"
 
 long int	time_left(t_philo *philo)
@@ -8,8 +20,7 @@ long int	time_left(t_philo *philo)
 	safe_mutex(philo->meal_mtx, LOCK);
 	last_meal = philo->last_meal;
 	safe_mutex(philo->meal_mtx, UNLOCK);
-	time_left = philo->tt_die
-		- (get_time(NULL, GET, MILI) - last_meal);
+	time_left = philo->tt_die - (get_time(NULL, GET, MILI) - last_meal);
 	return (time_left);
 }
 

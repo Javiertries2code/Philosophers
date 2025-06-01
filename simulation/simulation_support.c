@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   simulation_support.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jbravo <jbravo@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/01 13:56:38 by jbravo            #+#    #+#             */
+/*   Updated: 2025/06/01 13:56:40 by jbravo           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../philo.h"
 
 void	*set_all_died(t_maitre *maitre)
@@ -38,8 +50,8 @@ int	printer(t_philo *philo, char *opt)
 	}
 	else
 	{
-		printf("%s%ld %ld %s%s\n", get_color(opt), time, philo->ph_id,
-			opt, RESET);
+		printf("%s%ld %ld %s%s\n", get_color(opt), time, philo->ph_id, opt,
+			RESET);
 	}
 	safe_mutex(philo->wrt_mtx, UNLOCK);
 	return (ALL_ALIVE);
@@ -79,11 +91,10 @@ int	all_alive(t_philo *philo, char *opt)
 
 int	thinking(t_philo *philo)
 {
-	int		status;
-	long	thinking_time;
+	int status;
+	long thinking_time;
 
-	thinking_time = philo->tt_die
-		- (philo->time_to_eat + philo->time_to_sleep);
+	thinking_time = philo->tt_die - (philo->time_to_eat + philo->time_to_sleep);
 	status = all_alive(philo, THINKING);
 	if (philo->ph_id % 2 != 0 && philo->settings->num_ph % 2 != 0)
 		precise_sleep(thinking_time / 30, &philo->threshold);

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   timing.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jbravo <jbravo@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/01 13:58:16 by jbravo            #+#    #+#             */
+/*   Updated: 2025/06/01 13:58:18 by jbravo           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../philo.h"
 
 void	set_threshold(t_settings *settings)
@@ -48,8 +60,8 @@ void	funcion_proporcional(t_settings *settings)
 		input = input_min;
 	else if (input > input_max)
 		input = input_max;
-	output = ((input - input_min) / (input_max - input_min))
-		* (output_max - output_min) + output_min;
+	output = ((input - input_min) / (input_max - input_min)) * (output_max
+			- output_min) + output_min;
 	settings->threshold *= output;
 }
 

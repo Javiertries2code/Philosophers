@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_argv.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jbravo <jbravo@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/01 13:56:32 by jbravo            #+#    #+#             */
+/*   Updated: 2025/06/01 13:56:34 by jbravo           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../philo.h"
 
 static inline bool	is_space(char c)
@@ -63,11 +75,9 @@ int	parse_input(t_settings *set, const char **argv)
 	set->tt_die = (long)ft_atol(argv[2]) * 1e3;
 	set->tt_eat = (long)ft_atol(argv[3]) * 1e3;
 	set->tt_sleep = (long)ft_atol(argv[4]) * 1e3;
-	if (set->tt_die == -1e3 || set->tt_eat == -1e3
-		|| set->tt_sleep == -1e3)
+	if (set->tt_die == -1e3 || set->tt_eat == -1e3 || set->tt_sleep == -1e3)
 		return (EXIT_FAILURE);
-	if (set->tt_die < 6e4 || set->tt_eat < 6e4
-		|| set->tt_sleep < 6e4)
+	if (set->tt_die < 6e4 || set->tt_eat < 6e4 || set->tt_sleep < 6e4)
 		return (print_error(ARG_TOO_SMALL));
 	if (argv[5])
 	{

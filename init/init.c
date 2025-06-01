@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jbravo <jbravo@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/01 13:56:21 by jbravo            #+#    #+#             */
+/*   Updated: 2025/06/01 13:56:23 by jbravo           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../philo.h"
 
 void	create_mutexes(t_settings *s)
@@ -93,8 +105,8 @@ void	create_philos(t_settings *s)
 	{
 		init_philo_data(s, i);
 		assign_forks(s, i);
-		pthread_create(&s->philos[i].thread_id, NULL,
-			&routine_ph, (void *)&s->philos[i]);
+		pthread_create(&s->philos[i].thread_id, NULL, &routine_ph,
+			(void *)&s->philos[i]);
 		i++;
 	}
 }
