@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_argv.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbravo <jbravo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: havr <havr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 13:56:32 by jbravo            #+#    #+#             */
-/*   Updated: 2025/06/01 13:56:34 by jbravo           ###   ########.fr       */
+/*   Updated: 2025/06/01 15:20:07 by havr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,6 @@ void	load_settings(t_settings *set, const char *argv[])
 	set->ret_st = kloc(set->num_ph, sizeof(int));
 	set->own_death = kloc(set->num_ph, sizeof(int));
 	set->printer = 0;
-	set->funeral = 0;
 	set->starting_time = 0;
 	set->all_full = set->num_ph;
 	set->any_death = ALL_ALIVE;

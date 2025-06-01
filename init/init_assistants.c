@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_assistants.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbravo <jbravo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: havr <havr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 13:56:18 by jbravo            #+#    #+#             */
-/*   Updated: 2025/06/01 13:56:19 by jbravo           ###   ########.fr       */
+/*   Updated: 2025/06/01 15:22:16 by havr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	create_assitants(t_settings *set)
 	}
 }
 
- int	check_philo_state(t_asist *asist, int i)
+int	check_philo_state(t_asist *asist, int i)
 {
 	long	time;
 	int		status;

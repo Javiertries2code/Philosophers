@@ -114,17 +114,14 @@ typedef struct s_settings
 	long				max_thr;
 	long				starting_time;
 	int					*philo_status;
-	int					funeral;
 	int					printer;
 	pthread_mutex_t		*printer_mtx;
-	pthread_mutex_t		*funeral_mtx;
 	t_feed_mtx			feed_mtx;
 	int					all_full;
 	int					*ret_st;
 	pthread_mutex_t		*mutexes;
 	pthread_mutex_t		*st_mtx;
 	pthread_mutex_t		*meal_mtx;
-	t_maitre_mtx		mtr_mtx;
 	t_write_mtx			t_write_mtx;
 	time_mtx			time_mtx;
 	struct timeval		synchro_t;
@@ -177,8 +174,6 @@ typedef struct s_philo
 	t_general			t_general;
 	int					*printer;
 	pthread_mutex_t		*prntr_mtx;
-	int					*funeral;
-	pthread_mutex_t		*funeral_mtx;
 	long				num_ph;
 	long				ph_id;
 	long				tt_die;
@@ -208,8 +203,6 @@ typedef struct s_maitre
 	long				delay_to_sync;
 	int					*printer;
 	pthread_mutex_t		*printer_mtx;
-	int					*funeral;
-	pthread_mutex_t		*funeral_mtx;
 	long				num_philosophers;
 	pthread_mutex_t		*own_death_mtx;
 	pthread_mutex_t		*any_death_mtx;

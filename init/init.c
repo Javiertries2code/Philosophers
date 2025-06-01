@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbravo <jbravo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: havr <havr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 13:56:21 by jbravo            #+#    #+#             */
-/*   Updated: 2025/06/01 13:56:23 by jbravo           ###   ########.fr       */
+/*   Updated: 2025/06/01 15:20:11 by havr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,9 @@ void	create_mutexes(t_settings *s)
 
 	i = 0;
 	s->t_write_mtx = kloc(1, sizeof(pthread_mutex_t));
-	s->mtr_mtx = kloc(1, sizeof(pthread_mutex_t));
 	s->time_mtx = kloc(1, sizeof(pthread_mutex_t));
 	s->feed_mtx = kloc(1, sizeof(pthread_mutex_t));
 	s->printer_mtx = kloc(1, sizeof(pthread_mutex_t));
-	s->funeral_mtx = kloc(s->num_ph, sizeof(pthread_mutex_t));
 	s->mutexes = kloc(s->num_ph, sizeof(pthread_mutex_t));
 	s->st_mtx = kloc(s->num_ph, sizeof(pthread_mutex_t));
 	s->meal_mtx = kloc(s->num_ph, sizeof(pthread_mutex_t));
@@ -33,13 +31,11 @@ void	create_mutexes(t_settings *s)
 		safe_mutex(&s->mutexes[i], INIT);
 		safe_mutex(&s->st_mtx[i], INIT);
 		safe_mutex(&s->meal_mtx[i], INIT);
-		safe_mutex(&s->funeral_mtx[i], INIT);
 		safe_mutex(&s->own_death_mtx[i], INIT);
 		i++;
 	}
 	safe_mutex(s->t_write_mtx, INIT);
 	safe_mutex(s->time_mtx, INIT);
-	safe_mutex(s->mtr_mtx, INIT);
 	safe_mutex(s->any_death_mtx, INIT);
 }
 
@@ -68,8 +64,6 @@ static void	init_philo_data(t_settings *s, long int i)
 	s->philos[i].return_status = &s->ret_st[i];
 	philo->fork_next = &s->mutexes[i];
 	philo->last_meal = get_time(NULL, GET, MILI);
-	philo->funeral = &(s->funeral);
-	philo->funeral_mtx = s->funeral_mtx;
 	philo->printer = &(s->printer);
 	philo->prntr_mtx = s->printer_mtx;
 }
