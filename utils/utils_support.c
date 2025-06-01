@@ -6,7 +6,7 @@
 /*   By: havr <havr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 13:58:21 by jbravo            #+#    #+#             */
-/*   Updated: 2025/06/01 15:41:32 by havr             ###   ########.fr       */
+/*   Updated: 2025/06/01 15:52:52 by havr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,35 +45,5 @@ void	write_function(t_settings *settings, char *str)
 {
 	safe_mutex(settings->t_write_mtx, LOCK);
 	write(1, str, ft_strlen(str));
-	safe_mutex(settings->t_write_mtx, UNLOCK);
-}
-
-void	check_mutex(t_settings *settings, char *mtx_name,
-			pthread_mutex_t *mutex, char *mtx_name2,
-			pthread_mutex_t *mutex2, t_philo *philo)
-{
-	int	i;
-
-	safe_mutex(settings->t_write_mtx, LOCK);
-	i = 0;
-	while (i < settings->num_ph)
-	{
-		if (mutex && mutex2)
-		{
-			printf(CYAN "%s\n&mutex[%d] = %p\n" RST, mtx_name, i, &mutex[i]);
-			printf(CYAN "%s\n&mutex2[%d] = %p\n" RST, mtx_name2, i, &mutex2[i]);
-		}
-		if (philo)
-		{
-			printf(YELLOW "philo->settings->status_mtx[%d] = %p\n" RST,
-				i, &philo->settings->st_mtx[i]);
-			printf(WHITE "&philo->status-mtx[i] = %p\n" RST,
-				&philo->status_mtx[i]);
-			printf(YELLOW "&settings->philos[%d].status_mtx[...] = %p\n" RST,
-				i, &settings->philos[i].status_mtx[settings->philos[i].ph_id - 1]);
-		}
-		printf("\n\n");
-		i++;
-	}
 	safe_mutex(settings->t_write_mtx, UNLOCK);
 }

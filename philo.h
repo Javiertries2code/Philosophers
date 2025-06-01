@@ -277,8 +277,7 @@ void	free_allocated_items(void);
 /* debug */
 void	support_read_returns(t_settings *s);
 void	print_data(t_settings *s, char *str);
-void	check_mutex(t_settings *s, char *n1, pthread_mutex_t *m1,
-			char *n2, pthread_mutex_t *m2, t_philo *ph);
+
 
 /* error */
 int		print_error(int err);
