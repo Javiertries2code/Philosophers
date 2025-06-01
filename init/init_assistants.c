@@ -6,7 +6,7 @@
 /*   By: havr <havr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 13:56:18 by jbravo            #+#    #+#             */
-/*   Updated: 2025/06/01 15:31:29 by havr             ###   ########.fr       */
+/*   Updated: 2025/06/01 15:34:36 by havr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	create_assitants(t_settings *set)
 		create_assitant_six(set);
 	}
 }
+
 int	check_philo_state(t_asist *asist, int i)
 {
 	int		status;
@@ -63,8 +64,7 @@ int	handle_philo_death(t_asist *asist, int i)
 	return (0);
 }
 
-
- void	asistant_monitor(t_asist *asist, int step, int reverse)
+void	asistant_monitor(t_asist *asist, int step, int reverse)
 {
 	int	i;
 
@@ -88,6 +88,3 @@ int	handle_philo_death(t_asist *asist, int i)
 		}
 	}
 }
-
-
-
