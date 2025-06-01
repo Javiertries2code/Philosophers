@@ -259,7 +259,6 @@ void	precise_sleep(long t, long *thr);
 long	time_left(t_philo *ph);
 bool	too_short(t_settings *s);
 void	set_threshold(t_settings *s);
-void	funcion_proporcional(t_settings *s);
 
 /* utils */
 void	ft_bzero(void *s, size_t n);

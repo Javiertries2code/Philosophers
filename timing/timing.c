@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   timing.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbravo <jbravo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: havr <havr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 13:58:16 by jbravo            #+#    #+#             */
-/*   Updated: 2025/06/01 13:58:18 by jbravo           ###   ########.fr       */
+/*   Updated: 2025/06/01 15:51:21 by havr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,11 @@ void	set_threshold(t_settings *settings)
 			settings->threshold = settings->max_thr;
 		i++;
 	}
-	funcion_proporcional(settings);
+	funcion_proporcional(settings, 0);
 }
 
-void	funcion_proporcional(t_settings *settings)
+static	void	funcion_proporcional(t_settings *settings, float input_min)
 {
-	float	input_min;
 	float	input_max;
 	float	output_min;
 	float	output_max;
