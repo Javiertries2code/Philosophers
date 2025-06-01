@@ -226,6 +226,8 @@ void	*rout_three_ford(void *args);
 void	*rout_three_back(void *args);
 void	asistant_monitor(t_asist *a, int step, int rev);
 int		check_philo_state(t_asist *a, int i);
+int		handle_philo_death(t_asist *asist, int i);
+
 
 /* core logic */
 void	*routine_ph(void *args);

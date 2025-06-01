@@ -6,7 +6,7 @@
 /*   By: havr <havr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 13:56:18 by jbravo            #+#    #+#             */
-/*   Updated: 2025/06/01 15:22:16 by havr             ###   ########.fr       */
+/*   Updated: 2025/06/01 15:31:29 by havr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,8 @@ void	create_assitants(t_settings *set)
 		create_assitant_six(set);
 	}
 }
-
 int	check_philo_state(t_asist *asist, int i)
 {
-	long	time;
 	int		status;
 
 	if (time_left(&asist->philos[i]) > 0)
@@ -40,25 +38,32 @@ int	check_philo_state(t_asist *asist, int i)
 	status = asist->ret_st[i];
 	safe_mutex(&asist->status_mtx[i], UNLOCK);
 	if (status != FULL)
-	{
-		safe_mutex(asist->write_mtx, LOCK);
-		time = get_milisec() - asist->set->starting_time;
-		safe_mutex(asist->any_death_mtx, LOCK);
-		if (*asist->any_death == ALL_ALIVE)
-		{
-			printf("%ld %d died\n", time, i + 1);
-			*asist->any_death = ONE_DIED;
-		}
-		safe_mutex(asist->any_death_mtx, UNLOCK);
-		usleep(asist->num_philosophers * 100);
-		safe_mutex(asist->write_mtx, UNLOCK);
-		return (0);
-	}
+		return (handle_philo_death(asist, i));
 	safe_mutex(asist->feed_mtx, LOCK);
 	status = asist->set->all_full;
 	safe_mutex(asist->feed_mtx, UNLOCK);
 	return (status != 0);
 }
+
+int	handle_philo_death(t_asist *asist, int i)
+{
+	long	time;
+
+	safe_mutex(asist->write_mtx, LOCK);
+	time = get_milisec() - asist->set->starting_time;
+	safe_mutex(asist->any_death_mtx, LOCK);
+	if (*asist->any_death == ALL_ALIVE)
+	{
+		printf("%ld %d died\n", time, i + 1);
+		*asist->any_death = ONE_DIED;
+	}
+	safe_mutex(asist->any_death_mtx, UNLOCK);
+	usleep(asist->num_philosophers * 100);
+	safe_mutex(asist->write_mtx, UNLOCK);
+	return (0);
+}
+
+
  void	asistant_monitor(t_asist *asist, int step, int reverse)
 {
 	int	i;
