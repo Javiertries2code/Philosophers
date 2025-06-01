@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ending.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbravo <jbravo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: havr <havr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 13:52:21 by jbravo            #+#    #+#             */
-/*   Updated: 2025/06/01 13:52:28 by jbravo           ###   ########.fr       */
+/*   Updated: 2025/06/01 14:25:50 by havr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,7 @@ void	join_threads(t_settings *settings)
 			safe_mutex(settings->feed_mtx, UNLOCK);
 		}
 	}
-	if (settings->asist)
-		pthread_join(settings->asist->th_asist, NULL);
+	pthread_join(settings->asist->th_asist, NULL);
 	if (settings->nd_asist)
 		pthread_join(settings->nd_asist->th_asist, NULL);
 	if (settings->third_asist)
