@@ -228,7 +228,6 @@ void	asistant_monitor(t_asist *a, int step, int rev);
 int		check_philo_state(t_asist *a, int i);
 int		handle_philo_death(t_asist *asist, int i);
 
-
 /* core logic */
 void	*routine_ph(void *args);
 int		routine_even(t_philo *ph);
@@ -277,7 +276,6 @@ void	free_allocated_items(void);
 /* debug */
 void	support_read_returns(t_settings *s);
 void	print_data(t_settings *s, char *str);
-
 
 /* error */
 int		print_error(int err);

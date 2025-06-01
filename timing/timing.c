@@ -6,11 +6,36 @@
 /*   By: havr <havr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 13:58:16 by jbravo            #+#    #+#             */
-/*   Updated: 2025/06/01 15:51:21 by havr             ###   ########.fr       */
+/*   Updated: 2025/06/01 15:59:03 by havr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
+
+static	void	funcion_proporcional(t_settings *settings, float input_min)
+{
+	float	input_max;
+	float	output_min;
+	float	output_max;
+	float	input;
+	float	output;
+
+	input_min = THRESHOLD_MIN_INPUT;
+	if (SLEEPING_THRESHOLD_TESTTIME != 0)
+		input_max = SLEEPING_THRESHOLD_TESTTIME;
+	else
+		input_max = settings->max_thr;
+	output_min = MIN_SAFETY_MARGIN;
+	output_max = MAX_SAFETY_MARGIN;
+	input = (float)settings->threshold;
+	if (input < input_min)
+		input = input_min;
+	else if (input > input_max)
+		input = input_max;
+	output = ((input - input_min) / (input_max - input_min)) * (output_max
+			- output_min) + output_min;
+	settings->threshold *= output;
+}
 
 void	set_threshold(t_settings *settings)
 {
@@ -37,31 +62,6 @@ void	set_threshold(t_settings *settings)
 		i++;
 	}
 	funcion_proporcional(settings, 0);
-}
-
-static	void	funcion_proporcional(t_settings *settings, float input_min)
-{
-	float	input_max;
-	float	output_min;
-	float	output_max;
-	float	input;
-	float	output;
-
-	input_min = THRESHOLD_MIN_INPUT;
-	if (SLEEPING_THRESHOLD_TESTTIME != 0)
-		input_max = SLEEPING_THRESHOLD_TESTTIME;
-	else
-		input_max = settings->max_thr;
-	output_min = MIN_SAFETY_MARGIN;
-	output_max = MAX_SAFETY_MARGIN;
-	input = (float)settings->threshold;
-	if (input < input_min)
-		input = input_min;
-	else if (input > input_max)
-		input = input_max;
-	output = ((input - input_min) / (input_max - input_min)) * (output_max
-			- output_min) + output_min;
-	settings->threshold *= output;
 }
 
 void	precise_sleep(long nap_time, long *threshold)
