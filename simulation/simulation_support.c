@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   simulation_support.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbravo <jbravo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: havr <havr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 13:56:38 by jbravo            #+#    #+#             */
-/*   Updated: 2025/06/01 13:56:40 by jbravo           ###   ########.fr       */
+/*   Updated: 2025/06/01 15:44:32 by havr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,20 +44,19 @@ int	printer(t_philo *philo, char *opt)
 	}
 	if (!strcmp(opt, FORK2))
 	{
-		printf("%s%ld %ld has taken a fork%s\n", get_color(opt), time,
-			philo->ph_id, RESET);
-		printf(PINK "%ld %ld %s%s\n", time, philo->ph_id, EATING, RESET);
+		printf("%s%ld %ld has taken a fork%s\n", get_col(opt), time,
+			philo->ph_id, RST);
+		printf(PINK "%ld %ld %s%s\n", time, philo->ph_id, EATING, RST);
 	}
 	else
 	{
-		printf("%s%ld %ld %s%s\n", get_color(opt), time, philo->ph_id, opt,
-			RESET);
+		printf("%s%ld %ld %s%s\n", get_col(opt), time, philo->ph_id, opt, RST);
 	}
 	safe_mutex(philo->wrt_mtx, UNLOCK);
 	return (ALL_ALIVE);
 }
 
-char	*get_color(char *opt)
+char	*get_col(char *opt)
 {
 	int	n;
 
@@ -91,8 +90,8 @@ int	all_alive(t_philo *philo, char *opt)
 
 int	thinking(t_philo *philo)
 {
-	int status;
-	long thinking_time;
+	int		status;
+	long	thinking_time;
 
 	thinking_time = philo->tt_die - (philo->time_to_eat + philo->time_to_sleep);
 	status = all_alive(philo, THINKING);

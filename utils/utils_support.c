@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_support.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbravo <jbravo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: havr <havr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 13:58:21 by jbravo            #+#    #+#             */
-/*   Updated: 2025/06/01 13:58:22 by jbravo           ###   ########.fr       */
+/*   Updated: 2025/06/01 15:41:32 by havr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,16 +60,16 @@ void	check_mutex(t_settings *settings, char *mtx_name,
 	{
 		if (mutex && mutex2)
 		{
-			printf(CYAN "%s\n&mutex[%d] = %p\n" RESET, mtx_name, i, &mutex[i]);
-			printf(CYAN "%s\n&mutex2[%d] = %p\n" RESET, mtx_name2, i, &mutex2[i]);
+			printf(CYAN "%s\n&mutex[%d] = %p\n" RST, mtx_name, i, &mutex[i]);
+			printf(CYAN "%s\n&mutex2[%d] = %p\n" RST, mtx_name2, i, &mutex2[i]);
 		}
 		if (philo)
 		{
-			printf(YELLOW "philo->settings->status_mtx[%d] = %p\n" RESET,
+			printf(YELLOW "philo->settings->status_mtx[%d] = %p\n" RST,
 				i, &philo->settings->st_mtx[i]);
-			printf(WHITE "&philo->status-mtx[i] = %p\n" RESET,
+			printf(WHITE "&philo->status-mtx[i] = %p\n" RST,
 				&philo->status_mtx[i]);
-			printf(YELLOW "&settings->philos[%d].status_mtx[...] = %p\n" RESET,
+			printf(YELLOW "&settings->philos[%d].status_mtx[...] = %p\n" RST,
 				i, &settings->philos[i].status_mtx[settings->philos[i].ph_id - 1]);
 		}
 		printf("\n\n");

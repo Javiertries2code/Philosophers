@@ -6,7 +6,7 @@
 /*   By: havr <havr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 13:56:32 by jbravo            #+#    #+#             */
-/*   Updated: 2025/06/01 15:37:12 by havr             ###   ########.fr       */
+/*   Updated: 2025/06/01 15:45:21 by havr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static const char	*valid_input(const char *str)
 	return (nbr_ptr);
 }
 
-static long	ft_atol(const char *str)
+long	ft_atol(const char *str)
 {
 	long	result;
 

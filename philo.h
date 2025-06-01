@@ -11,7 +11,7 @@
 # include <errno.h>
 # include <string.h>
 
-# define RESET "\033[0m"
+# define RST "\033[0m"
 # define RED "\033[1;31m"
 # define GREEN "\033[1;32m"
 # define YELLOW "\033[93m"
@@ -237,7 +237,7 @@ int		eating(t_philo *ph);
 int		sleeping(t_philo *ph);
 int		thinking(t_philo *ph);
 int		all_alive(t_philo *ph, char *opt);
-char	*get_color(char *opt);
+char	*get_col(char *opt);
 int		printer(t_philo *ph, char *opt);
 
 /* setup */
@@ -247,6 +247,7 @@ void	load_settings(t_settings *s, const char **av);
 void	create_philos(t_settings *s);
 void	create_mutexes(t_settings *s);
 void	join_threads(t_settings *s);
+long	ft_atol(const char *str);
 
 /* time */
 long	get_microsec(void);
