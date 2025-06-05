@@ -10,7 +10,7 @@ DIR_EXITING := exiting/
 
 EXITING_FILES = exiting.c ending.c error_printer.c
 TIMING_FILES = timing.c  get_time.c synchro.c timing_support.c
-INIT_FILES =  init.c init_assistants.c asist_one.c asist_two.c asist_three.c asist_four.c asist_five.c asist_six.c
+INIT_FILES =  init.c init_assistants.c asist_one.c asist_two.c asist_three.c asist_four.c asist_five.c asist_six.c asist_seven.c asist_eight.c
 SIMULATION_FILES = simulation.c routines.c simulation_support.c
 UTILS_FILES = utils.c utils_support.c
 PARSERS_FILES = parse_argv.c 
@@ -39,7 +39,7 @@ $(NAME):$(OBJECTS)
 	 $(PARSERS) $(SIMULATIONS) $(INITS) $(TIMINGS) $(EXITING)
 
 clean:
-	rm -rf  $(NAME) $(OBJECTS)
+	rm -rf  $(OBJECTS)
 
 fclean: clean
 
@@ -55,6 +55,6 @@ debug_leaks:
 debug_races:
 	$(MAKE) fclean
 	$(MAKE) DEBUG=1
-	valgrind --tool=helgrind ./$(NAME) $(ARGS)
+	valgrind --tool=helgrind --tool=drd ./$(NAME) $(ARGS)
 
 .PHONY: all clean fclean re debug_leaks debug_races

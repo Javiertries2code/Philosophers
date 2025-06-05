@@ -1,23 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   asist_three.c                                      :+:      :+:    :+:   */
+/*   asist_seven.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jbravo <jbravo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/01 13:56:13 by jbravo            #+#    #+#             */
-/*   Updated: 2025/06/05 23:30:10 by jbravo           ###   ########.fr       */
+/*   Created: 2025/06/05 23:46:24 by jbravo            #+#    #+#             */
+/*   Updated: 2025/06/06 00:38:10 by jbravo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
 
-void	create_assitant_three(t_settings *s)
+void	create_assitant_seven(t_settings *s)
 {
 	t_asist	*asist;
 
 	asist = kloc(1, sizeof(t_asist));
-	s->third_asist = asist;
+	s->seventh_asist = asist;
 	asist->set = s;
 	asist->starting_time = s->starting_time;
 	asist->tt_die = s->tt_die;
@@ -34,15 +34,15 @@ void	create_assitant_three(t_settings *s)
 	asist->ret_st = s->ret_st;
 	asist->threshold = s->threshold;
 	asist->synchro_t = get_time(&s->synchro_t, CHANGE, MILI);
-	pthread_create(&asist->th_asist, NULL, &rout_two_ford, (void *)asist);
+	pthread_create(&asist->th_asist, NULL, &rout_four_ford, (void *)asist);
 }
 
-void	*rout_two_ford(void *args)
+void	*rout_four_ford(void *args)
 {
 	t_asist	*asist;
 
 	asist = (t_asist *)args;
 	busy_wait_start(asist->synchro_t, PHILO_HEAD_START);
-	asistant_monitor(asist, 2, 0);
+	asistant_monitor(asist, 4, 0);
 	return (NULL);
 }

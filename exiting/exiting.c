@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exiting.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: havr <havr@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: jbravo <jbravo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 13:54:20 by jbravo            #+#    #+#             */
-/*   Updated: 2025/06/01 15:19:40 by havr             ###   ########.fr       */
+/*   Updated: 2025/06/05 23:53:17 by jbravo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ static void	free_allocated(t_settings *s)
 {
 	free(s->t_write_mtx);
 	free(s->time_mtx);
-	free(s->printer_mtx);
 	free(s->st_mtx);
 	free(s->meal_mtx);
 	free(s->philo_status);
@@ -41,8 +40,6 @@ static void	destroy_mutexes(t_settings *s)
 		pthread_mutex_destroy(s->t_write_mtx);
 	if (s->time_mtx)
 		pthread_mutex_destroy(s->time_mtx);
-	if (s->printer_mtx)
-		pthread_mutex_destroy(s->printer_mtx);
 	if (s->any_death_mtx)
 		pthread_mutex_destroy(s->any_death_mtx);
 	while (i < s->num_ph)

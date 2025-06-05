@@ -6,7 +6,7 @@
 /*   By: jbravo <jbravo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 13:55:54 by jbravo            #+#    #+#             */
-/*   Updated: 2025/06/01 13:55:56 by jbravo           ###   ########.fr       */
+/*   Updated: 2025/06/05 23:32:54 by jbravo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ void	create_assitant_five(t_settings *s)
 	asist = kloc(1, sizeof(t_asist));
 	s->fifth_asist = asist;
 	asist->set = s;
+	asist->starting_time = s->starting_time;
+	asist->tt_die = s->tt_die;
 	asist->meal_mtx = s->meal_mtx;
 	asist->own_death = s->own_death;
 	asist->any_death = &s->any_death;

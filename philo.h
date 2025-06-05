@@ -1,15 +1,27 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jbravo <jbravo@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/01 16:50:58 by jbravo            #+#    #+#             */
+/*   Updated: 2025/06/06 00:20:11 by jbravo           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PHILO_H
 # define PHILO_H
 
-# include <unistd.h>
-# include <stdio.h>
+# include <errno.h>
+# include <limits.h>
 # include <pthread.h>
 # include <stdbool.h>
-# include <sys/time.h>
+# include <stdio.h>
 # include <stdlib.h>
-# include <limits.h>
-# include <errno.h>
 # include <string.h>
+# include <sys/time.h>
+# include <unistd.h>
 
 # define RST "\033[0m"
 # define RED "\033[1;31m"
@@ -28,11 +40,11 @@
 # define INPUT_ERROR 1
 # define ARG_NEG 2
 # define UNVALID_ARG 3
-# define ARG_TOO_BIG 4
-# define ARG_TOO_SMALL 5
-# define NO_PHILO_ERROR 6
-# define MALLOC_ERROR 7
-# define O_MAX_MEALS 8
+# define ARG_BIG 4
+# define ARG_SMALL 5
+# define NO_PHILO 6
+# define MALLOC 7
+# define NO_MEALS 8
 
 # define SAND_CLOCK 1000
 # define SLEEP_TO_SYNCHRO 1000
@@ -78,7 +90,7 @@ typedef enum s_states
 	TAKE_FIRST_FORK,
 	TAKE_SECOND_FORK,
 	DEATH
-}	t_states;
+}						t_states;
 
 typedef enum e_timing_options
 {
@@ -86,7 +98,7 @@ typedef enum e_timing_options
 	MICRO,
 	CHANGE,
 	GET
-}	t_timing_opt;
+}						t_timing_opt;
 
 typedef enum e_mtx_option
 {
@@ -94,7 +106,7 @@ typedef enum e_mtx_option
 	LOCK,
 	UNLOCK,
 	DESTROY
-}	t_mtx_option;
+}						t_mtx_option;
 
 typedef struct s_settings
 {
@@ -114,7 +126,6 @@ typedef struct s_settings
 	long				starting_time;
 	int					*philo_status;
 	int					printer;
-	pthread_mutex_t		*printer_mtx;
 	t_feed_mtx			feed_mtx;
 	int					all_full;
 	int					*ret_st;
@@ -132,7 +143,9 @@ typedef struct s_settings
 	struct s_asist		*fourth_asist;
 	struct s_asist		*fifth_asist;
 	struct s_asist		*sixth_asist;
-}	t_settings;
+	struct s_asist		*seventh_asist;
+	struct s_asist		*eight_asist;
+}						t_settings;
 
 typedef struct s_asist
 {
@@ -152,7 +165,10 @@ typedef struct s_asist
 	long				threshold;
 	long				delay_to_sync;
 	long				num_philosophers;
-}	t_asist;
+	long				starting_time;
+	long				tt_die;
+
+}						t_asist;
 
 typedef struct s_philo
 {
@@ -185,7 +201,7 @@ typedef struct s_philo
 	long				synchro_t;
 	int					*status;
 	pthread_mutex_t		*one_death_mtx;
-}	t_philo;
+}						t_philo;
 
 typedef struct s_maitre
 {
@@ -207,80 +223,85 @@ typedef struct s_maitre
 	pthread_mutex_t		*any_death_mtx;
 	bool				*own_death;
 	int					*any_death;
-}	t_maitre;
+}						t_maitre;
 
 /* assistants */
-void	create_assitants(t_settings *s);
-void	create_assitant_one(t_settings *s);
-void	create_assitant_two(t_settings *s);
-void	create_assitant_three(t_settings *s);
-void	create_assitant_four(t_settings *s);
-void	create_assitant_five(t_settings *s);
-void	create_assitant_six(t_settings *s);
-void	*rout_asistant(void *args);
-void	*rout_nd_asistant(void *args);
-void	*rout_two_ford(void *args);
-void	*rout_two_back(void *args);
-void	*rout_three_ford(void *args);
-void	*rout_three_back(void *args);
-void	asistant_monitor(t_asist *a, int step, int rev);
-int		check_philo_state(t_asist *a, int i);
-int		handle_philo_death(t_asist *asist, int i);
+void					create_assitant_seven(t_settings *s);
+void					*rout_four_ford(void *args);
+void					create_assitant_eight(t_settings *s);
+void					*rout_four_back(void *args);
+void					create_assitants(t_settings *s);
+void					create_assitant_one(t_settings *s);
+void					create_assitant_two(t_settings *s);
+void					create_assitant_three(t_settings *s);
+void					create_assitant_four(t_settings *s);
+void					create_assitant_five(t_settings *s);
+void					create_assitant_six(t_settings *s);
+void					*rout_asistant(void *args);
+void					*rout_nd_asistant(void *args);
+void					*rout_two_ford(void *args);
+void					*rout_two_back(void *args);
+void					*rout_three_ford(void *args);
+void					*rout_three_back(void *args);
+void					asistant_monitor(t_asist *a, int step, int rev);
+int						check_philo_state(t_asist *a, int i);
+int						handle_philo_death(t_asist *asist, int i);
 
 /* core logic */
-void	*routine_ph(void *args);
-int		routine_even(t_philo *ph);
-int		routine_odd(t_philo *ph);
-int		eating(t_philo *ph);
-int		sleeping(t_philo *ph);
-int		thinking(t_philo *ph);
-int		all_alive(t_philo *ph, char *opt);
-char	*get_col(char *opt);
-int		printer(t_philo *ph, char *opt);
+void					*routine_ph(void *args);
+int						routine_even(t_philo *ph);
+int						routine_odd(t_philo *ph);
+int						eating(t_philo *ph);
+int						sleeping(t_philo *ph);
+int						thinking(t_philo *ph);
+int						all_alive(t_philo *ph, char *opt);
+char					*get_col(char *opt);
+int						printer(t_philo *ph, char *opt);
 
 /* setup */
-int		parse_input(t_settings *s, const char **av);
-int		parse_int(char *av[]);
-void	load_settings(t_settings *s, const char **av);
-void	create_philos(t_settings *s);
-void	create_mutexes(t_settings *s);
-void	join_threads(t_settings *s);
-long	ft_atol(const char *str);
+int						parse_input(t_settings *s, const char **av);
+int						parse_int(char *av[]);
+void					load_settings(t_settings *s, const char **av);
+void					create_philos(t_settings *s);
+void					create_mutexes(t_settings *s);
+void					join_threads(t_settings *s);
+long					ft_atol(const char *str);
 
 /* time */
-long	get_microsec(void);
-long	get_milisec(void);
-long	get_time(struct timeval *tv, t_timing_opt o, t_timing_opt u);
-long	to_microsec(struct timeval *tv);
-void	busy_wait_start(long s, int h);
-void	precise_sleep(long t, long *thr);
-long	time_left(t_philo *ph);
-bool	too_short(t_settings *s);
-void	set_threshold(t_settings *s);
+long					get_microsec(void);
+long					get_milisec(void);
+long					get_time(struct timeval *tv, t_timing_opt o,
+							t_timing_opt u);
+long					to_microsec(struct timeval *tv);
+void					busy_wait_start(long s, int h);
+void					precise_sleep(long t, long *thr);
+long					time_left(t_philo *ph);
+bool					too_short(long starting_time, long tt_die);
+void					set_threshold(t_settings *s);
 
 /* utils */
-void	ft_bzero(void *s, size_t n);
-void	*kloc(size_t c, size_t s);
-size_t	ft_strlen(const char *s);
-int		ft_strcmp(const char *s1, const char *s2, size_t n);
-void	write_function(t_settings *s, char *str);
-void	safe_mutex(pthread_mutex_t *m, t_mtx_option o);
+void					ft_bzero(void *s, size_t n);
+void					*kloc(size_t c, size_t s);
+size_t					ft_strlen(const char *s);
+int						ft_strcmp(const char *s1, const char *s2, size_t n);
+void					write_function(t_settings *s, char *str);
+void					safe_mutex(pthread_mutex_t *m, t_mtx_option o);
 
 /* exit */
-void	exiting(t_settings *s, char *str);
-void	free_memory(t_settings *s);
-void	exit_on_error(char *str);
-void	free_allocated_items(void);
+void					exiting(t_settings *s, char *str);
+void					free_memory(t_settings *s);
+void					exit_on_error(char *str);
+void					free_allocated_items(void);
 
 /* debug */
-void	support_read_returns(t_settings *s);
-void	print_data(t_settings *s, char *str);
+void					support_read_returns(t_settings *s);
+void					print_data(t_settings *s, char *str);
 
 /* error */
-int		print_error(int err);
-void	init_error(int ret);
-void	lock_error(int ret);
-void	unlock_error(int ret);
-void	destroy_error(int ret);
+int						print_error(int err);
+void					init_error(int ret);
+void					lock_error(int ret);
+void					unlock_error(int ret);
+void					destroy_error(int ret);
 
 #endif

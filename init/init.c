@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: havr <havr@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: jbravo <jbravo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 13:56:21 by jbravo            #+#    #+#             */
-/*   Updated: 2025/06/01 15:36:52 by havr             ###   ########.fr       */
+/*   Updated: 2025/06/05 23:53:12 by jbravo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ void	create_mutexes(t_settings *s)
 	s->t_write_mtx = kloc(1, sizeof(pthread_mutex_t));
 	s->time_mtx = kloc(1, sizeof(pthread_mutex_t));
 	s->feed_mtx = kloc(1, sizeof(pthread_mutex_t));
-	s->printer_mtx = kloc(1, sizeof(pthread_mutex_t));
 	s->mutexes = kloc(s->num_ph, sizeof(pthread_mutex_t));
 	s->st_mtx = kloc(s->num_ph, sizeof(pthread_mutex_t));
 	s->meal_mtx = kloc(s->num_ph, sizeof(pthread_mutex_t));
@@ -65,7 +64,6 @@ static void	init_philo_data(t_settings *s, long int i)
 	philo->fork_next = &s->mutexes[i];
 	philo->last_meal = get_time(NULL, GET, MILI);
 	philo->printer = &(s->printer);
-	philo->prntr_mtx = s->printer_mtx;
 }
 
 static void	assign_forks(t_settings *s, long int i)

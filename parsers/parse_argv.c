@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_argv.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: havr <havr@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: jbravo <jbravo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 13:56:32 by jbravo            #+#    #+#             */
-/*   Updated: 2025/06/01 15:45:21 by havr             ###   ########.fr       */
+/*   Updated: 2025/06/01 18:11:54 by jbravo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ long	ft_atol(const char *str)
 	}
 	if (result > INT_MAX)
 	{
-		print_error(ARG_TOO_BIG);
+		print_error(ARG_BIG);
 		result = -1;
 	}
 	return (result);
@@ -71,19 +71,19 @@ int	parse_input(t_settings *set, const char **argv)
 	if (set->num_ph == -1)
 		return (EXIT_FAILURE);
 	if (set->num_ph == 0)
-		return (print_error(NO_PHILO_ERROR));
+		return (print_error(NO_PHILO));
 	set->tt_die = (long)ft_atol(argv[2]) * 1e3;
 	set->tt_eat = (long)ft_atol(argv[3]) * 1e3;
 	set->tt_sleep = (long)ft_atol(argv[4]) * 1e3;
 	if (set->tt_die == -1e3 || set->tt_eat == -1e3 || set->tt_sleep == -1e3)
 		return (EXIT_FAILURE);
 	if (set->tt_die < 6e4 || set->tt_eat < 6e4 || set->tt_sleep < 6e4)
-		return (print_error(ARG_TOO_SMALL));
+		return (print_error(ARG_SMALL));
 	if (argv[5])
 	{
 		set->max_meals = ft_atol(argv[5]);
 		if (set->max_meals < 1)
-			return (print_error(O_MAX_MEALS));
+			return (print_error(NO_MEALS));
 	}
 	else
 		set->max_meals = -1;

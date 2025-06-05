@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_assistants.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: havr <havr@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: jbravo <jbravo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 13:56:18 by jbravo            #+#    #+#             */
-/*   Updated: 2025/06/01 15:34:36 by havr             ###   ########.fr       */
+/*   Updated: 2025/06/05 23:57:21 by jbravo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,20 @@ void	create_assitants(t_settings *set)
 	create_assitant_one(set);
 	if (set->num_ph > 20 && set->num_ph <= 39)
 		create_assitant_two(set);
-	if (set->num_ph > 40 && set->num_ph <= 75)
+	if (set->num_ph > 30 && set->num_ph <= 60)
 	{
 		create_assitant_three(set);
 		create_assitant_four(set);
 	}
-	if (set->num_ph > 80)
+	if (set->num_ph > 60 && set->num_ph <= 100)
 	{
 		create_assitant_five(set);
 		create_assitant_six(set);
+	}
+	if (set->num_ph > 100)
+	{
+		create_assitant_seven(set);
+		create_assitant_eight(set);
 	}
 }
 
@@ -76,7 +81,7 @@ void	asistant_monitor(t_asist *asist, int step, int reverse)
 			i = 0;
 		while ((reverse && i >= 0) || (!reverse && i < asist->num_philosophers))
 		{
-			if (!too_short(asist->set))
+			if (!too_short(asist->starting_time, asist->tt_die))
 			{
 				if (!check_philo_state(asist, i))
 					return ;
