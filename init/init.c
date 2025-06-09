@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbravo <jbravo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: havr <havr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 13:56:21 by jbravo            #+#    #+#             */
-/*   Updated: 2025/06/05 23:53:12 by jbravo           ###   ########.fr       */
+/*   Updated: 2025/06/09 22:40:52 by havr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,5 +121,5 @@ void	load_settings(t_settings *set, const char *argv[])
 	set->starting_time = 0;
 	set->all_full = set->num_ph;
 	set->any_death = ALL_ALIVE;
-	usleep(100);
+	usleep(50);
 }

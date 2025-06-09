@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbravo <jbravo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: havr <havr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 16:50:39 by jbravo            #+#    #+#             */
-/*   Updated: 2025/06/01 16:50:43 by jbravo           ###   ########.fr       */
+/*   Updated: 2025/06/09 22:41:25 by havr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	main(int argc, char const *argv[])
 	load_settings(set, argv);
 	create_mutexes(set);
 	create_philos(set);
-	usleep(30);
+	usleep(10);
 	create_assitants(set);
 	join_threads(set);
 	exiting(set, NULL);

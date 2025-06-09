@@ -6,7 +6,7 @@
 /*   By: havr <havr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 16:50:58 by jbravo            #+#    #+#             */
-/*   Updated: 2025/06/09 22:04:26 by havr             ###   ########.fr       */
+/*   Updated: 2025/06/09 22:36:07 by havr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,11 @@
 # define MALLOC 7
 # define NO_MEALS 8
 
-# define SAND_CLOCK 1000
-# define SLEEP_TO_SYNCHRO 1000
-# define PHILO_HEAD_START 10
+# define SAND_CLOCK 100
+# define SLEEP_TO_SYNCHRO 100
+# define PHILO_HEAD_START 5
 # define SLEEPING_THRESHOLD_TESTTIME 0
-# define WAIT_TO_SYNCHRO 1000
+# define WAIT_TO_SYNCHRO 100
 # define THRESHOLD_TEST_ITERATION 50
 # define THRESHOLD_MIN_INPUT 150
 # define MIN_SAFETY_MARGIN 1.05

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_assistants.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbravo <jbravo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: havr <havr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 13:56:18 by jbravo            #+#    #+#             */
-/*   Updated: 2025/06/05 23:57:21 by jbravo           ###   ########.fr       */
+/*   Updated: 2025/06/09 22:49:03 by havr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,5 +91,6 @@ void	asistant_monitor(t_asist *asist, int step, int reverse)
 			else
 				i += step;
 		}
+		usleep(1);
 	}
 }
