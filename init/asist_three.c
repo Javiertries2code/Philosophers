@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   asist_three.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: havr <havr@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: jbravo <jbravo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 13:56:13 by jbravo            #+#    #+#             */
-/*   Updated: 2025/06/09 22:17:13 by havr             ###   ########.fr       */
+/*   Updated: 2025/06/10 00:45:06 by jbravo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,7 @@ void	create_assitant_three(t_settings *s)
 	s->third_asist = asist;
 	asist->set = s;
 	asist->time_mtx = s->time_mtx;
-	safe_mutex(asist->time_mtx, LOCK);
-	asist->starting_time = s->starting_time;
-	safe_mutex(asist->time_mtx, UNLOCK);
+	assign_flags(asist);
 	asist->tt_die = s->tt_die;
 	asist->meal_mtx = s->meal_mtx;
 	asist->own_death = s->own_death;

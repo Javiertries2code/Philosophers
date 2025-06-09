@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: havr <havr@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: jbravo <jbravo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 16:50:58 by jbravo            #+#    #+#             */
-/*   Updated: 2025/06/09 22:36:07 by havr             ###   ########.fr       */
+/*   Updated: 2025/06/10 00:49:13 by jbravo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@
 # define MALLOC 7
 # define NO_MEALS 8
 
-# define SAND_CLOCK 100
+# define SAND_CLOCK 200
 # define SLEEP_TO_SYNCHRO 100
 # define PHILO_HEAD_START 5
 # define SLEEPING_THRESHOLD_TESTTIME 0
@@ -228,6 +228,7 @@ typedef struct s_maitre
 }						t_maitre;
 
 /* assistants */
+void					assign_flags(t_asist *asist);
 void					create_assitant_seven(t_settings *s);
 void					*rout_four_ford(void *args);
 void					create_assitant_eight(t_settings *s);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   asist_seven.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: havr <havr@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: jbravo <jbravo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 23:46:24 by jbravo            #+#    #+#             */
-/*   Updated: 2025/06/09 22:17:38 by havr             ###   ########.fr       */
+/*   Updated: 2025/06/10 00:45:54 by jbravo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,7 @@ void	create_assitant_seven(t_settings *s)
 	s->seventh_asist = asist;
 	asist->set = s;
 	asist->time_mtx = s->time_mtx;
-	safe_mutex(asist->time_mtx, LOCK);
-	asist->starting_time = s->starting_time;
-	safe_mutex(asist->time_mtx, UNLOCK);
+	assign_flags(asist);
 	asist->tt_die = s->tt_die;
 	asist->meal_mtx = s->meal_mtx;
 	asist->own_death = s->own_death;

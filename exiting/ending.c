@@ -3,17 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ending.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: havr <havr@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: jbravo <jbravo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 16:51:20 by jbravo            #+#    #+#             */
-/*   Updated: 2025/06/09 20:57:22 by havr             ###   ########.fr       */
+/*   Updated: 2025/06/10 00:54:54 by jbravo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
 
-static 
-void set_em_full(t_settings *settings)
+static void	set_em_full(t_settings *settings)
 {
 	int		i;
 	void	*ret;

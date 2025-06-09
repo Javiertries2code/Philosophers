@@ -3,14 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   init_assistants.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: havr <havr@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: jbravo <jbravo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 13:56:18 by jbravo            #+#    #+#             */
-/*   Updated: 2025/06/09 22:49:03 by havr             ###   ########.fr       */
+/*   Updated: 2025/06/10 00:42:44 by jbravo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
+
+void	assign_flags(t_asist *asist)
+{
+	safe_mutex(asist->time_mtx, LOCK);
+	asist->starting_time = asist->set->starting_time;
+	safe_mutex(asist->time_mtx, UNLOCK);
+}
 
 void	create_assitants(t_settings *set)
 {

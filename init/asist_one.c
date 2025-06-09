@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   asist_one.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: havr <havr@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: jbravo <jbravo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 13:56:00 by jbravo            #+#    #+#             */
-/*   Updated: 2025/06/09 22:12:35 by havr             ###   ########.fr       */
+/*   Updated: 2025/06/10 00:44:28 by jbravo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,7 @@ void	create_assitant_one(t_settings *s)
 	asist->tt_die = s->tt_die;
 	asist->meal_mtx = s->meal_mtx;
 	asist->time_mtx = s->time_mtx;
-	safe_mutex(asist->time_mtx, LOCK);
-	asist->starting_time = s->starting_time;
-	safe_mutex(asist->time_mtx, UNLOCK);
+	assign_flags(asist);
 	asist->own_death = s->own_death;
 	asist->any_death = &s->any_death;
 	asist->own_death_mtx = s->own_death_mtx;
