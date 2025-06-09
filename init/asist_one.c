@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   asist_one.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbravo <jbravo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: havr <havr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 13:56:00 by jbravo            #+#    #+#             */
-/*   Updated: 2025/06/05 23:32:32 by jbravo           ###   ########.fr       */
+/*   Updated: 2025/06/09 22:12:35 by havr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,12 @@ void	create_assitant_one(t_settings *s)
 	asist = kloc(1, sizeof(t_asist));
 	s->asist = asist;
 	asist->set = s;
-	asist->starting_time = s->starting_time;
 	asist->tt_die = s->tt_die;
 	asist->meal_mtx = s->meal_mtx;
+	asist->time_mtx = s->time_mtx;
+	safe_mutex(asist->time_mtx, LOCK);
+	asist->starting_time = s->starting_time;
+	safe_mutex(asist->time_mtx, UNLOCK);
 	asist->own_death = s->own_death;
 	asist->any_death = &s->any_death;
 	asist->own_death_mtx = s->own_death_mtx;
@@ -31,7 +34,9 @@ void	create_assitant_one(t_settings *s)
 	asist->feed_mtx = s->feed_mtx;
 	asist->num_philosophers = s->num_ph;
 	asist->philos = s->philos;
+	safe_mutex(asist->status_mtx, LOCK);
 	asist->ret_st = s->ret_st;
+	safe_mutex(asist->status_mtx, UNLOCK);
 	asist->threshold = s->threshold;
 	asist->synchro_t = get_time(&s->synchro_t, CHANGE, MILI);
 	pthread_create(&asist->th_asist, NULL, &rout_asistant, (void *)asist);

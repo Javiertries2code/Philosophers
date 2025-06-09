@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbravo <jbravo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: havr <havr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 16:50:58 by jbravo            #+#    #+#             */
-/*   Updated: 2025/06/06 00:20:11 by jbravo           ###   ########.fr       */
+/*   Updated: 2025/06/09 22:04:26 by havr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,6 +149,7 @@ typedef struct s_settings
 
 typedef struct s_asist
 {
+	t_tm_mtx			time_mtx;
 	pthread_mutex_t		*meal_mtx;
 	pthread_mutex_t		*own_death_mtx;
 	pthread_mutex_t		*any_death_mtx;
@@ -186,6 +187,7 @@ typedef struct s_philo
 	pthread_mutex_t		*status_mtx;
 	t_write_mtx			wrt_mtx;
 	t_tm_mtx			time_mtx;
+	long				*starting_time;
 	t_general			t_general;
 	int					*printer;
 	pthread_mutex_t		*prntr_mtx;
